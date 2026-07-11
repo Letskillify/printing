@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { CommandPalette } from './components/layout/CommandPalette.jsx'
-import { CursorGlow } from './components/layout/CursorGlow.jsx'
-import { FloatingActions } from './components/layout/FloatingActions.jsx'
-import { Footer } from './components/layout/Footer.jsx'
-import { Navbar } from './components/layout/Navbar.jsx'
+import { CommandPalette } from './components/layout/CommandPalette'
+import { CursorGlow } from './components/layout/CursorGlow'
+import { FloatingActions } from './components/layout/FloatingActions'
+import { Footer } from './components/layout/Footer'
+import { Navbar } from './components/layout/Navbar'
 import { useLenis } from './hooks/useLenis'
 import { useScrollProgress } from './hooks/useScrollProgress'
-import { HomePage } from './pages/HomePage.jsx'
+import { HomePage } from './pages/HomePage'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
