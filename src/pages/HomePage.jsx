@@ -1,17 +1,17 @@
 import { lazy, Suspense } from 'react'
-import { CTA } from '../components/sections/CTA'
-import { Categories } from '../components/sections/Categories'
-import { FAQ } from '../components/sections/FAQ'
-import { FeaturedProducts } from '../components/sections/FeaturedProducts'
-import { Hero } from '../components/sections/Hero'
-import { Industries } from '../components/sections/Industries'
-import { PrintingProcess } from '../components/sections/PrintingProcess'
-import { QualityShowcase } from '../components/sections/QualityShowcase'
-import { TrustedBy } from '../components/sections/TrustedBy'
-import { WhyChooseUs } from '../components/sections/WhyChooseUs'
+import { CTA } from '../Components/sections/CTA'
+import { Categories } from '../Components/sections/Categories'
+import { FAQ } from '../Components/sections/FAQ'
+import { FeaturedProducts } from '../Components/sections/FeaturedProducts'
+import { Hero } from '../Components/sections/Hero'
+import { Industries } from '../Components/sections/Industries'
+import { PrintingProcess } from '../Components/sections/PrintingProcess'
+import { QualityShowcase } from '../Components/sections/QualityShowcase'
+import { TrustedBy } from '../Components/sections/TrustedBy'
+import { WhyChooseUs } from '../Components/sections/WhyChooseUs'
 
 const Testimonials = lazy(() =>
-  import('../components/sections/Testimonials').then((module) => ({ default: module.Testimonials })),
+  import('../Components/sections/Testimonials').then((module) => ({ default: module.Testimonials })),
 )
 
 function TestimonialsSkeleton() {
