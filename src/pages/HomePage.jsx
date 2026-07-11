@@ -7,7 +7,6 @@ import { Hero } from '../components/sections/Hero'
 import { Industries } from '../components/sections/Industries'
 import { PrintingProcess } from '../components/sections/PrintingProcess'
 import { QualityShowcase } from '../components/sections/QualityShowcase'
-import { Stats } from '../components/sections/Stats'
 import { TrustedBy } from '../components/sections/TrustedBy'
 import { WhyChooseUs } from '../components/sections/WhyChooseUs'
 
