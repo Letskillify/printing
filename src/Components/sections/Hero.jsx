@@ -1,90 +1,133 @@
-import { FiCheckCircle, FiPlay } from 'react-icons/fi'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
-import { Container } from '../ui/Container'
-import { GlassCard } from '../ui/GlassCard'
+import { FiUpload, FiCheck, FiArrowRight, FiShield, FiStar } from 'react-icons/fi'
 
-const floatingItems = ['Business Cards', 'Packaging Box', 'Sticker', 'Label', 'Invitation Card']
-
-export function Hero() {
-  const { scrollY } = useScroll()
-  const y = useTransform(scrollY, [0, 600], [0, -70])
+export function Hero({ setCurrentPage }) {
+  const handleLink = (page) => {
+    if (setCurrentPage) setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
-    <section id="home" className="relative overflow-hidden pt-32 sm:pt-36">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_10%,rgba(37,99,235,.18),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(168,85,247,.16),transparent_34%),linear-gradient(180deg,#fff,#f8fafc)] dark:bg-[radial-gradient(circle_at_20%_10%,rgba(37,99,235,.26),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(168,85,247,.20),transparent_34%),linear-gradient(180deg,#020617,#0f172a)]" />
-      <Container className="grid min-h-[calc(100vh-5rem)] items-center gap-12 pb-16 lg:grid-cols-[1fr_.9fr]">
-        <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75 }}>
-          <Badge>Luxury print production</Badge>
-          <h1 className="mt-7 max-w-5xl text-[38px] font-extrabold leading-[1.02] tracking-tight text-slate-950 dark:text-white sm:text-[52px] lg:text-[72px]">
-            Print that Builds Brands. Not Just Products.
+    <section className="relative bg-[#FAF8F5] py-20 lg:py-28 overflow-hidden font-sans border-b border-neutral-200/60">
+      
+      {/* Decorative Ambient Background Glows */}
+      <div className="absolute top-[-10%] left-[-5%] w-[45vw] h-[45vw] rounded-full bg-amber-200/20 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[45vw] h-[45vw] rounded-full bg-orange-100/30 blur-[140px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
+        
+        {/* Left Column: Premium Editorial Content */}
+        <div className="flex flex-col text-left lg:col-span-7 pr-0 lg:pr-6">
+          
+          {/* Subheading Badge */}
+          <div className="inline-flex items-center gap-2 mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#E5AA17] animate-pulse" />
+            <span className="text-[12px] md:text-[13px] font-extrabold tracking-[0.25em] text-[#C48C08] uppercase">
+              Design • Print • Deliver
+            </span>
+          </div>
+          
+          {/* Headline */}
+          <h1 className="text-[48px] sm:text-[62px] lg:text-[72px] font-extrabold text-neutral-900 leading-[1.05] tracking-tight mb-6">
+            Design it.<br />
+            Print it. <span className="font-serif italic font-normal text-[#D5A153]">Love it.</span>
           </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-            Enterprise-grade packaging, cards, labels, and retail print with proof-perfect color, tactile finishes, and a storefront your team can trust.
+          
+          {/* Paragraph */}
+          <p className="text-neutral-600 text-base md:text-[18px] leading-relaxed max-w-xl mb-10 font-normal">
+            Bespoke print production engineered for ambitious brands and discerning creators. Enjoy premium finishes, tactile textures, and doorstep delivery.
           </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Button onClick={() => document.querySelector('#products')?.scrollIntoView({ behavior: 'smooth' })}>Explore Products</Button>
-            <Button variant="secondary" onClick={() => document.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth' })}>Get Instant Quote</Button>
-          </div>
-          <div className="mt-9 flex flex-wrap gap-4 text-sm font-semibold text-slate-600 dark:text-slate-300">
-            {['Press-calibrated color', 'Human proofing', 'Global shipping'].map((item) => (
-              <span key={item} className="inline-flex items-center gap-2">
-                <FiCheckCircle className="text-blue-600" />
-                {item}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div className="relative min-h-[560px]" style={{ y }}>
-          <GlassCard className="absolute left-0 top-12 w-[78%] p-4">
-            <div className="rounded-[1.5rem] bg-slate-950 p-3 shadow-2xl">
-              <div className="h-7 rounded-t-2xl bg-slate-800" />
-              <div className="grid gap-3 rounded-b-2xl bg-gradient-to-br from-blue-500 via-cyan-400 to-violet-500 p-5">
-                <div className="h-32 rounded-2xl bg-white/80" />
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="h-16 rounded-xl bg-white/70" />
-                  <div className="h-16 rounded-xl bg-white/50" />
-                  <div className="h-16 rounded-xl bg-white/60" />
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-
-          <motion.div className="absolute right-0 top-3 w-48 rounded-[2rem] border border-white/70 bg-white/85 p-4 shadow-2xl backdrop-blur dark:border-white/10 dark:bg-white/10" animate={{ y: [0, -16, 0], rotate: [2, -2, 2] }} transition={{ duration: 7, repeat: Infinity }}>
-            <div className="mx-auto h-48 rounded-[1.5rem] bg-slate-950 p-3">
-              <div className="h-full rounded-[1rem] bg-gradient-to-br from-white via-cyan-100 to-blue-200" />
-            </div>
-          </motion.div>
-
-          {floatingItems.map((item, index) => (
-            <motion.div
-              key={item}
-              className="absolute rounded-full border border-white/70 bg-white/85 px-4 py-3 text-xs font-bold text-slate-800 shadow-xl backdrop-blur dark:border-white/10 dark:bg-slate-900/80 dark:text-white"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1, y: [0, index % 2 ? 14 : -14, 0] }}
-              transition={{ delay: index * 0.12, duration: 5 + index, repeat: Infinity }}
-              style={{
-                left: `${[6, 58, 12, 62, 34][index]}%`,
-                top: `${[3, 22, 66, 73, 47][index]}%`,
-              }}
+          
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 mb-10">
+            <button 
+              onClick={() => handleLink('products')} 
+              className="inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-800 text-white font-semibold px-8 py-4 rounded-full text-sm sm:text-[15px] transition-all duration-300 shadow-xl shadow-neutral-900/10 hover:shadow-2xl hover:-translate-y-0.5 cursor-pointer border-none group"
             >
-              {item}
-            </motion.div>
-          ))}
-
-          <GlassCard className="absolute bottom-10 right-8 flex w-72 items-center gap-4 p-5">
-            <button className="grid h-12 w-12 place-items-center rounded-full bg-blue-600 text-white" aria-label="Play brand film">
-              <FiPlay />
+              Shop All Products 
+              <FiArrowRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
-            <div>
-              <p className="text-sm font-bold text-slate-950 dark:text-white">See finishing in motion</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Foil, emboss, texture, edge paint</p>
+            
+            <button 
+              onClick={() => handleLink('products')} 
+              className="inline-flex items-center justify-center bg-white/90 backdrop-blur-md border border-neutral-300/80 hover:border-neutral-400 hover:bg-white text-neutral-800 font-semibold px-7 py-4 rounded-full text-sm sm:text-[15px] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+            >
+              Upload Your Design <FiUpload className="ml-2.5 w-4 h-4 text-neutral-500" />
+            </button>
+          </div>
+
+          {/* Quick Checklist Icons */}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-xs sm:text-sm font-medium text-neutral-700 border-t border-neutral-200/80 pt-8 max-w-xl">
+            <span className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center text-[#C48C08]">
+                <FiCheck className="w-3.5 h-3.5" />
+              </span>
+              Free Studio Design Check
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center text-[#C48C08]">
+                <FiCheck className="w-3.5 h-3.5" />
+              </span>
+              Encrypted Checkout
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center text-[#C48C08]">
+                <FiCheck className="w-3.5 h-3.5" />
+              </span>
+              On-Time Guaranteed
+            </span>
+          </div>
+
+          {/* Slider Pagination Dots */}
+          <div className="flex gap-2 mt-8 items-center">
+            <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 cursor-pointer hover:bg-neutral-400 transition-colors"></span>
+            <span className="w-7 h-2.5 rounded-full bg-[#E5AA17] cursor-pointer shadow-sm"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 cursor-pointer hover:bg-neutral-400 transition-colors"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-neutral-300 cursor-pointer hover:bg-neutral-400 transition-colors"></span>
+          </div>
+        </div>
+
+        {/* Right Column: Layered Photo Showcase */}
+        <div className="relative h-[480px] sm:h-[540px] lg:h-[580px] w-full lg:col-span-5 flex items-center justify-center select-none group/card">
+          
+          {/* Subtle Frame Geometry Backdrop */}
+          <div className="absolute inset-0 m-auto w-72 h-72 sm:w-80 sm:h-80 rounded-full border border-neutral-200/60 scale-125 pointer-events-none" />
+
+          {/* Main Showcase Image (Layered Print Mockup) */}
+          <div className="relative w-full h-[400px] sm:h-[460px] rounded-3xl overflow-hidden shadow-[0_30px_70px_rgba(0,0,0,0.12)] border border-white/60 transform transition-transform duration-700 group-hover/card:scale-[1.02]">
+            <img 
+              src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&q=80&w=1200" 
+              alt="Premium Print Production Showcase" 
+              className="w-full h-full object-cover object-center"
+            />
+            {/* Subtle Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          </div>
+
+          {/* Floating Glassmorphic Accent Badge 1: Quality Stamp */}
+          <div className="absolute top-6 left-2 sm:-left-4 bg-white/80 backdrop-blur-md border border-white/80 p-3.5 rounded-2xl shadow-xl flex items-center gap-3 transform -rotate-3 hover:rotate-0 transition-all duration-500 z-20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#E5AA17] to-amber-300 flex items-center justify-center text-slate-950 font-bold shadow-md">
+              <FiStar className="w-5 h-5 fill-slate-950" />
             </div>
-          </GlassCard>
-        </motion.div>
-      </Container>
+            <div>
+              <p className="text-xs font-bold text-neutral-900 leading-tight">4.9 / 5.0 Rating</p>
+              <p className="text-[10px] text-neutral-500 font-medium">Over 10k+ Prints Delivered</p>
+            </div>
+          </div>
+
+          {/* Floating Glassmorphic Accent Badge 2: Craftsmanship Tag */}
+          <div className="absolute bottom-8 right-2 sm:-right-4 bg-neutral-900/90 backdrop-blur-md border border-neutral-800 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3.5 transform rotate-2 hover:rotate-0 transition-all duration-500 z-20">
+            <div className="w-9 h-9 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-[#E5AA17]">
+              <FiShield className="w-4 h-4" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-bold tracking-wide text-amber-300 uppercase">100% Guaranteed</p>
+              <p className="text-[11px] text-neutral-300 font-normal">Ultra-High Resolution Print</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </section>
   )
 }

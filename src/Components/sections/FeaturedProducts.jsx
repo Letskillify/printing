@@ -1,51 +1,127 @@
-import { FiEye, FiStar } from 'react-icons/fi'
-import { motion } from 'framer-motion'
-import { products } from '../../data/siteData'
-import { Button } from '../ui/Button'
-import { Container } from '../ui/Container'
-import { ProductVisual } from '../ui/ProductVisual'
-import { SectionTitle } from '../ui/SectionTitle'
+import { FiArrowRight } from 'react-icons/fi';
 
 export function FeaturedProducts() {
+  const popularProducts = [
+    {
+      id: 1,
+      title: 'Visiting Cards',
+      description: 'Custom designs',
+      price: '₹199',
+      // Replace with your actual image paths
+      imageUrl: '/images/visiting-cards.png',
+    },
+    {
+      id: 2,
+      title: 'Pamphlets',
+      description: 'High quality prints',
+      price: '₹499',
+      imageUrl: '/images/pamphlets.png',
+    },
+    {
+      id: 3,
+      title: 'Brochures',
+      description: 'Various sizes',
+      price: '₹699',
+      imageUrl: '/images/brochures.png',
+    },
+    {
+      id: 4,
+      title: 'Flex Banners',
+      description: 'Durable & vibrant',
+      price: '₹299',
+      imageUrl: '/images/flex-banners.png',
+    },
+    {
+      id: 5,
+      title: 'Bill Books',
+      description: 'Numbered & carbonless',
+      price: '₹199',
+      imageUrl: '/images/bill-books.png',
+    },
+    {
+      id: 6,
+      title: 'Custom Design',
+      description: 'Bring your ideas',
+      price: '₹299',
+      imageUrl: '/images/custom-design.png',
+    }
+  ];
+
   return (
-    <section className="section-pad bg-slate-50 dark:bg-slate-900">
-      <Container>
-        <SectionTitle eyebrow="Featured products" title="Luxury ecommerce cards built to convert." text="Three fast-start bestsellers with premium finishes, beautiful proofs, and production-ready specs." />
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {products.map((product, index) => (
-            <motion.article
-              key={product.title}
-              className="group rounded-[2rem] border border-white/80 bg-white/80 p-4 shadow-[0_24px_90px_rgba(15,23,42,.08)] backdrop-blur transition hover:-translate-y-2 hover:shadow-[0_34px_110px_rgba(37,99,235,.16)] dark:border-white/10 dark:bg-white/5"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
+    <section id="products" className="py-16 bg-white font-sans overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header Section */}
+        <div className="flex items-center justify-between pb-6 mb-4">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-wide uppercase">
+            Popular Products
+          </h2>
+          <a
+            href="#all-products"
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            View All Products <FiArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+
+        {/* Horizontal Slider / Carousel */}
+        {/* Added inline styles to hide the scrollbar for webkit and standard browsers */}
+        <div
+          className="flex overflow-x-auto gap-4 sm:gap-6 pb-8 snap-x snap-mandatory"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {/* Webkit scrollbar hiding via style block to ensure it works without global CSS changes */}
+          <style dangerouslySetInnerHTML={{
+            __html: `
+            div::-webkit-scrollbar { display: none; }
+          `}} />
+
+          {popularProducts.map((prod) => (
+            <div
+              key={prod.id}
+              className="min-w-[260px] max-w-[260px] sm:min-w-[280px] sm:max-w-[280px] snap-start bg-white rounded-[20px] border border-gray-100 hover:border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col p-3 group"
             >
-              <div className="relative overflow-hidden rounded-[1.75rem]">
-                <ProductVisual tone={product.tone} type={index === 1 ? 'box' : index === 2 ? 'label' : 'card'} />
-                <button className="absolute right-4 top-4 flex min-h-11 translate-y-2 items-center gap-2 rounded-full bg-white/90 px-4 text-sm font-bold text-slate-900 opacity-0 shadow-xl backdrop-blur transition group-hover:translate-y-0 group-hover:opacity-100" aria-label={`Quick view ${product.title}`}>
-                  <FiEye />
-                  Quick View
-                </button>
+              {/* Image Container */}
+              <div className="bg-[#F8F9FA] rounded-2xl h-[220px] w-full flex items-center justify-center p-4 mb-4 relative overflow-hidden">
+                <img
+                  src={prod.imageUrl}
+                  alt={prod.title}
+                  className="object-contain w-full h-full drop-shadow-sm group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
               </div>
-              <div className="p-3 pt-5">
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-xl font-extrabold text-slate-950 dark:text-white">{product.title}</h3>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200">{product.price}</span>
+
+              {/* Product Info */}
+              <div className="px-2 pb-2 flex flex-col flex-1 justify-between">
+                <div>
+                  <h3 className="text-[18px] font-bold text-gray-900 leading-tight">
+                    {prod.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1.5">
+                    {prod.description}
+                  </p>
                 </div>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{product.finish}</p>
-                <div className="mt-5 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 text-sm font-bold text-amber-500">
-                    <FiStar className="fill-current" />
-                    {product.rating}
-                  </span>
-                  <Button className="px-5" icon={false}>Order</Button>
+
+                {/* Price and Action Button */}
+                <div className="flex items-center justify-between mt-6">
+                  <p className="text-[15px] font-bold text-gray-900">
+                    Starting at {prod.price}
+                  </p>
+
+                  <a
+                    href={`#product-${prod.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="w-8 h-8 rounded-full bg-[#FFC107] text-black flex items-center justify-center font-bold hover:bg-[#e0a800] transition-colors"
+                    aria-label={`Buy ${prod.title}`}
+                  >
+                    <FiArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
-            </motion.article>
+            </div>
           ))}
         </div>
-      </Container>
+
+      </div>
     </section>
-  )
+  );
 }
