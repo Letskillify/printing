@@ -7,7 +7,7 @@ export function AboutPage() {
       desc: 'Our printing presses are calibrated weekly to the FOGRA ISO standard. Color profiles (CMYK) are checked by real human pre-press specialists before production.',
       icon: <FiLayers className="w-6 h-6 text-amber-500" />
     },
-    {
+    { 
       title: 'Eco-Ethical Print',
       desc: 'We prioritize FSC-certified recycled paper stocks, biodegradable soy-based inks, and custom folding box designs that eliminate glue adhesives entirely where possible.',
       icon: <FiHeart className="w-6 h-6 text-amber-500" />
