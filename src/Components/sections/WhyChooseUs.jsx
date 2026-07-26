@@ -1,35 +1,100 @@
-import { motion } from 'framer-motion'
-import { reasons } from '../../data/siteData'
-import { Container } from '../ui/Container'
-import { SectionTitle } from '../ui/SectionTitle'
+import { motion, useReducedMotion } from 'framer-motion'
+import { FiAward, FiClock, FiDollarSign, FiHeadphones } from 'react-icons/fi'
 
 export function WhyChooseUs() {
+  const prefersReducedMotion = useReducedMotion()
+
+  const features = [
+    {
+      icon: <FiAward className="w-6 h-6" />,
+      title: 'Premium Quality',
+      desc: 'We use the finest materials and latest printing technology to deliver exceptional quality every time.'
+    },
+    {
+      icon: <FiClock className="w-6 h-6" />,
+      title: 'Fast Turnaround',
+      desc: 'Quick production and fast delivery to meet your deadlines without compromising on quality.'
+    },
+    {
+      icon: <FiDollarSign className="w-6 h-6" />,
+      title: 'Affordable Pricing',
+      desc: 'Competitive prices without compromising on quality. Best value for your money.'
+    },
+    {
+      icon: <FiHeadphones className="w-6 h-6" />,
+      title: 'Design Support',
+      desc: 'Expert design assistance to help you create stunning print materials.'
+    },
+  ]
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: prefersReducedMotion ? 0 : 0.08,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    },
+  }
+
   return (
-    <section className="section-pad bg-white dark:bg-slate-950">
-      <Container>
-        <SectionTitle eyebrow="Why brands choose us" title="Production calm for high-stakes launches." text="A senior print team, modern systems, and finishing standards built for founders, marketers, and operations teams." />
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {reasons.map((reason, index) => {
-            const Icon = reason.icon
-            return (
-              <motion.article
-                key={reason.title}
-                className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_20px_70px_rgba(15,23,42,.06)] transition hover:-translate-y-1 hover:border-blue-200 dark:border-white/10 dark:bg-white/5"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <div className="grid h-13 w-13 place-items-center rounded-2xl bg-blue-50 text-xl text-blue-600 dark:bg-blue-500/15 dark:text-blue-300">
-                  <Icon />
-                </div>
-                <h3 className="mt-5 text-xl font-extrabold text-slate-950 dark:text-white">{reason.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{reason.text}</p>
-              </motion.article>
-            )
-          })}
+    <section className="py-20 bg-white font-sans border-b border-[#E7EAF0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
+        <div className="text-center mb-14">
+          <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
+            Our Commitments
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B1633] tracking-tight">
+            Why Choose Printo?
+          </h2>
+          <p className="text-[#667085] text-[15px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
+            We provide exceptional printing services backed by years of experience and commitment to quality.
+          </p>
         </div>
-      </Container>
+
+        {/* 4 Feature Cards */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+        >
+          {features.map((f) => (
+            <motion.div
+              key={f.title}
+              variants={itemVariants}
+              className="group bg-white rounded-[16px] p-7 text-left border border-[#E7EAF0] hover:border-[#FF5A1F]/30 hover:shadow-[0_8px_25px_rgba(7,21,47,0.05)] transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+            >
+              <div>
+                {/* Icon Container */}
+                <div className="w-13 h-13 rounded-[12px] bg-[#F7F8FA] border border-[#E7EAF0] text-[#07152F] flex items-center justify-center mb-6 group-hover:bg-[#FF5A1F]/10 group-hover:border-[#FF5A1F]/30 group-hover:text-[#FF5A1F] group-hover:scale-105 group-hover:shadow-[0_0_20px_rgba(255,90,31,0.2)] transition-all duration-300">
+                  {f.icon}
+                </div>
+
+                <h3 className="text-[17px] font-bold text-[#0B1633] mb-2 group-hover:text-[#FF5A1F] transition-colors duration-200">
+                  {f.title}
+                </h3>
+                <p className="text-[#667085] text-[14px] font-normal leading-relaxed">
+                  {f.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+      </div>
     </section>
   )
 }

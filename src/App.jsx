@@ -72,11 +72,11 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-slate-950 antialiased transition-colors dark:bg-slate-950 dark:text-white">
-      {/* Scroll indicator banner top */}
-      <div className="fixed inset-x-0 top-0 z-[80] h-1 bg-slate-200/70 dark:bg-white/10">
+    <div className="min-h-screen bg-white text-slate-900 antialiased">
+      {/* Scroll progress indicator */}
+      <div className="fixed inset-x-0 top-0 z-[100] h-[3px] bg-slate-200/50">
         <motion.div
-          className="h-full origin-left bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300"
+          className="h-full origin-left bg-[#FF5A1F]"
           animate={{ scaleX: progress / 100 }}
           transition={{ type: 'spring', stiffness: 120, damping: 25 }}
         />
@@ -86,9 +86,6 @@ function App() {
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         cartCount={cartCount}
-        darkMode={darkMode}
-        onToggleDark={() => setDarkMode((value) => !value)}
-        onOpenCommand={() => setCommandOpen(true)}
       />
       
       {/* Switcher Main */}

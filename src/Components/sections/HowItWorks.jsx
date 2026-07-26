@@ -1,108 +1,127 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { FiGrid, FiUploadCloud, FiCheckCircle, FiPackage } from 'react-icons/fi'
+
 export function HowItWorks() {
+  const prefersReducedMotion = useReducedMotion()
+
   const steps = [
     {
-      id: '01',
+      num: '01',
+      icon: <FiGrid className="w-6 h-6" />,
       title: 'Choose Product',
-      description: 'Select the product you need from our wide range',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-slate-800">
-          {/* Box with arrow / package selector */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      )
+      desc: 'Select from our wide range of premium printing products.',
     },
     {
-      id: '02',
-      title: 'Upload / Design',
-      description: 'Upload your design or use our design services',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-slate-800">
-          {/* Cloud upload to match screenshot */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-        </svg>
-      )
+      num: '02',
+      icon: <FiUploadCloud className="w-6 h-6" />,
+      title: 'Upload Design',
+      desc: 'Upload your design or use our templates to create your own.',
     },
     {
-      id: '03',
-      title: 'Customize & Preview',
-      description: 'Customize your product and preview your order',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-slate-800">
-          {/* Settings Sliders */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-        </svg>
-      )
+      num: '03',
+      icon: <FiCheckCircle className="w-6 h-6" />,
+      title: 'Review & Order',
+      desc: 'Review your order and proceed to secure payment.',
     },
     {
-      id: '04',
-      title: 'Place Order',
-      description: 'Secure payment and place your order',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-slate-800">
-          {/* Credit card */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-        </svg>
-      )
-    },
-    {
-      id: '05',
+      num: '04',
+      icon: <FiPackage className="w-6 h-6" />,
       title: 'We Print & Deliver',
-      description: 'High quality printing and delivery at your doorstep',
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-slate-800">
-          {/* Delivery Truck */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3.75h10.5a2.25 2.25 0 012.25 2.25v6.75M2.25 3.75v11.25c0 .621.504 1.125 1.125 1.125h9.75M2.25 15h12m0 0v-3.75m0 3.75h3.375a1.125 1.125 0 001.077-.803l1.83-5.32c.117-.34-.076-.707-.435-.707h-5.845V4.5a2.25 2.25 0 00-2.25-2.25h-5.25" />
-        </svg>
-      )
-    }
+      desc: 'We print with precision and deliver to your doorstep.',
+    },
   ]
 
-  return (
-    <section className="py-16 md:py-24 bg-white font-sans overflow-hidden border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        
-        {/* Section title */}
-        <span className="text-[12px] font-bold tracking-[0.2em] text-[#E5AA17] uppercase block mb-3">
-          How It Works
-        </span>
-        <h2 className="text-[26px] sm:text-[34px] font-black text-slate-800 tracking-tight mb-16">
-          Simple Steps to Your Perfect Print
-        </h2>
+  const lineVariants = {
+    hidden: { scaleX: 0 },
+    visible: {
+      scaleX: 1,
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+    }
+  }
 
-        {/* Steps container */}
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: prefersReducedMotion ? 0 : 0.12,
+        delayChildren: 0.2,
+      },
+    },
+  }
+
+  const stepVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 15 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+    },
+  }
+
+  return (
+    <section className="py-20 bg-[#F7F8FA] font-sans border-b border-[#E7EAF0]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
+            Simple 4-Step Journey
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0B1633] tracking-tight">
+            How It Works
+          </h2>
+          <p className="text-[#667085] text-[15px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
+            Simple 4 steps to get your print products delivered to your doorstep.
+          </p>
+        </div>
+
+        {/* Steps Grid */}
         <div className="relative">
-          {/* Dashed Connecting Line (rendered behind circles on desktop) */}
-          <div className="absolute top-10 left-[10%] right-[10%] h-[2px] border-t-2 border-dashed border-[#FAF0D7] -z-10 hidden lg:block"></div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-y-12 gap-x-6">
-            {steps.map((st) => (
-              <div key={st.id} className="flex flex-col items-center text-center px-4 group">
-                
-                {/* Circle Container Badge */}
-                <div className="w-20 h-20 rounded-full bg-[#FAF5E6] hover:bg-[#F3E6C6] transition-colors duration-300 flex items-center justify-center border border-[#FAF0D7] mb-5 shadow-sm">
-                  {st.icon}
-                </div>
-                
-                {/* Step number */}
-                <span className="text-sm font-extrabold text-[#E5AA17] mb-2 font-mono">
-                  {st.id}
-                </span>
-                
-                {/* Title */}
-                <h3 className="text-[15px] sm:text-base font-black text-slate-800 mb-2">
-                  {st.title}
-                </h3>
-                
-                {/* Description */}
-                <p className="text-[11.5px] sm:text-xs text-gray-500 font-medium leading-relaxed max-w-[190px]">
-                  {st.description}
-                </p>
-                
-              </div>
-            ))}
+          {/* Animated Connecting Line (Desktop) */}
+          <div className="hidden lg:block absolute top-[58px] left-[15%] right-[15%] h-[2.5px] bg-[#E7EAF0] z-0 overflow-hidden">
+            <motion.div
+              className="h-full bg-[#FF5A1F] origin-left"
+              variants={lineVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-50px' }}
+            />
           </div>
+
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+          >
+            {steps.map((step) => (
+              <motion.div
+                key={step.title}
+                variants={stepVariants}
+                className="group bg-white rounded-[16px] p-6 text-center border border-[#E7EAF0] hover:border-[#FF5A1F]/30 hover:shadow-[0_8px_25px_rgba(7,21,47,0.06)] transition-all duration-300 hover:-translate-y-1 flex flex-col items-center"
+              >
+                {/* Step Number Badge */}
+                <span className="inline-block bg-[#07152F] text-white text-[10px] font-extrabold px-3 py-0.5 rounded-full uppercase tracking-wider mb-4 shadow-sm">
+                  Step {step.num}
+                </span>
+
+                {/* Icon Container */}
+                <div className="w-14 h-14 rounded-[14px] bg-[#F7F8FA] border border-[#E7EAF0] text-[#FF5A1F] flex items-center justify-center mb-4 group-hover:bg-[#FF5A1F] group-hover:text-white group-hover:scale-105 transition-all duration-300 shadow-sm">
+                  {step.icon}
+                </div>
+
+                <h3 className="text-[17px] font-bold text-[#0B1633] mb-1.5 group-hover:text-[#FF5A1F] transition-colors duration-200">
+                  {step.title}
+                </h3>
+                <p className="text-[#667085] text-[14px] font-normal leading-relaxed max-w-[220px]">
+                  {step.desc}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
 
       </div>
