@@ -17,6 +17,9 @@ import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
 import { TrackOrderPage } from './pages/TrackOrderPage'
 import { HelpCenterPage } from './pages/HelpCenterPage'
+import { BlogPage } from './pages/BlogPage'
+import { CartPage } from './pages/CartPage'
+import { CustomQuotePage } from './pages/CustomQuotePage'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
@@ -66,6 +69,12 @@ function App() {
         return <TrackOrderPage />
       case 'help':
         return <HelpCenterPage />
+      case 'blog':
+        return <BlogPage />
+      case 'cart':
+        return <CartPage setCurrentPage={setCurrentPage} />
+      case 'quote':
+        return <CustomQuotePage />
       default:
         return <HomePage setCurrentPage={setCurrentPage} />
     }

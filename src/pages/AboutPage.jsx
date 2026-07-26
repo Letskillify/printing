@@ -1,106 +1,108 @@
-import { FiLayers, FiShield, FiHeart } from 'react-icons/fi'
+import { FiLayers, FiShield, FiHeart, FiCheckCircle, FiAward, FiUsers } from 'react-icons/fi'
 
 export function AboutPage() {
   const values = [
     {
-      title: 'Obsessive Precision',
-      desc: 'Our printing presses are calibrated weekly to the FOGRA ISO standard. Color profiles (CMYK) are checked by real human pre-press specialists before production.',
-      icon: <FiLayers className="w-6 h-6 text-amber-500" />
+      title: 'Obsessive Calibration',
+      desc: 'Our printing presses are calibrated weekly to the FOGRA ISO standard. CMYK color profiles are verified by senior prepress specialists prior to printing.',
+      icon: <FiLayers className="w-6 h-6 text-[#FF5A1F]" />
     },
     { 
-      title: 'Eco-Ethical Print',
-      desc: 'We prioritize FSC-certified recycled paper stocks, biodegradable soy-based inks, and custom folding box designs that eliminate glue adhesives entirely where possible.',
-      icon: <FiHeart className="w-6 h-6 text-amber-500" />
+      title: 'Eco-Ethical Production',
+      desc: 'We prioritize FSC-certified recycled paper stocks, vegetable soy inks, and glue-less packaging designs.',
+      icon: <FiHeart className="w-6 h-6 text-[#FF5A1F]" />
     },
     {
-      title: 'On-Time Handoff Guarantee',
-      desc: 'We understand business deadlines. If your order shipment leaves our printing hubs later than the promised dispatch date, you get a full refund.',
-      icon: <FiShield className="w-6 h-6 text-amber-500" />
+      title: 'Dispatch Guarantee',
+      desc: 'We respect business deadlines. If your order shipment leaves our printing hub later than promised, you receive a full refund.',
+      icon: <FiShield className="w-6 h-6 text-[#FF5A1F]" />
     }
   ]
 
+  const stats = [
+    { number: '15+', label: 'Years in Printing' },
+    { number: '50,000+', label: 'Satisfied Clients' },
+    { number: '100,000+', label: 'Orders Delivered' },
+    { number: '99.9%', label: 'Color Accuracy' },
+  ]
+
   return (
-    <section className="bg-[#FAF8F5] py-14 font-sans text-left min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">
+      
+      {/* Page Hero Header — Deep Navy #07152F */}
+      <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
+        <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+            <span>Home</span>
+            <span>/</span>
+            <span className="text-[#FF5A1F] font-bold">About Us</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-3">
+            Legacy of Precision Printing
+          </h1>
+          <p className="text-slate-300 text-[15px] max-w-2xl leading-relaxed">
+            Combining advanced offset press engineering with meticulous craftsmanship to power physical brand collateral nationwide.
+          </p>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        {/* Banner Hero */}
-        <div className="bg-[#FAF6F0] rounded-2xl border border-gray-150 p-8 sm:p-12 mb-12 text-center sm:text-left flex flex-col lg:flex-row items-center gap-8">
-          <div className="max-w-2xl text-left">
-            <span className="text-xs font-bold tracking-[0.2em] text-[#E5AA17] uppercase block mb-3">
-              Who We Are
+        {/* Story Section */}
+        <div className="bg-white rounded-[20px] p-8 sm:p-12 border border-[#E7EAF0] shadow-sm mb-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 text-left">
+            <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
+              OUR MISSION & CRAFT
             </span>
-            <h1 className="text-[32px] sm:text-[42px] font-black text-slate-800 tracking-tight leading-none mb-5">
-              Legacy of High-Precision Print Production
-            </h1>
-            <p className="text-gray-600 text-xs sm:text-base leading-relaxed">
-              At CreatiPrint, we combine advanced print engineering with meticulous craftsmanship. We believe prints build physical trust between brands and their audiences. Every trifold pamphlet fold, business card foil accent, and box edge detail represents your corporate signature.
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B1633] mb-4">
+              We Believe Print Builds Physical Trust
+            </h2>
+            <p className="text-[#667085] text-[15px] leading-relaxed mb-4">
+              Every trifold brochure fold, business card foil accent, and rigid box edge detail represents your corporate signature. That is why we treat print as high-precision engineering.
+            </p>
+            <p className="text-[#667085] text-[15px] leading-relaxed">
+              Equipped with Heidelberg offset lithography presses, digital plotters, and automated die-cutting machines, we ensure your brand looks flawless in every client handoff.
             </p>
           </div>
-          {/* Logo Badge Art */}
-          <div className="flex-shrink-0 w-40 h-40 bg-[#FAF7F2] border border-gray-200 rounded-full flex items-center justify-center shadow-inner">
-            <svg viewBox="0 0 100 100" className="w-20 h-20 text-[#E5AA17]" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 8L88 30V70L50 92L12 70V30L50 8Z" stroke="currentColor" strokeWidth="6" strokeLinejoin="round" />
-              <path d="M50 8L88 30L50 52L12 30L50 8Z" fill="currentColor" fillOpacity="0.4" stroke="currentColor" strokeWidth="4" />
-              <path d="M12 30L50 52V92" stroke="currentColor" strokeWidth="5" />
-              <path d="M88 30L50 52V92" stroke="currentColor" strokeWidth="5" />
-            </svg>
+
+          <div className="lg:col-span-5 bg-[#07152F] text-white p-8 rounded-[16px] border border-slate-800 text-center relative overflow-hidden">
+            <div className="w-16 h-16 rounded-[14px] bg-[#FF5A1F] flex items-center justify-center mx-auto mb-4 text-white shadow-lg">
+              <FiAward className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Certified Print Studio</h3>
+            <p className="text-[#909AB0] text-[13.5px] leading-relaxed">
+              FOGRA ISO 12647 Color Calibrated & FSC Eco-Certified Paper Stock Partner.
+            </p>
           </div>
         </div>
 
-        {/* Pillars / Values blocks */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {values.map((v) => (
-            <div key={v.title} className="bg-white rounded-xl border border-gray-150 p-6 flex flex-col items-start hover:shadow-md transition">
-              <div className="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center mb-5">
-                {v.icon}
-              </div>
-              <h3 className="text-base sm:text-lg font-black text-slate-850 mb-3">{v.title}</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-medium">{v.desc}</p>
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {stats.map((s) => (
+            <div key={s.label} className="bg-white rounded-[16px] p-6 border border-[#E7EAF0] text-center shadow-xs">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#FF5A1F] mb-1">{s.number}</div>
+              <div className="text-[13px] text-[#667085] font-semibold">{s.label}</div>
             </div>
           ))}
         </div>
 
-        {/* Highlight Production facility detailing */}
-        <div className="bg-white rounded-2xl border border-gray-150 p-8 sm:p-10 mb-12">
-          <div className="border-b border-gray-100 pb-4 mb-8">
-            <h2 className="text-lg font-black text-slate-850 uppercase tracking-wide">
-              Facility & Press Machinery
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-sm sm:text-base font-black text-slate-800">4-Color Offset Lithography Presses</h4>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed font-semibold">Ensures absolute color uniformity across larger-scale brochure runs and flyer prints. Calibrated with Heidelberg printing software.</p>
+        {/* Core Values */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {values.map((v) => (
+            <div key={v.title} className="bg-white rounded-[16px] p-7 border border-[#E7EAF0] hover:border-[#FF5A1F]/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-[12px] bg-[#FF5A1F]/10 border border-[#FF5A1F]/20 flex items-center justify-center mb-4">
+                {v.icon}
               </div>
-              <div>
-                <h4 className="text-sm sm:text-base font-black text-slate-800">Flatbed Plotting & UV Spot Finish Coaters</h4>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed font-semibold">Delivers raised metallic leaf foils, matte soft-touch coatings, and spot laminate textures that demand customer touch.</p>
-              </div>
-              <div>
-                <h4 className="text-sm sm:text-base font-black text-slate-800">High-Speed Laser Dieline Routers</h4>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed font-semibold">Precise layout outline cutting for packaging boxes, folders, custom tags, and stickers with error margins under 0.1mm.</p>
-              </div>
+              <h3 className="text-[18px] font-bold text-[#0B1633] mb-2">{v.title}</h3>
+              <p className="text-[#667085] text-[14px] leading-relaxed">{v.desc}</p>
             </div>
-            {/* Visual Vector Machinery schematic render */}
-            <div className="bg-[#FAF7F2] border border-gray-150 rounded-xl p-6 h-64 flex flex-col justify-between relative overflow-hidden select-none">
-              <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block">Print Calibration Grid</span>
-              
-              <svg viewBox="0 0 100 40" className="w-full fill-none stroke-amber-500 stroke-[0.8] opacity-75">
-                {/* Simulated sine-wave / machine trace */}
-                <path d="M 0 20 Q 12.5 5, 25 20 T 50 20 T 75 20 T 100 20" />
-                <path d="M 0 20 Q 12.5 35, 25 20 T 50 20 T 75 20 T 100 20" stroke="#0b1426" strokeWidth="0.5" />
-              </svg>
-              
-              <div className="flex justify-between items-center text-xs font-black text-slate-700">
-                <span>SYSTEM STATUS: Calibrated</span>
-                <span className="text-[#E9A115]">99.8% Alignment Accuracy</span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
       </div>
-    </section>
+
+    </div>
   )
 }

@@ -99,7 +99,7 @@ export function Hero({ setCurrentPage }) {
           {/* Hero H1 — Dominant Headline */}
           <motion.h1
             variants={h1Variants}
-            className="text-4xl sm:text-5xl lg:text-[64px] font-black text-white leading-[1.05] tracking-tight mb-5"
+            className="text-4xl sm:text-5xl lg:text-[60px] font-extrabold text-white leading-[1.08] tracking-tight mb-5"
           >
             Print Your Imagination,<br />
             <span className="text-[#FF5A1F]">

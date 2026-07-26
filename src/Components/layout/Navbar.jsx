@@ -57,7 +57,7 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
               <FiUser className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> My Account
             </button>
             <button
-              onClick={() => handleLinkClick('products')}
+              onClick={() => handleLinkClick('cart')}
               className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors duration-200 border-none bg-transparent cursor-pointer text-[10.5px] sm:text-[11px] font-medium"
             >
               <FiShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> Cart ({cartCount})
@@ -174,6 +174,19 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
               }`} />
             </button>
 
+            {/* Blog */}
+            <button
+              onClick={() => handleLinkClick('blog')}
+              className={`relative px-4 py-2 text-[14px] font-semibold transition-colors duration-200 border-none cursor-pointer group ${
+                currentPage === 'blog' ? 'text-[#FF5A1F]' : 'text-[#0B1633] hover:text-[#FF5A1F]'
+              }`}
+            >
+              Blog
+              <span className={`absolute bottom-0 left-4 right-4 h-[2.5px] bg-[#FF5A1F] rounded-full transition-transform duration-300 ${
+                currentPage === 'blog' ? 'scale-x-100 origin-left' : 'scale-x-0 group-hover:scale-x-100 origin-left'
+              }`} />
+            </button>
+
             {/* Contact */}
             <button
               onClick={() => handleLinkClick('contact')}
@@ -189,7 +202,13 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
           </nav>
 
           {/* Right Action Button */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2.5">
+            <button
+              onClick={() => handleLinkClick('quote')}
+              className="inline-flex items-center gap-1.5 bg-[#07152F] hover:bg-[#0B1633] text-white font-extrabold text-[13px] px-4 py-2.5 rounded-[12px] transition border border-slate-700 cursor-pointer"
+            >
+              Get Quote
+            </button>
             <button
               onClick={() => handleLinkClick('products')}
               className="inline-flex items-center gap-2 bg-[#FF5A1F] hover:bg-[#e44d15] hover:brightness-105 text-white font-extrabold text-[14px] px-5 py-2.5 rounded-[12px] transition-all duration-250 shadow-md shadow-[#FF5A1F]/20 hover:shadow-lg hover:shadow-[#FF5A1F]/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer border-none"
@@ -220,8 +239,11 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
             { label: 'Products', page: 'products' },
             { label: 'Services', page: 'services' },
             { label: 'Templates', page: 'templates' },
+            { label: 'Blog', page: 'blog' },
             { label: 'About Us', page: 'about' },
             { label: 'Contact Us', page: 'contact' },
+            { label: 'Cart Overview', page: 'cart' },
+            { label: 'Custom Quote', page: 'quote' },
           ].map(({ label, page }) => (
             <button
               key={page}

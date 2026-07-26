@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { FiArrowRight, FiCheck, FiFilter, FiUploadCloud, FiX } from 'react-icons/fi'
+import { motion, useReducedMotion } from 'framer-motion'
+import { FiArrowRight, FiCheck, FiFilter, FiUploadCloud, FiX, FiShoppingBag, FiStar, FiSliders } from 'react-icons/fi'
 
 export function ProductsPage({ onAddToCart }) {
+  const prefersReducedMotion = useReducedMotion()
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedProduct, setSelectedProduct] = useState(null)
   
@@ -19,34 +21,19 @@ export function ProductsPage({ onAddToCart }) {
       id: 1,
       title: 'Visiting Cards',
       category: 'Stationery',
-      description: 'Standard 3.5" x 2" business cards with selectable luxury paper textures.',
+      description: 'Standard 3.5" x 2" business cards with selectable luxury paper textures and foil accents.',
       pricePerUnit: 0.8,
       basePrice: 199,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <rect x="5" y="15" width="65" height="42" rx="3" fill="#0b1426" />
-          <line x1="12" y1="23" x2="32" y2="23" stroke="#E5AA17" strokeWidth="2.5" />
-          <line x1="12" y1="31" x2="52" y2="31" stroke="#ffffff" strokeWidth="1.5" className="opacity-40" />
-          <rect x="25" y="24" width="65" height="42" rx="3" fill="#ffffff" stroke="#E2E8F0" strokeWidth="1" />
-          <rect x="33" y="32" width="10" height="10" fill="#E5AA17" rx="1" />
-          <line x1="47" y1="35" x2="77" y2="35" stroke="#1e293b" strokeWidth="2" />
-        </svg>
-      )
+      image: 'https://images.unsplash.com/photo-1612831819695-7e71f5ccf16c?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 2,
-      title: 'Pamphlets',
+      title: 'Pamphlets & Flyers',
       category: 'Marketing',
-      description: 'Bi-fold and tri-fold high speed premium offset calibrated flyers.',
+      description: 'Bi-fold and tri-fold high speed premium offset calibrated marketing flyers.',
       pricePerUnit: 1.8,
       basePrice: 499,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <path d="M15 10 L40 16 L40 60 L15 52 Z" fill="#ffffff" stroke="#E2E8F0" strokeWidth="1" />
-          <path d="M40 16 L68 11 L68 55 L40 60 Z" fill="#E2E8F0" />
-          <path d="M68 11 L90 18 L90 62 L68 55 Z" fill="#ffffff" stroke="#E2E8F0" strokeWidth="1" />
-        </svg>
-      )
+      image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 3,
@@ -55,357 +42,288 @@ export function ProductsPage({ onAddToCart }) {
       description: 'Multi-page booklets and catalogs with custom bindings and cover finishes.',
       pricePerUnit: 2.5,
       basePrice: 699,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <path d="M16 12 L48 8 L48 58 L16 62 Z" fill="#0b1426" />
-          <path d="M48 8 L80 14 L80 64 L48 58 Z" fill="#f8fafc" stroke="#CBD5E1" strokeWidth="1" />
-          <rect x="54" y="20" width="20" height="10" fill="#E5AA17" />
-        </svg>
-      )
+      image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 4,
-      title: 'Flex Banners',
+      title: 'Flex Banners & Posters',
       category: 'Signage',
-      description: 'Durable, weather-resistant PVC banners with reinforced metal grommets.',
+      description: 'Durable, weather-resistant PVC banners with reinforced metal grommets for outdoor events.',
       pricePerUnit: 4.5,
       basePrice: 299,
-      imageMarkup: (
-        <svg viewBox="0 0 70 80" className="w-14 h-18 drop-shadow-md">
-          <rect x="12" y="4" width="46" height="68" rx="1.5" fill="#0b1426" />
-          <rect x="22" y="14" width="26" height="12" fill="#E5AA17" />
-          <line x1="35" y1="40" x2="35" y2="72" stroke="#475569" strokeWidth="2" />
-        </svg>
-      )
+      image: 'https://images.unsplash.com/photo-1608502374980-67d5c35a5302?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 5,
-      title: 'Bill Books',
+      title: 'Bill Books & Invoices',
       category: 'Stationery',
-      description: 'Duplicate or triplicate carbonless paper bill books with logical layouts.',
+      description: 'Duplicate or triplicate carbonless paper bill books with logical enterprise layouts.',
       pricePerUnit: 1.2,
       basePrice: 199,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <rect x="20" y="8" width="60" height="54" rx="2" fill="#ffffff" stroke="#CBD5E1" strokeWidth="1.5" />
-          <rect x="20" y="8" width="60" height="8" rx="1" fill="#94a3b8" />
-          <rect x="25" y="22" width="50" height="32" rx="1" fill="#f8fafc" stroke="#E2E8F0" strokeWidth="1" />
-        </svg>
-      )
+      image: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 6,
-      title: 'Custom Design',
-      category: 'Marketing',
-      description: 'One-on-one consultation with layout design specialists to bring ideas to life.',
-      pricePerUnit: 0.0,
-      basePrice: 299,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <rect x="18" y="10" width="64" height="42" rx="3" fill="#475569" />
-          <rect x="21" y="13" width="58" height="36" rx="1" fill="#ffffff" />
-          <circle cx="50" cy="31" r="9" fill="#0b1426" />
-        </svg>
-      )
+      title: 'Custom Packaging Boxes',
+      category: 'Packaging',
+      description: 'Rigid mailer boxes, pouches, and eco-friendly custom branded boxes.',
+      pricePerUnit: 5.5,
+      basePrice: 899,
+      image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 7,
-      title: 'Packaging Boxes',
+      title: 'Stickers & Labels',
       category: 'Packaging',
-      description: 'Eco-safe custom printed product boxes, folders, and mailer setups.',
-      pricePerUnit: 5.0,
-      basePrice: 399,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-24 h-16 drop-shadow-md">
-          <path d="M50 10 L80 25 L50 40 L20 25 Z" fill="#2d3b4e" />
-          <path d="M20 25 L50 40 L50 67 L20 52 Z" fill="#0b1426" />
-          <path d="M50 40 L80 25 L80 52 L50 67 Z" fill="#1b2a47" />
-        </svg>
-      )
+      description: 'Custom die-cut vinyl stickers and waterproof product roll labels.',
+      pricePerUnit: 0.5,
+      basePrice: 149,
+      image: 'https://images.unsplash.com/photo-1591981730169-05e8e57a7c04?auto=format&fit=crop&q=80&w=600',
     },
     {
       id: 8,
-      title: 'Labels & Stickers',
-      category: 'Packaging',
-      description: 'Waterproof die-cut rolls or sheets. High glossy finish options.',
-      pricePerUnit: 0.5,
-      basePrice: 149,
-      imageMarkup: (
-        <svg viewBox="0 0 100 70" className="w-22 h-16 drop-shadow-md">
-          <circle cx="50" cy="35" r="22" fill="#E5AA17" fillOpacity="0.15" stroke="#E5AA17" strokeWidth="2.5" strokeDasharray="4 3" />
-          <circle cx="50" cy="35" r="15" fill="#E5AA17" />
-          <path d="M46 35 L49 38 L55 32" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      )
-    }
+      title: 'Photo Canvas Prints',
+      category: 'Signage',
+      description: 'Museum-grade stretched canvas prints mounted on solid pine frames.',
+      pricePerUnit: 8.0,
+      basePrice: 799,
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=600',
+    },
   ]
 
-  const filteredProducts = activeCategory === 'All'
-    ? productsList
+  const filteredProducts = activeCategory === 'All' 
+    ? productsList 
     : productsList.filter(p => p.category === activeCategory)
 
-  // Configure Calculations
-  const calculateTotal = () => {
-    if (!selectedProduct) return 0
-    let base = selectedProduct.basePrice
-    let qtyCost = quantity * selectedProduct.pricePerUnit
-    let finishAdd = 0
-    if (finish === 'Gold Foil Accent') finishAdd = 450
-    if (finish === 'Spot UV Laminate') finishAdd = 300
-    return Math.round(base + qtyCost + finishAdd)
-  }
-
-  const handleSimulateFile = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setUploadedFile(e.target.files[0].name)
-    }
-  }
-
-  const submitAddToCart = () => {
+  const handleAddToCartClick = () => {
+    if (onAddToCart) onAddToCart()
     setIsAdded(true)
-    onAddToCart()
     setTimeout(() => {
       setIsAdded(false)
       setSelectedProduct(null)
-      // reset forms
-      setUploadedFile(null)
-      setFinish('None')
-    }, 1500)
+    }, 1800)
+  }
+
+  // Calculate dynamic price
+  const calculateTotal = (product) => {
+    const base = product.basePrice || 200
+    const qtyPrice = (quantity / 50) * product.pricePerUnit * 40
+    const finishCost = finish === 'Gold Foil' ? 350 : finish === 'Spot UV' ? 250 : 0
+    return Math.round(base + qtyPrice + finishCost)
   }
 
   return (
-    <section className="bg-[#FAF8F5] py-14 font-sans text-left min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Marketplace Hero Header */}
-        <div className="bg-[#FAF6F0] rounded-2xl border border-gray-150 p-8 sm:p-10 mb-10 text-center sm:text-left">
-          <span className="text-xs font-bold tracking-[0.2em] text-[#E5AA17] uppercase block mb-3">
-            CreatiPrint Store
-          </span>
-          <h1 className="text-[32px] sm:text-[40px] font-black text-slate-800 tracking-tight leading-none mb-4">
-            Design & Print Marketplace
+    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">
+
+      {/* Page Hero Header — Deep Navy #07152F */}
+      <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
+        <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+            <span>Home</span>
+            <span>/</span>
+            <span className="text-[#FF5A1F] font-bold">Products Catalog</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-3">
+            All Print Products
           </h1>
-          <p className="text-gray-550 text-sm sm:text-base max-w-2xl leading-relaxed">
-            Choose from our premium catalog. Calibrated print output, custom thickness selections, and quick delivery directly to your workspace.
+          <p className="text-slate-300 text-[15px] max-w-2xl leading-relaxed">
+            High precision printing, custom dimensions, luxury finishes, and instant digital proofing.
           </p>
         </div>
+      </section>
 
-        {/* Filters and Search toolbar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-          {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 w-full sm:w-auto">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 rounded-full text-xs font-black select-none transition-all ${
-                  activeCategory === cat
-                    ? 'bg-[#E5AA17] text-slate-950 shadow-md shadow-amber-500/10'
-                    : 'bg-white border border-gray-250 text-gray-700 hover:border-gray-400'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="text-xs font-bold text-gray-450 uppercase flex items-center gap-1.5 self-end">
-            <FiFilter className="w-3.5 h-3.5" />
-            Showing {filteredProducts.length} Products
-          </div>
+      {/* Main Catalog Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        {/* Category Filter Tabs */}
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-4 mb-8 no-scrollbar">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#667085] mr-2 flex items-center gap-1.5 flex-shrink-0">
+            <FiFilter className="text-[#FF5A1F]" /> Filter:
+          </span>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-[10px] text-[13px] font-bold transition-all duration-200 cursor-pointer border-none flex-shrink-0 ${
+                activeCategory === cat
+                  ? 'bg-[#FF5A1F] text-white shadow-md shadow-[#FF5A1F]/20'
+                  : 'bg-white text-[#0B1633] border border-[#E7EAF0] hover:bg-[#F7F8FA] hover:text-[#FF5A1F]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
-        {/* Grid List */}
+        {/* Product Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredProducts.map((prod) => (
             <div
               key={prod.id}
-              className="bg-white rounded-xl border border-gray-150 hover:border-gray-300 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden group"
+              className="group bg-white rounded-[16px] overflow-hidden border border-[#E7EAF0] hover:border-[#FF5A1F]/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between"
             >
-              {/* Graphic element container */}
-              <div className="bg-[#FAF7F2] h-40 flex items-center justify-center border-b border-gray-100">
-                {prod.imageMarkup}
+              {/* Product Image */}
+              <div className="relative h-[180px] w-full overflow-hidden bg-[#F7F8FA]">
+                <img
+                  src={prod.image}
+                  alt={prod.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <span className="absolute top-3 right-3 bg-[#07152F] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">
+                  {prod.category}
+                </span>
               </div>
-              
-              {/* Card Meta Content */}
-              <div className="p-5 flex flex-col justify-between flex-1">
+
+              {/* Product Content */}
+              <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-amber-500 px-2 py-0.5 rounded-md bg-amber-50 inline-block mb-2">
-                    {prod.category}
-                  </span>
-                  <h3 className="text-base font-extrabold text-slate-800 group-hover:text-[#E5AA17] transition-colors leading-tight">
+                  <h3 className="text-[17px] font-bold text-[#0B1633] group-hover:text-[#FF5A1F] transition-colors mb-1.5">
                     {prod.title}
                   </h3>
-                  <p className="text-xs text-gray-500 line-clamp-2 mt-1.5 leading-relaxed">
+                  <p className="text-[#667085] text-[13.5px] leading-relaxed mb-4">
                     {prod.description}
                   </p>
                 </div>
-                
-                {/* Row pricing & button */}
-                <div className="flex items-center justify-between mt-6 pt-2 border-t border-gray-50">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Starting at</span>
-                    <span className="text-[15px] font-black text-slate-800">{prod.pricePerUnit === 0 ? 'Quote' : `₹${prod.basePrice}`}</span>
+
+                <div className="pt-3 border-t border-[#E7EAF0] flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] text-[#667085] block">Starting from</span>
+                    <span className="text-[18px] font-extrabold text-[#0B1633]">₹{prod.basePrice}</span>
                   </div>
+
                   <button
-                    onClick={() => {
-                      setSelectedProduct(prod)
-                      setQuantity(250)
-                      setPaperType('350gsm Premium Matte')
-                      setFinish('None')
-                    }}
-                    className="flex items-center justify-center gap-1 text-[11px] font-black text-slate-800 hover:text-[#E5AA17] uppercase tracking-wider bg-slate-50 border border-gray-200 px-3.5 py-2 rounded-lg transition"
+                    onClick={() => setSelectedProduct(prod)}
+                    className="inline-flex items-center gap-1.5 bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[13px] px-4 py-2 rounded-[10px] transition-all cursor-pointer border-none shadow-sm shadow-[#FF5A1F]/20"
                   >
-                    Details <FiArrowRight className="w-3.0 h-3.0" />
+                    Configure <FiArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
       </div>
 
-      {/* Product Detail Modal / Slider Configuration Drawer */}
+      {/* Product Customizer Modal */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white max-w-lg w-full rounded-2xl shadow-2xl border border-gray-150 overflow-hidden relative flex flex-col max-h-[85vh]">
-            
-            {/* Header info */}
-            <div className="bg-[#FAF7F2] p-5 border-b border-gray-100 flex justify-between items-center text-left">
-              <div>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-amber-500 block mb-1">Configure Order</span>
-                <h3 className="text-lg font-black text-slate-800">{selectedProduct.title}</h3>
-              </div>
-              <button 
-                onClick={() => setSelectedProduct(null)}
-                className="w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition"
-              >
-                <FiX className="w-4 h-4" />
-              </button>
+        <div className="fixed inset-0 z-50 bg-[#07152F]/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-[20px] border border-[#E7EAF0] shadow-2xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto relative">
+            {/* Close Modal */}
+            <button
+              onClick={() => setSelectedProduct(null)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F7F8FA] hover:bg-[#E7EAF0] text-[#0B1633] flex items-center justify-center transition border-none cursor-pointer"
+            >
+              <FiX className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <span className="bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-bold px-3 py-1 rounded-full uppercase">
+                {selectedProduct.category}
+              </span>
+              <h2 className="text-2xl font-extrabold text-[#0B1633]">{selectedProduct.title}</h2>
             </div>
 
-            {/* Modal Scroll Config Fields */}
-            <div className="p-6 overflow-y-auto space-y-5 text-left flex-1">
-              
-              {/* Product description info banner */}
-              <div className="p-3.5 bg-slate-50 border border-gray-150 rounded-lg text-xs text-gray-600 leading-relaxed">
-                {selectedProduct.description}
-              </div>
-
-              {/* Quantity config selector */}
+            {/* Config Form */}
+            <div className="space-y-5 mb-6 text-left">
+              {/* Quantity */}
               <div>
-                <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">Quantity</label>
-                <select 
-                  value={quantity} 
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="w-full text-xs font-semibold p-3 border border-gray-250 bg-white rounded-lg focus:outline-none focus:border-[#E5AA17]"
-                >
-                  <option value={100}>100 units</option>
-                  <option value={250}>250 units</option>
-                  <option value={500}>500 units</option>
-                  <option value={1000}>1000 units</option>
-                </select>
-                <p className="text-[10px] text-gray-400 mt-1 font-medium">Rate: ₹{selectedProduct.pricePerUnit} per unit + Base pricing</p>
-              </div>
-
-              {/* Material Stock Selection */}
-              <div>
-                <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">Material / Paper Type</label>
-                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-gray-700">
-                  {['350gsm Premium Matte', '400gsm Velvet Touch', 'Eco Kraft Cardstock', 'Synthetic Waterproof'].map((p) => (
+                <label className="block text-[13px] font-bold text-[#0B1633] mb-2">Select Quantity:</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[100, 250, 500, 1000].map((qty) => (
                     <button
-                      key={p}
-                      onClick={() => setPaperType(p)}
-                      className={`p-3 border rounded-lg text-left transition ${
-                        paperType === p 
-                          ? 'border-[#E5AA17] bg-amber-50/50 text-[#b58005]' 
-                          : 'border-gray-250 hover:border-gray-350'
+                      key={qty}
+                      onClick={() => setQuantity(qty)}
+                      className={`py-2 rounded-[10px] text-xs font-bold transition border cursor-pointer ${
+                        quantity === qty
+                          ? 'bg-[#FF5A1F] text-white border-[#FF5A1F]'
+                          : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
                       }`}
                     >
-                      {p}
+                      {qty} units
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Special Finishes Upgrade */}
+              {/* Paper Stock */}
               <div>
-                <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">Luxury Finishing Addon</label>
-                <div className="space-y-2">
-                  {[
-                    { name: 'None', price: '+₹0', desc: 'Standard calibrated offset print' },
-                    { name: 'Gold Foil Accent', price: '+₹450', desc: 'Adds a raised metallic gold foil highlight on layout elements' },
-                    { name: 'Spot UV Laminate', price: '+₹300', desc: 'Adds gloss layer accents raises contrasting glossy textures' }
-                  ].map((x) => (
-                    <div 
-                      key={x.name} 
-                      onClick={() => setFinish(x.name)}
-                      className={`p-3 border rounded-xl flex items-center justify-between cursor-pointer transition ${
-                        finish === x.name 
-                          ? 'border-[#E5AA17] bg-amber-50/40' 
-                          : 'border-gray-150 hover:border-gray-250'
+                <label className="block text-[13px] font-bold text-[#0B1633] mb-2">Paper Stock & Weight:</label>
+                <select
+                  value={paperType}
+                  onChange={(e) => setPaperType(e.target.value)}
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-2.5 px-3 text-xs text-[#0B1633] font-medium focus:outline-none focus:border-[#FF5A1F]"
+                >
+                  <option>300gsm Art Card Matte</option>
+                  <option>350gsm Premium Gloss</option>
+                  <option>400gsm Velvet Touch</option>
+                  <option>Recycled FSC Eco Kraft</option>
+                </select>
+              </div>
+
+              {/* Finish Options */}
+              <div>
+                <label className="block text-[13px] font-bold text-[#0B1633] mb-2">Special Finishes:</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['None', 'Gold Foil', 'Spot UV'].map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setFinish(f)}
+                      className={`py-2 rounded-[10px] text-xs font-bold transition border cursor-pointer ${
+                        finish === f
+                          ? 'bg-[#07152F] text-white border-[#07152F]'
+                          : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
                       }`}
                     >
-                      <div className="flex flex-col">
-                        <span className="text-xs font-black text-slate-800">{x.name}</span>
-                        <span className="text-[10px] text-gray-400 mt-0.5 leading-none">{x.desc}</span>
-                      </div>
-                      <span className="text-xs font-extrabold text-[#E5AA17]">{x.price}</span>
-                    </div>
+                      {f}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              {/* Artwork Design Upload Box */}
+              {/* File Upload Dropzone */}
               <div>
-                <label className="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2">Upload Print File (PDF / SVG / AI)</label>
-                <div className="border-2 border-dashed border-gray-250 rounded-xl p-5 flex flex-col items-center justify-center text-center hover:bg-slate-50 transition cursor-pointer relative">
-                  <input 
-                    type="file" 
-                    accept=".pdf,.ai,.psd,.zip,.png,.svg" 
-                    onChange={handleSimulateFile}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                  />
-                  <FiUploadCloud className="w-8 h-8 text-[#E5AA17] mb-2" />
-                  <span className="text-xs font-extrabold text-slate-850">
-                    {uploadedFile ? `Artwork: ${uploadedFile}` : 'Drag & drop or Click to choose file'}
+                <label className="block text-[13px] font-bold text-[#0B1633] mb-2">Upload Print File (PDF, AI, PSD):</label>
+                <label className="border-2 border-dashed border-[#E7EAF0] hover:border-[#FF5A1F] rounded-[14px] p-4 text-center block bg-[#F7F8FA] cursor-pointer transition">
+                  <FiUploadCloud className="w-8 h-8 text-[#FF5A1F] mx-auto mb-1" />
+                  <span className="text-xs text-[#667085] font-medium block">
+                    {uploadedFile ? uploadedFile.name : 'Click to upload or drag artwork file here'}
                   </span>
-                  <span className="text-[9.5px] text-gray-400 mt-1 font-medium">Recommended file formats: high-res PDF or SVG with 3mm bleed borders</span>
-                </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => setUploadedFile(e.target.files[0])}
+                  />
+                </label>
               </div>
-
             </div>
 
-            {/* Calculations Footer */}
-            <div className="p-5 border-t border-gray-100 bg-[#FAF7F2] flex items-center justify-between text-left">
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-450 font-bold uppercase tracking-wider">Calculated Total</span>
-                <span className="text-[20px] font-black text-slate-900 leading-none mt-1">₹{calculateTotal()}</span>
+            {/* Total Price & Add to Cart */}
+            <div className="pt-4 border-t border-[#E7EAF0] flex items-center justify-between">
+              <div>
+                <span className="text-xs text-[#667085] block">Total Estimated Price</span>
+                <span className="text-2xl font-extrabold text-[#FF5A1F]">₹{calculateTotal(selectedProduct)}</span>
               </div>
-              
+
               <button
-                onClick={submitAddToCart}
-                disabled={isAdded}
-                className={`inline-flex items-center justify-center text-xs sm:text-sm font-black uppercase tracking-wider px-6 py-3 rounded-lg shadow-md transition-all select-none ${
-                  isAdded 
-                    ? 'bg-emerald-500 text-white shadow-emerald-500/10' 
-                    : 'bg-[#E5AA17] hover:bg-[#cca118] text-slate-950 shadow-amber-500/10'
-                }`}
+                onClick={handleAddToCartClick}
+                className="bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] px-7 py-3 rounded-[12px] transition-all border-none cursor-pointer flex items-center gap-2 shadow-md shadow-[#FF5A1F]/20"
               >
                 {isAdded ? (
                   <>
-                    <FiCheck className="w-4 h-4 mr-1.5 stroke-[3]" /> Added to Cart
+                    <FiCheck className="w-4 h-4" /> Added to Cart!
                   </>
                 ) : (
-                  'Add to Cart'
+                  <>
+                    <FiShoppingBag className="w-4 h-4" /> Add to Cart
+                  </>
                 )}
               </button>
             </div>
-
           </div>
         </div>
       )}
-    </section>
+
+    </div>
   )
 }
