@@ -122,10 +122,10 @@ export function HowItWorks() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#E55325] inline-block" />
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#07152F] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-bold text-[#07152F] tracking-tight">
             How It Works
           </h2>
-          <p className="text-[#667085] text-[15px] font-normal mt-2 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2 max-w-lg mx-auto leading-relaxed">
             Simple 4 steps to get your print products delivered to your doorstep.
           </p>
 
@@ -189,7 +189,7 @@ export function HowItWorks() {
                     <h3 className="text-[19px] font-bold text-[#07152F] mb-2 leading-snug">
                       {step.title}
                     </h3>
-                    <p className="text-[#667085] text-[13.5px] font-normal leading-relaxed max-w-[210px] mx-auto">
+                    <p className="text-[#667085] text-[14.5px] font-normal leading-relaxed max-w-[210px] mx-auto">
                       {step.desc}
                     </p>
                   </div>

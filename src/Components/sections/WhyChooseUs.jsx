@@ -55,11 +55,11 @@ export function WhyChooseUs() {
           <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
             Our Commitments
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1633] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#0B1633] tracking-tight">
             Why Choose Printo?
           </h2>
-          <p className="text-[#667085] text-[15px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
-            We provide exceptional printing services backed by years of experience and commitment to quality.
+          <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
+            Everything you need for seamless high-quality printing from design to doorstep.
           </p>
         </div>
 

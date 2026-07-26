@@ -58,10 +58,10 @@ export function Testimonials() {
           <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
             Real Customer Reviews
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1633] tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#0B1633] tracking-tight">
             What Our Customers Say
           </h2>
-          <p className="text-[#667085] text-[15px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
+          <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2.5 max-w-lg mx-auto leading-relaxed">
             Read real feedback from our satisfied enterprise and business clients.
           </p>
         </div>

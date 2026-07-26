@@ -93,10 +93,10 @@ export function ShopByCategory({ setCurrentPage }) {
               <span className="h-[2px] w-8 bg-[#FF5A1F] inline-block rounded-full" />
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A1F] inline-block" />
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#0B1633] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-bold text-[#0B1633] tracking-tight">
               Shop by <span className="text-[#FF5A1F]">Category</span>
             </h2>
-            <p className="text-[#667085] text-[15px] font-normal mt-2 max-w-xl leading-relaxed">
+            <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2 max-w-xl leading-relaxed">
               Explore our wide range of premium printing products engineered for high precision and vibrant colors.
             </p>
           </div>
@@ -147,7 +147,7 @@ export function ShopByCategory({ setCurrentPage }) {
                   <h3 className="text-[18px] font-bold text-[#0B1633] group-hover:text-[#FF5A1F] transition-colors duration-200 leading-snug mb-1">
                     {cat.name}
                   </h3>
-                  <p className="text-[#667085] text-[13.5px] font-normal leading-relaxed">
+                  <p className="text-[#667085] text-[14.5px] font-normal leading-relaxed">
                     {cat.sub}
                   </p>
                 </div>

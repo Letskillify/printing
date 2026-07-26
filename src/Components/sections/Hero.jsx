@@ -99,7 +99,7 @@ export function Hero({ setCurrentPage }) {
           {/* Hero H1 — Dominant Headline */}
           <motion.h1
             variants={h1Variants}
-            className="text-4xl sm:text-5xl lg:text-[60px] font-extrabold text-white leading-[1.08] tracking-tight mb-5"
+            className="text-4xl sm:text-5xl lg:text-[58px] font-bold text-white leading-[1.08] tracking-tight mb-5"
           >
             Print Your Imagination,<br />
             <span className="text-[#FF5A1F]">
@@ -110,7 +110,7 @@ export function Hero({ setCurrentPage }) {
           {/* Description */}
           <motion.p
             variants={descVariants}
-            className="text-slate-300 text-[15px] sm:text-[16px] lg:text-[17px] font-normal leading-relaxed max-w-xl mb-8 tracking-wide"
+            className="text-lg sm:text-[20px] text-[#909AB0] font-normal leading-relaxed mb-8 max-w-xl tracking-wide"
           >
             Enterprise-grade print production engineered for ambitious brands. Enjoy tactile luxury textures, vibrant color accuracy, instant quotes, and rapid doorstep delivery.
           </motion.p>
