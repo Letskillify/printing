@@ -1,37 +1,80 @@
-import { useState } from 'react'
-import { FiTrash2, FiShoppingBag, FiArrowRight, FiCheckCircle, FiShield, FiTag } from 'react-icons/fi'
+import { useState, useEffect } from 'react'
+import { FiTrash2, FiShoppingBag, FiArrowRight, FiCheckCircle, FiShield, FiTag, FiX, FiZap } from 'react-icons/fi'
+import { addOrderToFirestore } from '../services/firebase'
+import { useAuth } from '../context/AuthContext'
 
 export function CartPage({ setCurrentPage }) {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Visiting Cards - Premium Matte',
-      qty: 250,
-      paper: '350gsm Premium Matte',
-      finish: 'Gold Foil Accent',
-      unitPrice: 0.8,
-      totalPrice: 449,
-      image: 'https://images.unsplash.com/photo-1612831819695-7e71f5ccf16c?auto=format&fit=crop&q=80&w=600',
-    },
-    {
-      id: 2,
-      name: 'Tri-Fold Marketing Pamphlets',
-      qty: 500,
-      paper: '170gsm Gloss Art Paper',
-      finish: 'None',
-      unitPrice: 1.8,
-      totalPrice: 899,
-      image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&q=80&w=600',
-    },
-  ])
+  const { cartItems, removeFromCart, clearCart, currentUser } = useAuth()
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id))
-  }
+  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
+  const [customerName, setCustomerName] = useState('')
+  const [customerEmail, setCustomerEmail] = useState('')
+  const [customerPhone, setCustomerPhone] = useState('')
+  const [customerCompany, setCustomerCompany] = useState('')
+  const [address, setAddress] = useState('')
+  const [isExpress, setIsExpress] = useState(false)
+  const [placingOrder, setPlacingOrder] = useState(false)
+  const [orderSuccess, setOrderSuccess] = useState(null)
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.totalPrice, 0)
+  useEffect(() => {
+    if (currentUser) {
+      setCustomerName(currentUser.displayName || '')
+      setCustomerEmail(currentUser.email || '')
+    }
+  }, [currentUser])
+
+  const subtotal = cartItems.reduce((acc, item) => acc + (item.totalPrice || (item.qty * item.unitPrice)), 0)
   const shipping = subtotal > 999 || subtotal === 0 ? 0 : 99
   const total = subtotal + shipping
+
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault()
+    setPlacingOrder(true)
+
+    const orderId = `PRT-${Math.floor(10000 + Math.random() * 90000)}`
+    const newOrderData = {
+      id: orderId,
+      customer: {
+        uid: currentUser?.uid || null,
+        name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+        company: customerCompany || 'Direct Retail',
+        isB2B: !!customerCompany,
+        creditNet15: false
+      },
+      items: cartItems.map(item => ({
+        productName: item.name,
+        variant: `${item.paper || 'Standard'} | ${item.finish || 'Matte'}`,
+        quantity: item.qty,
+        unitPrice: item.unitPrice,
+        total: item.totalPrice || (item.qty * item.unitPrice)
+      })),
+      subtotal,
+      shippingFee: shipping,
+      gstAmount: Math.round(subtotal * 0.18),
+      totalAmount: total,
+      status: 'Payment Confirmed',
+      isExpress,
+      expressDeadline: isExpress ? new Date(Date.now() + 4 * 3600 * 1000).toISOString() : null,
+      deliveryMethod: isExpress ? 'Local Porter Express' : 'Pan-India BlueDart Express',
+      deliveryAddress: address,
+      artworkFile: {
+        fileName: 'checkout_artwork.pdf',
+        fileType: 'pdf',
+        dimensions: 'Standard Spec',
+        resolutionDpi: 300,
+        cmykVerified: true,
+        previewUrl: cartItems[0]?.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600'
+      }
+    }
+
+    await addOrderToFirestore(newOrderData)
+    clearCart()
+    setPlacingOrder(false)
+    setOrderSuccess(orderId)
+    setCheckoutModalOpen(false)
+  }
 
   return (
     <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">
@@ -56,7 +99,25 @@ export function CartPage({ setCurrentPage }) {
 
       {/* Cart Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        {cartItems.length > 0 ? (
+        {orderSuccess ? (
+          <div className="bg-white rounded-[24px] p-12 text-center max-w-lg mx-auto border border-emerald-200 shadow-xl space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+              <FiCheckCircle className="w-8 h-8" />
+            </div>
+            <h3 className="text-2xl font-extrabold text-[#0B1633]">Order Confirmed & Transmitted!</h3>
+            <p className="text-slate-600 text-sm">
+              Your order <span className="font-bold text-[#FF5A1F]">{orderSuccess}</span> has been saved to Firestore and transmitted directly into our live production pipeline!
+            </p>
+            <div className="pt-4 flex justify-center gap-3">
+              <button
+                onClick={() => setCurrentPage('admin')}
+                className="bg-[#07152F] text-white font-bold text-xs px-5 py-3 rounded-xl hover:bg-slate-800 transition"
+              >
+                Track in Admin Pipeline
+              </button>
+            </div>
+          </div>
+        ) : cartItems.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
             {/* Cart Items List (8 cols) */}
@@ -75,17 +136,17 @@ export function CartPage({ setCurrentPage }) {
                     <div>
                       <h3 className="text-[16px] font-bold text-[#0B1633] leading-snug">{item.name}</h3>
                       <p className="text-[12px] text-[#667085] mt-0.5">Quantity: {item.qty} units</p>
-                      <p className="text-[12px] text-[#667085]">Paper: {item.paper} • Finish: {item.finish}</p>
+                      <p className="text-[12px] text-[#667085]">Paper: {item.paper || 'Standard'} • Finish: {item.finish || 'Matte'}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E7EAF0]">
                     <div className="text-left sm:text-right">
-                      <span className="text-[18px] font-extrabold text-[#FF5A1F]">₹{item.totalPrice}</span>
+                      <span className="text-[18px] font-extrabold text-[#FF5A1F]">₹{item.totalPrice || (item.qty * item.unitPrice)}</span>
                     </div>
 
                     <button
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeFromCart(item.id)}
                       className="p-2 text-slate-400 hover:text-red-500 transition border-none bg-transparent cursor-pointer"
                       title="Remove Item"
                     >
@@ -118,7 +179,7 @@ export function CartPage({ setCurrentPage }) {
                 </div>
 
                 <button
-                  onClick={() => alert('Proceeding to Secure Checkout Portal...')}
+                  onClick={() => setCheckoutModalOpen(true)}
                   className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] py-3.5 rounded-[12px] transition border-none cursor-pointer shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-2"
                 >
                   Proceed to Checkout <FiArrowRight className="w-4 h-4" />
@@ -143,6 +204,117 @@ export function CartPage({ setCurrentPage }) {
           </div>
         )}
       </div>
+
+      {/* Production Checkout Modal */}
+      {checkoutModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-[20px] shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden">
+            <div className="p-4 bg-[#07152F] text-white flex items-center justify-between">
+              <h3 className="font-extrabold text-sm text-white">Production Order Checkout</h3>
+              <button onClick={() => setCheckoutModalOpen(false)} className="text-slate-400 hover:text-white">
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handlePlaceOrder} className="p-6 space-y-4 text-xs font-sans">
+              <div>
+                <label className="block font-bold text-slate-800 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Aarav Sharma"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-800 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    placeholder="aarav@company.com"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-800 mb-1">Mobile Phone *</label>
+                  <input
+                    type="text"
+                    required
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="+91 98450 11223"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-800 mb-1">Company (Optional)</label>
+                  <input
+                    type="text"
+                    value={customerCompany}
+                    onChange={(e) => setCustomerCompany(e.target.value)}
+                    placeholder="Nexus Media Ltd"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-800 mb-1">Delivery Address *</label>
+                  <input
+                    type="text"
+                    required
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Indiranagar, Bangalore"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
+                  />
+                </div>
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer font-bold text-red-600 pt-1">
+                <input
+                  type="checkbox"
+                  checked={isExpress}
+                  onChange={(e) => setIsExpress(e.target.checked)}
+                  className="accent-red-600 rounded"
+                />
+                <span className="flex items-center gap-1"><FiZap className="w-3.5 h-3.5 fill-red-600" /> Mark as Express Same-Day Dispatch</span>
+              </label>
+
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                <div>
+                  <span className="text-slate-500 text-[10px]">Total Payable Amount</span>
+                  <div className="font-extrabold text-[#FF5A1F] text-lg">₹{total}</div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-600"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={placingOrder}
+                    className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-bold shadow-md cursor-pointer"
+                  >
+                    {placingOrder ? 'Transmitting to Admin...' : 'Place Order & Pay'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   )

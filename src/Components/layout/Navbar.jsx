@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { FiMenu, FiX, FiShoppingBag, FiUser, FiChevronDown, FiTruck, FiShield, FiCheckCircle } from 'react-icons/fi'
+import { FiMenu, FiX, FiShoppingBag, FiUser, FiChevronDown, FiTruck, FiShield, FiCheckCircle, FiHeart, FiLogOut } from 'react-icons/fi'
+import { useAuth } from '../../context/AuthContext'
 
-export function Navbar({ currentPage, setCurrentPage, cartCount }) {
+export function Navbar({ currentPage, setCurrentPage }) {
+  const { currentUser, setAuthModalOpen, setAuthModalTab, logout, cartItems, wishlistItems } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +33,7 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
       {/* ── Top Announcement Bar (Deep Navy: #07152F) ── */}
       <div className="bg-[#07152F] text-white text-[11px] font-medium py-1.5 px-3 sm:px-4 border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto flex flex-row justify-between items-center gap-2">
-          {/* Left badges (Show single compact highlight on mobile, all on sm+) */}
+          {/* Left badges */}
           <div className="flex items-center gap-4 sm:gap-6">
             <span className="flex items-center gap-1.5 opacity-95">
               <FiTruck className="w-3.5 h-3.5 text-[#FF5A1F]" />
@@ -51,16 +54,68 @@ export function Navbar({ currentPage, setCurrentPage, cartCount }) {
           {/* Right */}
           <div className="flex items-center gap-3 sm:gap-5 flex-shrink-0">
             <button
-              onClick={() => handleLinkClick('contact')}
-              className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors duration-200 border-none bg-transparent cursor-pointer text-[10.5px] sm:text-[11px] font-medium"
+              onClick={() => handleLinkClick('admin')}
+              className="flex items-center gap-1 text-sky-300 hover:text-white transition-colors duration-200 border border-sky-400/30 bg-sky-500/20 px-2.5 py-0.5 rounded-full text-[10.5px] sm:text-[11px] font-bold cursor-pointer"
             >
-              <FiUser className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> My Account
+              ⚡ Admin Panel
             </button>
+
+            {currentUser ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-1.5 text-slate-200 hover:text-white font-bold text-[11px] cursor-pointer"
+                >
+                  <span className="w-5 h-5 rounded-full bg-[#FF5A1F] text-white font-extrabold text-[10px] flex items-center justify-center">
+                    {currentUser.displayName ? currentUser.displayName.substring(0, 1).toUpperCase() : 'U'}
+                  </span>
+                  <span className="hidden sm:inline">{currentUser.displayName || currentUser.email}</span>
+                  <FiChevronDown className="w-3 h-3 text-slate-400" />
+                </button>
+
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 text-xs text-slate-800 z-50">
+                    <div className="px-4 py-2 border-b border-slate-100 font-bold text-slate-900">
+                      {currentUser.displayName || 'Customer'}
+                    </div>
+                    <button 
+                      onClick={() => { handleLinkClick('cart'); setUserDropdownOpen(false); }}
+                      className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2"
+                    >
+                      <FiShoppingBag className="w-3.5 h-3.5 text-[#FF5A1F]" /> Cart ({cartItems.length})
+                    </button>
+                    <button 
+                      onClick={() => { logout(); setUserDropdownOpen(false); }}
+                      className="w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 flex items-center gap-2"
+                    >
+                      <FiLogOut className="w-3.5 h-3.5" /> Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => { setAuthModalTab('login'); setAuthModalOpen(true); }}
+                className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors duration-200 border-none bg-transparent cursor-pointer text-[10.5px] sm:text-[11px] font-bold"
+              >
+                <FiUser className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> Sign In / Register
+              </button>
+            )}
+
+            <button
+              onClick={() => handleLinkClick('products')}
+              className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors duration-200 border-none bg-transparent cursor-pointer text-[10.5px] sm:text-[11px] font-medium"
+              title="Saved Wishlist"
+            >
+              <FiHeart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-rose-400 fill-rose-500" />
+              <span className="hidden sm:inline">Wishlist</span> ({wishlistItems.length})
+            </button>
+
             <button
               onClick={() => handleLinkClick('cart')}
               className="flex items-center gap-1 text-slate-300 hover:text-white transition-colors duration-200 border-none bg-transparent cursor-pointer text-[10.5px] sm:text-[11px] font-medium"
             >
-              <FiShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> Cart ({cartCount})
+              <FiShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FF5A1F]" /> Cart ({cartItems.length})
             </button>
           </div>
         </div>

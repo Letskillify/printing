@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { FiUploadCloud, FiCheckCircle, FiSend, FiFileText } from 'react-icons/fi'
+import { addOrderToFirestore, addDesignRequestToFirestore } from '../services/firebase'
 
 export function CustomQuotePage() {
   const [submitted, setSubmitted] = useState(false)
@@ -10,15 +11,70 @@ export function CustomQuotePage() {
     phone: '',
     productType: 'Custom Packaging Box',
     quantity: '500',
-    dimensions: '',
+    dimensions: '10 x 8 x 4 inches',
     paperStock: '350gsm Premium Matte',
     finishes: 'Gold Foil + Spot UV',
     notes: '',
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitted(true)
+
+    const orderId = `PRT-${Math.floor(10000 + Math.random() * 90000)}`
+    const newOrderData = {
+      id: orderId,
+      customer: {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company || 'Enterprise Quote Client',
+        isB2B: true,
+        creditNet15: false
+      },
+      items: [
+        {
+          productName: formData.productType,
+          variant: `${formData.paperStock} | ${formData.finishes}`,
+          quantity: parseInt(formData.quantity) || 500,
+          unitPrice: 25,
+          total: (parseInt(formData.quantity) || 500) * 25
+        }
+      ],
+      subtotal: (parseInt(formData.quantity) || 500) * 25,
+      shippingFee: 0,
+      gstAmount: Math.round(((parseInt(formData.quantity) || 500) * 25) * 0.18),
+      totalAmount: Math.round(((parseInt(formData.quantity) || 500) * 25) * 1.18),
+      status: 'Artwork Verification',
+      isExpress: false,
+      deliveryMethod: 'Pan-India BlueDart Express',
+      deliveryAddress: 'Corporate Office Address',
+      artworkFile: {
+        fileName: 'custom_quote_brief.pdf',
+        fileType: 'pdf',
+        dimensions: formData.dimensions || 'Standard',
+        resolutionDpi: 300,
+        cmykVerified: true,
+        previewUrl: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600'
+      },
+      notes: formData.notes
+    }
+
+    // Add live order and design ticket to Firestore
+    await addOrderToFirestore(newOrderData)
+    await addDesignRequestToFirestore({
+      id: `DSGN-${Math.floor(100 + Math.random() * 900)}`,
+      orderId: orderId,
+      customerName: `${formData.name} (${formData.company || 'Direct'})`,
+      phone: formData.phone,
+      product: formData.productType,
+      brief: formData.notes || `Custom dimensions: ${formData.dimensions}. Stock: ${formData.paperStock}. Finishes: ${formData.finishes}`,
+      assignedDesigner: null,
+      status: 'Assigned',
+      proofUrl: null,
+      fee: 299
+    })
+
     setTimeout(() => {
       setSubmitted(false)
       setFormData({
@@ -27,7 +83,7 @@ export function CustomQuotePage() {
         dimensions: '', paperStock: '350gsm Premium Matte',
         finishes: 'Gold Foil + Spot UV', notes: ''
       })
-    }, 3000)
+    }, 4000)
   }
 
   return (
@@ -166,11 +222,11 @@ export function CustomQuotePage() {
             >
               {submitted ? (
                 <>
-                  <FiCheckCircle className="w-4 h-4" /> Quote Requested!
+                  <FiCheckCircle className="w-4 h-4 text-emerald-300" /> Transmitted to Admin Pipeline!
                 </>
               ) : (
                 <>
-                  <FiSend className="w-4 h-4" /> Request Custom Quote
+                  <FiSend className="w-4 h-4" /> Request Custom Quote & Submit to Admin
                 </>
               )}
             </button>

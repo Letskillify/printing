@@ -20,18 +20,47 @@ import { HelpCenterPage } from './pages/HelpCenterPage'
 import { BlogPage } from './pages/BlogPage'
 import { CartPage } from './pages/CartPage'
 import { CustomQuotePage } from './pages/CustomQuotePage'
+import { AdminApp } from './admin/AdminApp'
 
-function App() {
+import { AuthProvider } from './context/AuthContext'
+import { AuthModal } from './Components/auth/AuthModal'
+
+function AppContent() {
   const [darkMode, setDarkMode] = useState(false)
-  const [currentPage, setCurrentPage] = useState('home')
-  const [cartCount, setCartCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState(() => {
+    const path = window.location.pathname.toLowerCase()
+    return (path === '/admin' || path.startsWith('/admin/')) ? 'admin' : 'home'
+  })
   const [commandOpen, setCommandOpen] = useState(false)
   const progress = useScrollProgress()
   useLenis()
 
-  // Reset scroll whenever page changes
+  // Sync state with URL pathname & browser back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.toLowerCase()
+      if (path === '/admin' || path.startsWith('/admin/')) {
+        setCurrentPage('admin')
+      } else {
+        setCurrentPage('home')
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  // Sync URL when currentPage state changes
   useEffect(() => {
     window.scrollTo(0, 0)
+    if (currentPage === 'admin') {
+      if (window.location.pathname !== '/admin') {
+        window.history.pushState(null, '', '/admin')
+      }
+    } else {
+      if (window.location.pathname === '/admin') {
+        window.history.pushState(null, '', '/')
+      }
+    }
   }, [currentPage])
 
   useEffect(() => {
@@ -50,13 +79,17 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  if (currentPage === 'admin') {
+    return <AdminApp onSwitchToWebsite={() => setCurrentPage('home')} />
+  }
+
   // Page switcher renderer helper
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
         return <HomePage setCurrentPage={setCurrentPage} />
       case 'products':
-        return <ProductsPage onAddToCart={() => setCartCount((c) => c + 1)} />
+        return <ProductsPage onNavigateCart={() => setCurrentPage('cart')} />
       case 'services':
         return <ServicesPage />
       case 'templates':
@@ -94,7 +127,6 @@ function App() {
       <Navbar
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        cartCount={cartCount}
       />
       
       {/* Switcher Main */}
@@ -103,8 +135,15 @@ function App() {
       <Footer setCurrentPage={setCurrentPage} />
       <FloatingActions />
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
+      <AuthModal />
     </div>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  )
+}
