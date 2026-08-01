@@ -493,258 +493,717 @@ export const ProductCatalogManager = () => {
               </button>
             </div>
 
-            {/* ─── Premium Form Body ─── */}
-            <div className="p-6 space-y-5 bg-[#F8FAFC]">
-
-              {/* Helper: reusable variant row renderer */}
-              {/* ── SECTION 1 · Core Product Info ── */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600">
-                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                    <Package className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-extrabold text-white text-[11px] uppercase tracking-widest">Section 1</p>
-                    <p className="font-bold text-white/80 text-xs">Core Product Information</p>
-                  </div>
-                </div>
-                <div className="p-5 space-y-4">
-                  <div>
-                    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Product Title *</label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                      required
-                      className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-semibold text-slate-900 text-sm bg-slate-50 focus:bg-white transition"
-                      placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Base Price (₹)</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                        <input type="number" step="0.01" value={formData.basePrice} onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })} className="w-full pl-7 pr-3 py-2.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-bold text-slate-900 text-sm bg-slate-50 focus:bg-white transition" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Min Pieces (MOQ)</label>
-                      <input type="number" min="1" value={formData.minOrderQty || 100} onChange={(e) => setFormData({ ...formData, minOrderQty: parseInt(e.target.value) || 1 })} className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-bold text-slate-900 text-sm bg-slate-50 focus:bg-white transition" />
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Category</label>
-                        <button type="button" onClick={() => setShowInlineCatInput(!showInlineCatInput)} className="text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer border-none transition">
-                          <Plus className="w-3 h-3" /> New
-                        </button>
-                      </div>
-                      {showInlineCatInput ? (
-                        <div className="flex items-center gap-1.5">
-                          <input type="text" value={inlineCatInput} onChange={(e) => setInlineCatInput(e.target.value)} placeholder="New category name" className="flex-1 px-3 py-2 rounded-xl border-2 border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50" />
-                          <button type="button" onClick={() => { if (inlineCatInput.trim()) { addCategory(inlineCatInput.trim()); setFormData({ ...formData, category: inlineCatInput.trim() }); setInlineCatInput(''); setShowInlineCatInput(false); } }} className="px-3 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0">✓</button>
-                          <button type="button" onClick={() => setShowInlineCatInput(false)} className="px-2 py-2 text-slate-400 hover:text-slate-700 border-none bg-transparent cursor-pointer shrink-0">✕</button>
-                        </div>
-                      ) : (
-                        <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-bold text-slate-900 text-sm bg-slate-50 focus:bg-white transition">
-                          {(categories && categories.length > 0 ? categories : ['Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch']).map((cat, idx) => (
-                            <option key={idx} value={cat}>{cat}</option>
-                          ))}
-                        </select>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">Short Summary</label>
-                    <input type="text" value={formData.summary} onChange={(e) => setFormData({ ...formData, summary: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-semibold text-slate-700 text-sm bg-slate-50 focus:bg-white transition" placeholder="One-line description for product card view..." />
-                  </div>
-
-                  {/* Gallery */}
-                  <div>
-                    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Product Gallery</label>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {formData.images.map((imgUrl, i) => (
-                        <div key={i} className="relative group/img">
-                          <img src={imgUrl} alt="Gallery" className="w-14 h-14 object-cover rounded-xl border-2 border-slate-200 shadow-sm" />
-                          <button type="button" onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))} className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 border-none cursor-pointer opacity-0 group-hover/img:opacity-100 transition">
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                      <label className="w-14 h-14 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 hover:bg-blue-50 bg-slate-50 flex flex-col items-center justify-center text-blue-500 cursor-pointer transition group">
-                        <Upload className="w-4 h-4 group-hover:scale-110 transition" />
-                        <span className="text-[9px] font-bold mt-0.5">Upload</span>
-                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                      </label>
-                      {uploadingImage && <div className="w-14 h-14 rounded-xl border-2 border-blue-200 bg-blue-50 flex items-center justify-center"><div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>}
-                    </div>
-                  </div>
-                </div>
+            {/* Native Scrollable Form Body */}
+            <div className="p-6 space-y-6 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            {/* General Settings */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">1. Core Information</h4>
+              
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Product Title</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                  required
+                  className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
+                />
               </div>
 
-              {/* ── SECTION 2 · Volume Tiered Pricing ── */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600">
-                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                    <DollarSign className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-extrabold text-white text-[11px] uppercase tracking-widest">Section 2</p>
-                    <p className="font-bold text-white/80 text-xs">Volume Tier Pricing Grid</p>
-                  </div>
-                  <button type="button" onClick={() => setFormData({ ...formData, tieredPricing: [...formData.tieredPricing, { tierMin: 500, pricePerUnit: 3.5 }] })} className="ml-auto px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] flex items-center gap-1 border-none cursor-pointer transition">
-                    <Plus className="w-3.5 h-3.5" /> Add Tier
-                  </button>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Base Price (₹)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.basePrice}
+                    onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
+                  />
                 </div>
-                <div className="p-5">
-                  <div className="grid grid-cols-12 gap-2 mb-2 px-1">
-                    <span className="col-span-5 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Min Qty (pcs)</span>
-                    <span className="col-span-6 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Price / Unit (₹)</span>
-                  </div>
-                  <div className="space-y-2">
-                    {formData.tieredPricing.map((tier, idx) => (
-                      <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-slate-50 rounded-xl px-3 py-2 border border-slate-100">
-                        <div className="col-span-5 flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">≥</span>
-                          <input type="number" value={tier.tierMin} onChange={(e) => { const t = [...formData.tieredPricing]; t[idx].tierMin = parseInt(e.target.value); setFormData({ ...formData, tieredPricing: t }); }} className="flex-1 px-2 py-1.5 rounded-lg border border-slate-200 font-bold text-sm focus:outline-none focus:border-emerald-500 bg-white" />
-                        </div>
-                        <div className="col-span-6 flex items-center gap-2">
-                          <span className="text-sm font-bold text-slate-400">₹</span>
-                          <input type="number" step="0.01" value={tier.pricePerUnit} onChange={(e) => { const t = [...formData.tieredPricing]; t[idx].pricePerUnit = parseFloat(e.target.value); setFormData({ ...formData, tieredPricing: t }); }} className="flex-1 px-2 py-1.5 rounded-lg border border-slate-200 font-bold text-sm focus:outline-none focus:border-emerald-500 bg-white" />
-                          <button type="button" onClick={() => setFormData({ ...formData, tieredPricing: formData.tieredPricing.filter((_, i) => i !== idx) })} className="w-7 h-7 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg border-none bg-transparent cursor-pointer transition">
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
-              {/* ── SECTION 3-10 · Variants ── */}
-              {[
-                {
-                  label: 'Print Sides', number: 3, color: 'from-violet-500 to-purple-600',
-                  key: 'sides', addLabel: 'Add Side', placeholder: 'e.g. Single-sided, Double-sided',
-                  newItem: { name: 'New Side Option', priceModifier: 0 }
-                },
-                {
-                  label: 'Edge Cutting & Corner Options', number: 4, color: 'from-amber-500 to-orange-500',
-                  key: 'corners', addLabel: 'Add Cut', placeholder: 'e.g. Standard, Rounded Corners',
-                  newItem: { name: 'New Cut Option', priceModifier: 0 }
-                },
-                {
-                  label: 'Lamination Finish', number: 5, color: 'from-pink-500 to-rose-600',
-                  key: 'lamination', addLabel: 'Add Lamination', placeholder: 'e.g. Gloss Lamination, Velvet Soft-Touch',
-                  newItem: { name: 'New Lamination', priceModifier: 0 }
-                },
-                {
-                  label: 'Card Size & Format', number: 6, color: 'from-sky-500 to-cyan-600',
-                  key: 'sizeFormat', addLabel: 'Add Format', placeholder: 'e.g. Standard 90×55mm, Square',
-                  newItem: { name: 'New Format', priceModifier: 0 }
-                },
-                {
-                  label: 'Metallic Foil Accents', number: 7, color: 'from-yellow-500 to-amber-600',
-                  key: 'foilAccents', addLabel: 'Add Foil', placeholder: 'e.g. Raised Gold Foil, Holographic',
-                  newItem: { name: 'New Foil Color', priceModifier: 0 }
-                },
-                {
-                  label: 'Spot UV & Selective Textures', number: 8, color: 'from-teal-500 to-emerald-600',
-                  key: 'spotUV', addLabel: 'Add Spot UV', placeholder: 'e.g. Single-Sided Spot UV, 3D Embossed',
-                  newItem: { name: 'New Spot UV Option', priceModifier: 0 }
-                },
-                {
-                  label: 'Artwork Proofing & Prepress', number: 9, color: 'from-indigo-500 to-blue-700',
-                  key: 'proofService', addLabel: 'Add Level', placeholder: 'e.g. Print-Ready, CMYK Proofing +₹99',
-                  newItem: { name: 'New Proofing Level', priceModifier: 0 }
-                },
-                {
-                  label: 'Packaging & Presentation', number: 10, color: 'from-slate-600 to-slate-800',
-                  key: 'packagingStyle', addLabel: 'Add Packaging', placeholder: 'e.g. Eco Bulk Shrink, Gift Box',
-                  newItem: { name: 'New Packaging Option', priceModifier: 0 }
-                },
-              ].map((section) => (
-                <div key={section.key} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                  <div className={`flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r ${section.color}`}>
-                    <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                      <Layers className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-extrabold text-white text-[11px] uppercase tracking-widest">Section {section.number}</p>
-                      <p className="font-bold text-white/80 text-xs">{section.label}</p>
-                    </div>
-                    <button type="button" onClick={() => { const current = formData.variants?.[section.key] || []; setFormData({ ...formData, variants: { ...formData.variants, [section.key]: [...current, { ...section.newItem }] } }); }} className="ml-auto px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white font-bold text-[11px] flex items-center gap-1 border-none cursor-pointer transition">
-                      <Plus className="w-3.5 h-3.5" /> {section.addLabel}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Min Pieces (MOQ)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={formData.minOrderQty || 100}
+                    onChange={(e) => setFormData({ ...formData, minOrderQty: parseInt(e.target.value) || 1 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block font-bold text-slate-700">Category</label>
+                    <button
+                      type="button"
+                      onClick={() => setShowInlineCatInput(!showInlineCatInput)}
+                      className="text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer border-none"
+                    >
+                      <Plus className="w-3 h-3" /> Quick Add
                     </button>
                   </div>
-                  <div className="p-4">
-                    {(formData.variants?.[section.key] || []).length === 0 ? (
-                      <p className="text-center text-slate-400 text-xs py-4 font-semibold">No options yet — click "{section.addLabel}" to add one.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-12 gap-2 mb-1 px-1">
-                          <span className="col-span-7 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Option Name</span>
-                          <span className="col-span-4 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">₹ per unit added</span>
-                        </div>
-                        {(formData.variants?.[section.key] || []).map((item, idx) => (
-                          <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 group">
-                            <input
-                              type="text"
-                              value={item.name}
-                              onChange={(e) => {
-                                const arr = [...(formData.variants?.[section.key] || [])];
-                                arr[idx] = { ...arr[idx], name: e.target.value };
-                                setFormData({ ...formData, variants: { ...formData.variants, [section.key]: arr } });
-                              }}
-                              placeholder={section.placeholder}
-                              className="col-span-7 px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-400"
-                            />
-                            <div className="col-span-4 flex items-center gap-1">
-                              <span className="text-slate-400 font-bold text-xs shrink-0">₹</span>
-                              <input
-                                type="number"
-                                step="0.1"
-                                value={item.priceModifier}
-                                onChange={(e) => {
-                                  const arr = [...(formData.variants?.[section.key] || [])];
-                                  arr[idx] = { ...arr[idx], priceModifier: parseFloat(e.target.value) || 0 };
-                                  setFormData({ ...formData, variants: { ...formData.variants, [section.key]: arr } });
-                                }}
-                                className="flex-1 px-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-xs focus:outline-none focus:border-blue-400"
-                              />
-                              <button type="button" onClick={() => { const arr = (formData.variants?.[section.key] || []).filter((_, i) => i !== idx); setFormData({ ...formData, variants: { ...formData.variants, [section.key]: arr } }); }} className="w-6 h-6 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg border-none bg-transparent cursor-pointer opacity-0 group-hover:opacity-100 transition">
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
 
-              {/* ── SECTION 11 · SEO Meta ── */}
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-slate-700 to-slate-900">
-                  <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
-                    <Search className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-extrabold text-white text-[11px] uppercase tracking-widest">Section 11</p>
-                    <p className="font-bold text-white/80 text-xs">SEO & Search Meta</p>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5">SEO Title Tag</label>
-                  <input type="text" value={formData.seo?.metaTitle || ''} onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })} className="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-slate-500 focus:outline-none font-semibold text-slate-800 text-sm bg-slate-50 focus:bg-white transition" placeholder="e.g. Premium Business Cards | Fast Printing India" />
+                  {showInlineCatInput ? (
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={inlineCatInput}
+                        onChange={(e) => setInlineCatInput(e.target.value)}
+                        placeholder="e.g. Stickers & Labels"
+                        className="flex-1 p-2 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (inlineCatInput.trim()) {
+                            addCategory(inlineCatInput.trim());
+                            setFormData({ ...formData, category: inlineCatInput.trim() });
+                            setInlineCatInput('');
+                            setShowInlineCatInput(false);
+                          }
+                        }}
+                        className="px-3 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowInlineCatInput(false)}
+                        className="px-2 py-2 text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer shrink-0"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500 bg-white"
+                    >
+                      {(categories && categories.length > 0 ? categories : ['Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch']).map((cat, idx) => (
+                        <option key={idx} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Short Summary</label>
+                <input
+                  type="text"
+                  value={formData.summary}
+                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500"
+                  placeholder="Summary for product card view..."
+                />
+              </div>
+
+              {/* Cloudinary Gallery Manager */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Cloudinary Gallery Images</label>
+                <div className="flex items-center gap-3 flex-wrap mb-2">
+                  {formData.images.map((imgUrl, i) => (
+                    <div key={i} className="relative group/img">
+                      <img src={imgUrl} alt="Gallery" className="w-16 h-16 object-cover rounded-xl border border-slate-200" />
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 border-none cursor-pointer"
+                        title="Remove Image"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  <label className="w-16 h-16 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/50 flex flex-col items-center justify-center text-blue-600 cursor-pointer">
+                    <Upload className="w-4 h-4" />
+                    <span className="text-[9px] font-bold mt-1">Upload</span>
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                  </label>
+                </div>
+              </div>
             </div>
-            {/* ─── End Form Body ─── */}
+
+            {/* Specifications & Tiered Pricing Matrix */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">2. Tiered Quantity Pricing Grid</h4>
+              
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                <div className="text-[11px] font-bold text-slate-600 grid grid-cols-2">
+                  <span>Minimum Quantity Tier</span>
+                  <span>Price Per Unit (₹)</span>
+                </div>
+                {formData.tieredPricing.map((tier, idx) => (
+                  <div key={idx} className="grid grid-cols-2 gap-2">
+                    <input
+                      type="number"
+                      value={tier.tierMin}
+                      onChange={(e) => {
+                        const newTiers = [...formData.tieredPricing];
+                        newTiers[idx].tierMin = parseInt(e.target.value);
+                        setFormData({ ...formData, tieredPricing: newTiers });
+                      }}
+                      className="p-1.5 rounded-lg border bg-white font-semibold"
+                    />
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={tier.pricePerUnit}
+                      onChange={(e) => {
+                        const newTiers = [...formData.tieredPricing];
+                        newTiers[idx].pricePerUnit = parseFloat(e.target.value);
+                        setFormData({ ...formData, tieredPricing: newTiers });
+                      }}
+                      className="p-1.5 rounded-lg border bg-white font-semibold"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* 3. Sides Printing Options & Prices */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">3. Print Sides Options & Prices</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.sides || [];
+                      setFormData({
+                        ...formData,
+                        variants: {
+                          ...formData.variants,
+                          sides: [...current, { name: 'New Side Option', priceModifier: 0 }]
+                        }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Side Option
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Side Option Name</span>
+                    <span className="col-span-5">Added Price (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.sides || []).map((side, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={side.name}
+                        onChange={(e) => {
+                          const newSides = [...(formData.variants?.sides || [])];
+                          newSides[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                        }}
+                        placeholder="e.g. Single-sided, Double-sided"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={side.priceModifier}
+                        onChange={(e) => {
+                          const newSides = [...(formData.variants?.sides || [])];
+                          newSides[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newSides = (formData.variants?.sides || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Edge Cutting & Corner Options & Prices */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">4. Edge Cutting & Corner Options & Prices</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.corners || [];
+                      setFormData({
+                        ...formData,
+                        variants: {
+                          ...formData.variants,
+                          corners: [...current, { name: 'New Cut Option', priceModifier: 0 }]
+                        }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Cut Option
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Finishing Cut Name</span>
+                    <span className="col-span-5">Added Price (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.corners || []).map((cut, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={cut.name}
+                        onChange={(e) => {
+                          const newCorners = [...(formData.variants?.corners || [])];
+                          newCorners[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                        }}
+                        placeholder="e.g. Standard, Edge Cutting, Rounded Corners"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={cut.priceModifier}
+                        onChange={(e) => {
+                          const newCorners = [...(formData.variants?.corners || [])];
+                          newCorners[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newCorners = (formData.variants?.corners || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5. Lamination Options & Charges */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">5. Lamination Options & Charges</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.lamination || [];
+                      setFormData({
+                        ...formData,
+                        variants: {
+                          ...formData.variants,
+                          lamination: [...current, { name: 'New Lamination Option', priceModifier: 0 }]
+                        }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Lamination
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Lamination Type</span>
+                    <span className="col-span-5">Added Charge (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.lamination || []).map((lam, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={lam.name}
+                        onChange={(e) => {
+                          const newLam = [...(formData.variants?.lamination || [])];
+                          newLam[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                        }}
+                        placeholder="e.g. Gloss Lamination, Velvet Soft-Touch"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={lam.priceModifier}
+                        onChange={(e) => {
+                          const newLam = [...(formData.variants?.lamination || [])];
+                          newLam[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newLam = (formData.variants?.lamination || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Column 2 Settings */}
+            <div className="space-y-4">
+              {/* 6. Card Size & Format Options */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">6. Card Size & Format Options</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.sizeFormat || [];
+                      setFormData({
+                        ...formData,
+                        variants: { ...formData.variants, sizeFormat: [...current, { name: 'New Format', priceModifier: 0 }] }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Size Format
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Format Name</span>
+                    <span className="col-span-5">Added Price (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.sizeFormat || []).map((sz, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={sz.name}
+                        onChange={(e) => {
+                          const newSz = [...(formData.variants?.sizeFormat || [])];
+                          newSz[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                        }}
+                        placeholder="e.g. Standard (90x55mm), Square (60x60mm)"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={sz.priceModifier}
+                        onChange={(e) => {
+                          const newSz = [...(formData.variants?.sizeFormat || [])];
+                          newSz[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newSz = (formData.variants?.sizeFormat || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 7. Metallic Foil Accents & Stamping */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">7. Metallic Foil Accents & Stamping</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.foilAccents || [];
+                      setFormData({
+                        ...formData,
+                        variants: { ...formData.variants, foilAccents: [...current, { name: 'New Foil Color', priceModifier: 0 }] }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Foil Option
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Foil Accent Type</span>
+                    <span className="col-span-5">Added Charge (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.foilAccents || []).map((foil, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={foil.name}
+                        onChange={(e) => {
+                          const newFoil = [...(formData.variants?.foilAccents || [])];
+                          newFoil[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                        }}
+                        placeholder="e.g. Raised Gold Foil, Silver Foil, Laser Holographic"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={foil.priceModifier}
+                        onChange={(e) => {
+                          const newFoil = [...(formData.variants?.foilAccents || [])];
+                          newFoil[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newFoil = (formData.variants?.foilAccents || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 8. Spot UV & 3D Textures */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">8. Spot UV & Selective Textures</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.spotUV || [];
+                      setFormData({
+                        ...formData,
+                        variants: { ...formData.variants, spotUV: [...current, { name: 'New Spot UV Option', priceModifier: 0 }] }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Spot UV
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Spot UV Option</span>
+                    <span className="col-span-5">Added Charge (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.spotUV || []).map((uv, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={uv.name}
+                        onChange={(e) => {
+                          const newUv = [...(formData.variants?.spotUV || [])];
+                          newUv[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                        }}
+                        placeholder="e.g. Single-Sided Spot UV, 3D Embossed Raised UV"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={uv.priceModifier}
+                        onChange={(e) => {
+                          const newUv = [...(formData.variants?.spotUV || [])];
+                          newUv[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newUv = (formData.variants?.spotUV || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 9. Proofing & Design Support */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">9. Artwork Proofing & Prepress Level</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.proofService || [];
+                      setFormData({
+                        ...formData,
+                        variants: { ...formData.variants, proofService: [...current, { name: 'New Proofing Level', priceModifier: 0 }] }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Proofing Level
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Proofing Level</span>
+                    <span className="col-span-5">Added Charge (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.proofService || []).map((proof, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={proof.name}
+                        onChange={(e) => {
+                          const newProof = [...(formData.variants?.proofService || [])];
+                          newProof[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
+                        }}
+                        placeholder="e.g. Print-Ready, Prepress CMYK Check (+₹99)"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={proof.priceModifier}
+                        onChange={(e) => {
+                          const newProof = [...(formData.variants?.proofService || [])];
+                          newProof[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newProof = (formData.variants?.proofService || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 10. Packaging & Presentation Styles */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">10. Packaging & Presentation Styles</h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = formData.variants?.packagingStyle || [];
+                      setFormData({
+                        ...formData,
+                        variants: { ...formData.variants, packagingStyle: [...current, { name: 'New Packaging Option', priceModifier: 0 }] }
+                      });
+                    }}
+                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                  >
+                    <Plus className="w-3 h-3" /> Add Packaging
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
+                    <span className="col-span-6">Packaging Style</span>
+                    <span className="col-span-5">Added Charge (₹/unit)</span>
+                    <span className="col-span-1"></span>
+                  </div>
+                  {(formData.variants?.packagingStyle || []).map((pkg, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                      <input
+                        type="text"
+                        value={pkg.name}
+                        onChange={(e) => {
+                          const newPkg = [...(formData.variants?.packagingStyle || [])];
+                          newPkg[idx].name = e.target.value;
+                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
+                        }}
+                        placeholder="e.g. Eco Bulk Shrink, Acrylic Desk Box, Luxury Gift Box"
+                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={pkg.priceModifier}
+                        onChange={(e) => {
+                          const newPkg = [...(formData.variants?.packagingStyle || [])];
+                          newPkg[idx].priceModifier = parseFloat(e.target.value) || 0;
+                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
+                        }}
+                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newPkg = (formData.variants?.packagingStyle || []).filter((_, i) => i !== idx);
+                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
+                        }}
+                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
+                        title="Delete Option"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* SEO Controls */}
+              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600 pt-2">6. SEO Meta Controls</h4>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">SEO Title Tag</label>
+                <input
+                  type="text"
+                  value={formData.seo?.metaTitle || ''}
+                  onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+            </div>
 
             {/* Sticky Bottom Action Bar */}
             <div className="sticky bottom-0 z-30 bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-between rounded-b-3xl shadow-lg">
