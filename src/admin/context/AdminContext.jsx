@@ -30,6 +30,43 @@ export const AdminProvider = ({ children }) => {
   const [cloudinaryMedia, setCloudinaryMedia] = useState(INITIAL_CLOUDINARY_MEDIA);
   const [logisticsLogs, setLogisticsLogs] = useState(INITIAL_LOGISTICS_LOGS);
 
+  // Dynamic Categories Management
+  const [categories, setCategories] = useState([
+    'Business Stationery',
+    'Large Format Display',
+    'Custom Packaging',
+    'Apparel & Merch',
+    'Marketing Collateral',
+    'Stickers & Labels',
+    'Promotional Merchandise'
+  ]);
+
+  // Sync category list with any custom categories attached to fetched products
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setCategories(prev => {
+        const set = new Set([...prev]);
+        products.forEach(p => {
+          if (p.category) set.add(p.category);
+        });
+        return Array.from(set);
+      });
+    }
+  }, [products]);
+
+  const addCategory = (categoryName) => {
+    if (!categoryName || !categoryName.trim()) return;
+    const trimmed = categoryName.trim();
+    setCategories(prev => {
+      if (prev.includes(trimmed)) return prev;
+      return [...prev, trimmed];
+    });
+  };
+
+  const deleteCategory = (categoryName) => {
+    setCategories(prev => prev.filter(c => c !== categoryName));
+  };
+
   // Modals & UI States
   const [preflightModalOpen, setPreflightModalOpen] = useState(false);
   const [walkInModalOpen, setWalkInModalOpen] = useState(false);
@@ -176,6 +213,9 @@ export const AdminProvider = ({ children }) => {
       products,
       saveProduct,
       removeProduct,
+      categories,
+      addCategory,
+      deleteCategory,
       designRequests,
       assignDesignerToTicket,
       uploadTicketProof,

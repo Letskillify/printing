@@ -45,7 +45,7 @@ export function CartPage({ setCurrentPage }) {
       },
       items: cartItems.map(item => ({
         productName: item.name,
-        variant: `${item.paper || 'Standard'} | ${item.finish || 'Matte'}`,
+        variant: `Size: ${item.sizeFormat || 'Standard'} | Paper: ${item.paper || 'Standard'} | Sides: ${item.sides || 'Single-sided'} | Cut: ${item.corners || 'Standard'} | Lam: ${item.lamination || 'None'} | Foil: ${item.foil || 'None'} | SpotUV: ${item.spotUV || 'None'} | Proof: ${item.proof || 'Self Upload'} | Pkg: ${item.packaging || 'Bulk Shrink'}`,
         quantity: item.qty,
         unitPrice: item.unitPrice,
         total: item.totalPrice || (item.qty * item.unitPrice)
@@ -136,7 +136,7 @@ export function CartPage({ setCurrentPage }) {
                     <div>
                       <h3 className="text-[16px] font-bold text-[#0B1633] leading-snug">{item.name}</h3>
                       <p className="text-[12px] text-[#667085] mt-0.5">Quantity: {item.qty} units</p>
-                      <p className="text-[12px] text-[#667085]">Paper: {item.paper || 'Standard'} • Finish: {item.finish || 'Matte'}</p>
+                      <p className="text-[11px] text-[#667085] leading-relaxed">Format: {item.sizeFormat || 'Standard'} • Sides: {item.sides || 'Single-sided'} • Cut: {item.corners || 'Standard'} • Lam: {item.lamination || 'None'} • Foil: {item.foil || 'None'} • SpotUV: {item.spotUV || 'None'} • Proof: {item.proof || 'Standard'} • Pkg: {item.packaging || 'Bulk'}</p>
                     </div>
                   </div>
 

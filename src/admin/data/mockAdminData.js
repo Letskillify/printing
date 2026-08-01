@@ -344,6 +344,7 @@ export const INITIAL_PRODUCTS = [
       "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=800&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1616469829941-c7200edec809?q=80&w=800&auto=format&fit=crop"
     ],
+    minOrderQty: 100,
     variants: {
       paperStock: [
         { name: "350 GSM Soft-Touch Matte", priceModifier: 0 },
@@ -355,9 +356,49 @@ export const INITIAL_PRODUCTS = [
         { name: "Raised Gold Foil Accent (+ Front)", priceModifier: 2.20 },
         { name: "Spot UV Gloss on Logo", priceModifier: 1.80 }
       ],
+      sides: [
+        { name: "Single-sided", priceModifier: 0 },
+        { name: "Double-sided", priceModifier: 1.50 }
+      ],
       corners: [
-        { name: "Standard 90° Square", priceModifier: 0 },
-        { name: "6mm Precision Rounded", priceModifier: 0.40 }
+        { name: "Standard", priceModifier: 0 },
+        { name: "Edge Cutting", priceModifier: 1.00 },
+        { name: "Rounded Corners", priceModifier: 0.50 }
+      ],
+      lamination: [
+        { name: "No Lamination", priceModifier: 0 },
+        { name: "Gloss Lamination", priceModifier: 0.50 },
+        { name: "Matte Lamination", priceModifier: 0.80 },
+        { name: "Velvet Soft-Touch Lamination", priceModifier: 1.50 }
+      ],
+      sizeFormat: [
+        { name: "Standard (90x55mm)", priceModifier: 0 },
+        { name: "Square (60x60mm)", priceModifier: 0.50 },
+        { name: "Slim (90x45mm)", priceModifier: 0.30 },
+        { name: "Foldable 4-Panel", priceModifier: 1.80 }
+      ],
+      foilAccents: [
+        { name: "No Metallic Foil", priceModifier: 0 },
+        { name: "Raised Gold Foil", priceModifier: 2.20 },
+        { name: "Raised Silver Foil", priceModifier: 2.00 },
+        { name: "Rose Gold Foil", priceModifier: 2.50 },
+        { name: "Holographic Laser Foil", priceModifier: 3.00 }
+      ],
+      spotUV: [
+        { name: "No Spot UV", priceModifier: 0 },
+        { name: "Single-Sided Spot UV Logo", priceModifier: 1.20 },
+        { name: "Double-Sided Spot UV Accent", priceModifier: 2.00 },
+        { name: "3D Embossed Raised UV", priceModifier: 2.80 }
+      ],
+      proofService: [
+        { name: "Print-Ready (Self Upload)", priceModifier: 0 },
+        { name: "Prepress CMYK Proofing (+₹99)", priceModifier: 0.50 },
+        { name: "Full Designer Support (+₹299)", priceModifier: 1.50 }
+      ],
+      packagingStyle: [
+        { name: "Standard Eco Bulk Shrink", priceModifier: 0 },
+        { name: "Acrylic Desk Storage Box", priceModifier: 1.20 },
+        { name: "Luxury Gift Presentation Box", priceModifier: 3.50 }
       ]
     },
     tieredPricing: [
