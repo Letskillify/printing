@@ -75,7 +75,7 @@ export const LiveStatCards = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden group"
+            className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold text-slate-500 tracking-tight">

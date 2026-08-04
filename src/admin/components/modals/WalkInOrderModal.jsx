@@ -50,11 +50,11 @@ export const WalkInOrderModal = () => {
     <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         
-        <div className="p-4 border-b border-slate-200 bg-slate-900 text-white flex items-center justify-between">
-          <h3 className="font-extrabold text-sm flex items-center gap-2">
-            <Plus className="w-4 h-4 text-blue-400" /> Create Walk-In Counter Print Order
+        <div className="p-4 border-b border-slate-200/80 bg-white text-slate-950 flex items-center justify-between">
+          <h3 className="font-extrabold text-sm flex items-center gap-2 text-slate-900">
+            <Plus className="w-4 h-4 text-blue-600" /> Create Walk-In Counter Print Order
           </h3>
-          <button onClick={() => setWalkInModalOpen(false)} className="text-slate-400 hover:text-white">
+          <button onClick={() => setWalkInModalOpen(false)} className="text-slate-450 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-50 transition-colors border-none bg-transparent cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>

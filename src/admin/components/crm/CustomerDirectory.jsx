@@ -52,8 +52,74 @@ export const CustomerDirectory = () => {
         />
       </div>
 
-      {/* High-density CRM Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+      {/* Mobile Stacked Card View */}
+      <div className="block md:hidden space-y-4">
+        {filteredCustomers.map((cust) => (
+          <div key={cust.id} className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-3xs space-y-3">
+            <div className="flex items-center gap-3">
+              {cust.logoUrl ? (
+                <img src={cust.logoUrl} alt="Logo" className="w-9 h-9 object-cover rounded-xl border border-slate-200 shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-xs shrink-0">
+                  {cust.name.substring(0, 2).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <div className="font-extrabold text-slate-900 text-sm">{cust.name}</div>
+                <div className="text-[11px] text-purple-600 font-bold">{cust.company || 'Retail Account'}</div>
+              </div>
+            </div>
+
+            <div className="text-xs space-y-1.5 pt-1.5 border-t border-slate-100 text-slate-700">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="truncate">{cust.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                <span>{cust.phone}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400 font-semibold text-[10px] uppercase">GSTIN:</span>
+                {cust.gstin ? (
+                  <span className="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-bold">
+                    {cust.gstin}
+                  </span>
+                ) : (
+                  <span className="text-slate-400 italic">No GST registered</span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+              <div>
+                <span className="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Spend ({cust.totalOrders} orders)</span>
+                <span className="font-black text-slate-900 text-xs">₹{cust.totalSpend.toLocaleString()}</span>
+              </div>
+
+              <button
+                onClick={() => toggleB2BCredit(cust.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors inline-flex items-center gap-1.5 cursor-pointer ${
+                  cust.creditNet15 
+                    ? 'bg-purple-600 text-white border-purple-600 shadow-3xs' 
+                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <CreditCard className="w-3.5 h-3.5" />
+                <span>{cust.creditNet15 ? 'NET-15' : 'Cash'}</span>
+              </button>
+            </div>
+          </div>
+        ))}
+        {filteredCustomers.length === 0 && (
+          <div className="py-12 text-center text-slate-400 font-medium">
+            No customers found matching search criteria.
+          </div>
+        )}
+      </div>
+
+      {/* High-density CRM Table for Desktop */}
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-100/70 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -110,11 +176,7 @@ export const CustomerDirectory = () => {
                 <td className="py-3 px-4 text-center">
                   <button
                     onClick={() => toggleB2BCredit(cust.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors inline-flex items-center gap-1.5 ${
-                      cust.creditNet15 
-                        ? 'bg-purple-600 text-white border-purple-600 shadow-2xs' 
-                        : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
-                    }`}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors inline-flex items-center gap-1.5 bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 cursor-pointer"
                   >
                     <CreditCard className="w-3.5 h-3.5" />
                     <span>{cust.creditNet15 ? 'NET-15 Enabled' : 'Standard Cash'}</span>

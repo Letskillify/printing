@@ -55,21 +55,21 @@ export const PreflightFileInspector = () => {
       <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Modal Top Bar */}
-        <div className="p-4 border-b border-slate-200 bg-slate-900 text-white flex items-center justify-between">
+        <div className="p-4 border-b border-slate-200 bg-white text-slate-950 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-extrabold shadow-sm border border-blue-150">
               <FileCheck className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-base tracking-tight text-white">
+                <h3 className="font-extrabold text-base tracking-tight text-slate-900">
                   Pre-Flight File Inspector & Inspector Engine
                 </h3>
-                <span className="px-2 py-0.5 rounded bg-blue-500/30 text-sky-300 font-extrabold text-xs border border-sky-400/30">
+                <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">
                   {selectedOrder.id}
                 </span>
               </div>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-500">
                 Customer: {selectedOrder.customer.name} ({selectedOrder.customer.company || 'Retail'})
               </p>
             </div>
@@ -77,7 +77,7 @@ export const PreflightFileInspector = () => {
 
           <button
             onClick={() => setPreflightModalOpen(false)}
-            className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-450 hover:text-slate-700 transition-colors border border-slate-200/60 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

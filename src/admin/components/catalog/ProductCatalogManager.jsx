@@ -30,6 +30,7 @@ export const ProductCatalogManager = () => {
   const [newCatSidebarInput, setNewCatSidebarInput] = useState('');
   const [showInlineCatInput, setShowInlineCatInput] = useState(false);
   const [inlineCatInput, setInlineCatInput] = useState('');
+  const [formActiveTab, setFormActiveTab] = useState('general'); // 'general', 'tiered', 'variants'
 
   const filteredProducts = products.filter(prod => {
     const matchesSearch = (prod.title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -123,6 +124,7 @@ export const ProductCatalogManager = () => {
 
   const openCreateForm = () => {
     setEditingProduct(null);
+    setFormActiveTab('general');
     setFormData({
       title: '',
       slug: '',
@@ -193,6 +195,7 @@ export const ProductCatalogManager = () => {
   };
 
   const openEditForm = (prod) => {
+    setFormActiveTab('general');
     setFormData({
       ...prod,
       minOrderQty: prod.minOrderQty || 100,
@@ -270,19 +273,18 @@ export const ProductCatalogManager = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner & Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-[#07152F] p-6 rounded-3xl border border-slate-800 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 blur-[100px] pointer-events-none" />
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-blue-50/50 via-white to-slate-50 p-6 rounded-3xl border border-slate-200/80 text-slate-800 shadow-xs relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-extrabold border border-blue-500/30 uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-extrabold border border-blue-200 uppercase tracking-wider">
               Admin Enterprise Catalog
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            <Package className="w-6 h-6 text-[#FF5A1F]" />
+          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <Package className="w-6 h-6 text-blue-600" />
             Print Product Matrix & Pricing Engine
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl mt-1">
+          <p className="text-xs text-slate-500 max-w-2xl mt-1 font-medium">
             Manage live print SKUs, volume tier pricing matrices, Cloudinary galleries, and multi-variant pricing rules.
           </p>
         </div>
@@ -290,13 +292,13 @@ export const ProductCatalogManager = () => {
         <div className="flex items-center gap-3 relative z-10">
           <button
             onClick={() => setIsCategorySidebarOpen(true)}
-            className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs flex items-center gap-2 border border-white/20 transition-all cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs flex items-center gap-2 border border-slate-200 shadow-3xs transition-all cursor-pointer"
           >
-            <FolderPlus className="w-4 h-4 text-blue-400" /> Manage Categories
+            <FolderPlus className="w-4 h-4 text-blue-600" /> Manage Categories
           </button>
           <button
             onClick={openCreateForm}
-            className="px-5 py-3 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition-all cursor-pointer border-none"
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer border-none"
           >
             <Plus className="w-4 h-4" /> Add New Print Product
           </button>
@@ -370,8 +372,8 @@ export const ProductCatalogManager = () => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 cursor-pointer transition border ${
                 selectedCategory === cat
-                  ? 'bg-[#07152F] text-white border-[#07152F] shadow-xs'
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-400'
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
               }`}
             >
               {cat}
@@ -464,763 +466,716 @@ export const ProductCatalogManager = () => {
         ))}
       </div>
 
-      {/* Form Editor Mode - 100% RELIABLE SCROLLABLE MODAL OVERLAY */}
+      {/* Form Editor Mode - 100% RELIABLE ULTRA-PREMIUM TABBED MODAL OVERLAY */}
       {isCreating && (
-        <div className="fixed inset-0 z-50 bg-[#07152F]/85 backdrop-blur-md overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
           <form 
             onSubmit={handleFormSubmit} 
-            className="bg-white rounded-3xl w-full max-w-5xl my-6 shadow-2xl border border-slate-200 text-slate-800 animate-in fade-in zoom-in duration-200 relative"
+            className="bg-white rounded-3xl w-full max-w-5xl my-4 sm:my-8 shadow-2xl border border-slate-200/90 text-slate-800 animate-in fade-in zoom-in-95 duration-200 relative overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Sticky Top Header */}
-            <div className="sticky top-0 z-30 bg-[#07152F] px-6 py-4 text-white flex items-center justify-between border-b border-slate-800 rounded-t-3xl shadow-md">
+            <div className="bg-white px-6 py-4 border-b border-slate-200/80 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                  <Sparkles className="w-5 h-5 text-[#FF5A1F]" />
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold border border-blue-100 shadow-3xs">
+                  <Sparkles className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-base tracking-tight text-white">
-                    {editingProduct ? `Edit Product: ${formData.title}` : 'Create New Custom Print Product'}
+                  <h3 className="font-black text-base sm:text-lg tracking-tight text-slate-900">
+                    {editingProduct ? `Edit SKU: ${formData.title}` : 'Create New Custom Print Product'}
                   </h3>
-                  <p className="text-[11px] text-slate-400 font-medium">Configure core pricing, MOQ safeguards, and multi-variant pricing matrix</p>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Configure core product details, gallery images, tiered quantity pricing, and multi-variant rules
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsCreating(false)}
-                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 font-bold text-xs text-white transition cursor-pointer border border-white/10"
+                className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 font-extrabold text-sm transition flex items-center justify-center border-none cursor-pointer"
+                title="Close"
               >
-                Close & Cancel
+                ✕
               </button>
             </div>
 
-            {/* Native Scrollable Form Body */}
-            <div className="p-6 space-y-6 text-xs">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-            {/* General Settings */}
-            <div className="space-y-4">
-              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">1. Core Information</h4>
+            {/* Form Section Navigation Tab Bar */}
+            <div className="bg-slate-50/80 px-6 py-2 border-b border-slate-200/80 flex items-center gap-2 overflow-x-auto shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => setFormActiveTab('general')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
+                  formActiveTab === 'general'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <Package className="w-4 h-4" /> 1. Core Info & Cloudinary Gallery
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFormActiveTab('tiered')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
+                  formActiveTab === 'tiered'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <DollarSign className="w-4 h-4" /> 2. Tiered Quantity Pricing Grid ({formData.tieredPricing?.length || 0} tiers)
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFormActiveTab('variants')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
+                  formActiveTab === 'variants'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <Layers className="w-4 h-4" /> 3. Print Options & Finishes
+              </button>
+            </div>
+
+            {/* Tabbed Form Body */}
+            <div className="p-6 space-y-6 overflow-y-auto flex-1 text-xs custom-scrollbar bg-slate-50/30">
               
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Product Title</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  required
-                  className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
-                  placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
-                />
-              </div>
+              {/* TAB 1: GENERAL INFO & CLOUDINARY GALLERY */}
+              {formActiveTab === 'general' && (
+                <div className="space-y-6 animate-in fade-in duration-150">
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
+                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                      <Package className="w-4 h-4" /> Basic Details & Classification
+                    </h4>
 
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Base Price (₹)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.basePrice}
-                    onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
-                  />
-                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Product Title *</label>
+                        <input
+                          type="text"
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                          required
+                          className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
+                        />
+                      </div>
 
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Min Pieces (MOQ)</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={formData.minOrderQty || 100}
-                    onChange={(e) => setFormData({ ...formData, minOrderQty: parseInt(e.target.value) || 1 })}
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500"
-                  />
-                </div>
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Base Price (₹) *</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={formData.basePrice}
+                          onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })}
+                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                        />
+                      </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block font-bold text-slate-700">Category</label>
-                    <button
-                      type="button"
-                      onClick={() => setShowInlineCatInput(!showInlineCatInput)}
-                      className="text-[10px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer border-none"
-                    >
-                      <Plus className="w-3 h-3" /> Quick Add
-                    </button>
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Minimum Order Qty (MOQ) *</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={formData.minOrderQty || 100}
+                          onChange={(e) => setFormData({ ...formData, minOrderQty: parseInt(e.target.value) || 1 })}
+                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                        />
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Print Category</label>
+                          <button
+                            type="button"
+                            onClick={() => setShowInlineCatInput(!showInlineCatInput)}
+                            className="text-[10px] font-extrabold text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer border-none"
+                          >
+                            <Plus className="w-3 h-3" /> Quick Add Category
+                          </button>
+                        </div>
+
+                        {showInlineCatInput ? (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={inlineCatInput}
+                              onChange={(e) => setInlineCatInput(e.target.value)}
+                              placeholder="e.g. Stickers & Labels"
+                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (inlineCatInput.trim()) {
+                                  addCategory(inlineCatInput.trim());
+                                  setFormData({ ...formData, category: inlineCatInput.trim() });
+                                  setInlineCatInput('');
+                                  setShowInlineCatInput(false);
+                                }
+                              }}
+                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
+                            >
+                              Save Category
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowInlineCatInput(false)}
+                              className="px-2 py-2 text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer shrink-0"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={formData.category}
+                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-xs"
+                          >
+                            {(categories && categories.length > 0 ? categories : ['Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch']).map((cat, idx) => (
+                              <option key={idx} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Short Product Summary</label>
+                        <textarea
+                          rows={2}
+                          value={formData.summary}
+                          onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                          className="w-full p-3 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          placeholder="Brief description visible on product cards..."
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {showInlineCatInput ? (
-                    <div className="flex items-center gap-1.5">
-                      <input
-                        type="text"
-                        value={inlineCatInput}
-                        onChange={(e) => setInlineCatInput(e.target.value)}
-                        placeholder="e.g. Stickers & Labels"
-                        className="flex-1 p-2 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (inlineCatInput.trim()) {
-                            addCategory(inlineCatInput.trim());
-                            setFormData({ ...formData, category: inlineCatInput.trim() });
-                            setInlineCatInput('');
-                            setShowInlineCatInput(false);
-                          }
-                        }}
-                        className="px-3 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowInlineCatInput(false)}
-                        className="px-2 py-2 text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer shrink-0"
-                      >
-                        ✕
-                      </button>
+                  {/* Cloudinary Image Gallery Dropzone */}
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                        <Upload className="w-4 h-4" /> Cloudinary Product Gallery ({formData.images.length} uploaded)
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-medium">PNG, JPG, WEBP up to 10MB</span>
                     </div>
-                  ) : (
-                    <select
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-blue-500 bg-white"
-                    >
-                      {(categories && categories.length > 0 ? categories : ['Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch']).map((cat, idx) => (
-                        <option key={idx} value={cat}>{cat}</option>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                      {formData.images.map((imgUrl, i) => (
+                        <div key={i} className="relative group/img aspect-square rounded-2xl overflow-hidden border border-slate-200 shadow-3xs bg-slate-100">
+                          <img src={imgUrl} alt="Gallery" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
+                          {i === 0 && (
+                            <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md bg-blue-600 text-white font-black text-[9px] uppercase tracking-wider shadow-2xs">
+                              Main Image
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
+                            className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md hover:bg-red-700 border-none cursor-pointer transition-colors"
+                            title="Remove Image"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
                       ))}
-                    </select>
-                  )}
-                </div>
-              </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Short Summary</label>
-                <input
-                  type="text"
-                  value={formData.summary}
-                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500"
-                  placeholder="Summary for product card view..."
-                />
-              </div>
-
-              {/* Cloudinary Gallery Manager */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Cloudinary Gallery Images</label>
-                <div className="flex items-center gap-3 flex-wrap mb-2">
-                  {formData.images.map((imgUrl, i) => (
-                    <div key={i} className="relative group/img">
-                      <img src={imgUrl} alt="Gallery" className="w-16 h-16 object-cover rounded-xl border border-slate-200" />
-                      <button
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
-                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 border-none cursor-pointer"
-                        title="Remove Image"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
+                      {/* Dropzone Upload Button */}
+                      <label className="aspect-square rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50 flex flex-col items-center justify-center text-blue-600 cursor-pointer transition-colors p-3 text-center">
+                        <Upload className="w-6 h-6 mb-1 text-blue-500" />
+                        <span className="text-[11px] font-bold text-slate-800">
+                          {uploadingImage ? 'Uploading...' : 'Upload Image'}
+                        </span>
+                        <span className="text-[9px] text-slate-400 font-medium mt-0.5">Click to browse</span>
+                        <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                      </label>
                     </div>
-                  ))}
-                  <label className="w-16 h-16 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/50 flex flex-col items-center justify-center text-blue-600 cursor-pointer">
-                    <Upload className="w-4 h-4" />
-                    <span className="text-[9px] font-bold mt-1">Upload</span>
-                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Specifications & Tiered Pricing Matrix */}
-            <div className="space-y-4">
-              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">2. Tiered Quantity Pricing Grid</h4>
-              
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                <div className="text-[11px] font-bold text-slate-600 grid grid-cols-2">
-                  <span>Minimum Quantity Tier</span>
-                  <span>Price Per Unit (₹)</span>
-                </div>
-                {formData.tieredPricing.map((tier, idx) => (
-                  <div key={idx} className="grid grid-cols-2 gap-2">
-                    <input
-                      type="number"
-                      value={tier.tierMin}
-                      onChange={(e) => {
-                        const newTiers = [...formData.tieredPricing];
-                        newTiers[idx].tierMin = parseInt(e.target.value);
-                        setFormData({ ...formData, tieredPricing: newTiers });
-                      }}
-                      className="p-1.5 rounded-lg border bg-white font-semibold"
-                    />
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={tier.pricePerUnit}
-                      onChange={(e) => {
-                        const newTiers = [...formData.tieredPricing];
-                        newTiers[idx].pricePerUnit = parseFloat(e.target.value);
-                        setFormData({ ...formData, tieredPricing: newTiers });
-                      }}
-                      className="p-1.5 rounded-lg border bg-white font-semibold"
-                    />
                   </div>
-                ))}
-              </div>
 
-              {/* 3. Sides Printing Options & Prices */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">3. Print Sides Options & Prices</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.sides || [];
-                      setFormData({
-                        ...formData,
-                        variants: {
-                          ...formData.variants,
-                          sides: [...current, { name: 'New Side Option', priceModifier: 0 }]
-                        }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Side Option
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Side Option Name</span>
-                    <span className="col-span-5">Added Price (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.sides || []).map((side, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                  {/* SEO Section */}
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">
+                      SEO Optimization Controls
+                    </h4>
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1 uppercase text-[10px] tracking-wider">Meta Title Tag</label>
                       <input
                         type="text"
-                        value={side.name}
-                        onChange={(e) => {
-                          const newSides = [...(formData.variants?.sides || [])];
-                          newSides[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
-                        }}
-                        placeholder="e.g. Single-sided, Double-sided"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
+                        value={formData.seo?.metaTitle || ''}
+                        onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })}
+                        placeholder="e.g. Buy Luxury Business Cards Online | Printigly"
+                        className="w-full p-2.5 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 text-xs"
                       />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={side.priceModifier}
-                        onChange={(e) => {
-                          const newSides = [...(formData.variants?.sides || [])];
-                          newSides[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: TIERED QUANTITY PRICING GRID */}
+              {formActiveTab === 'tiered' && (
+                <div className="space-y-4 animate-in fade-in duration-150">
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <div>
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                          <DollarSign className="w-4 h-4" /> Volume Quantity Discount Matrix
+                        </h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">Automatically calculates tiered discounts based on order quantity threshold</p>
+                      </div>
                       <button
                         type="button"
                         onClick={() => {
-                          const newSides = (formData.variants?.sides || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                          const currentTiers = formData.tieredPricing || [];
+                          const lastMin = currentTiers.length > 0 ? currentTiers[currentTiers.length - 1].tierMin + 500 : 500;
+                          const lastPrice = currentTiers.length > 0 ? Math.max(currentTiers[currentTiers.length - 1].pricePerUnit - 0.5, 1) : 4.0;
+                          setFormData({
+                            ...formData,
+                            tieredPricing: [...currentTiers, { tierMin: lastMin, pricePerUnit: lastPrice }]
+                          });
                         }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
+                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-xs flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Plus className="w-3.5 h-3.5" /> Add Tier Rule
                       </button>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* 4. Edge Cutting & Corner Options & Prices */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">4. Edge Cutting & Corner Options & Prices</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.corners || [];
-                      setFormData({
-                        ...formData,
-                        variants: {
-                          ...formData.variants,
-                          corners: [...current, { name: 'New Cut Option', priceModifier: 0 }]
-                        }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Cut Option
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Finishing Cut Name</span>
-                    <span className="col-span-5">Added Price (₹/unit)</span>
-                    <span className="col-span-1"></span>
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-12 gap-3 px-3 py-2 bg-slate-100/70 rounded-xl text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">
+                        <span className="col-span-5">Minimum Quantity (pcs)</span>
+                        <span className="col-span-5">Price Per Unit (₹)</span>
+                        <span className="col-span-2 text-right">Action</span>
+                      </div>
+
+                      {formData.tieredPricing.map((tier, idx) => (
+                        <div key={idx} className="grid grid-cols-12 gap-3 items-center p-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition">
+                          <div className="col-span-5">
+                            <input
+                              type="number"
+                              min="1"
+                              value={tier.tierMin}
+                              onChange={(e) => {
+                                const newTiers = [...formData.tieredPricing];
+                                newTiers[idx].tierMin = parseInt(e.target.value) || 1;
+                                setFormData({ ...formData, tieredPricing: newTiers });
+                              }}
+                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-xs focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+                          <div className="col-span-5">
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={tier.pricePerUnit}
+                              onChange={(e) => {
+                                const newTiers = [...formData.tieredPricing];
+                                newTiers[idx].pricePerUnit = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, tieredPricing: newTiers });
+                              }}
+                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-xs focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+                          <div className="col-span-2 text-right">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newTiers = formData.tieredPricing.filter((_, i) => i !== idx);
+                                setFormData({ ...formData, tieredPricing: newTiers });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition border-none bg-transparent cursor-pointer"
+                              title="Delete Tier"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  {(formData.variants?.corners || []).map((cut, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={cut.name}
-                        onChange={(e) => {
-                          const newCorners = [...(formData.variants?.corners || [])];
-                          newCorners[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                        }}
-                        placeholder="e.g. Standard, Edge Cutting, Rounded Corners"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={cut.priceModifier}
-                        onChange={(e) => {
-                          const newCorners = [...(formData.variants?.corners || [])];
-                          newCorners[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newCorners = (formData.variants?.corners || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
                 </div>
-              </div>
+              )}
 
-              {/* 5. Lamination Options & Charges */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">5. Lamination Options & Charges</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.lamination || [];
-                      setFormData({
-                        ...formData,
-                        variants: {
-                          ...formData.variants,
-                          lamination: [...current, { name: 'New Lamination Option', priceModifier: 0 }]
-                        }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Lamination
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Lamination Type</span>
-                    <span className="col-span-5">Added Charge (₹/unit)</span>
-                    <span className="col-span-1"></span>
+              {/* TAB 3: PRINT OPTIONS & FINISHES */}
+              {formActiveTab === 'variants' && (
+                <div className="space-y-6 animate-in fade-in duration-150">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    {/* 1. Print Sides */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">1. Print Sides</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.sides || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, sides: [...current, { name: 'New Side', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Option
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.sides || []).map((side, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={side.name}
+                              onChange={(e) => {
+                                const newSides = [...(formData.variants?.sides || [])];
+                                newSides[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                              }}
+                              placeholder="Side Name"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={side.priceModifier}
+                              onChange={(e) => {
+                                const newSides = [...(formData.variants?.sides || [])];
+                                newSides[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSides = (formData.variants?.sides || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 2. Edge Cutting & Corners */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">2. Edge Cuts & Corners</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.corners || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, corners: [...current, { name: 'New Cut', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Cut Option
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.corners || []).map((cut, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={cut.name}
+                              onChange={(e) => {
+                                const newCorners = [...(formData.variants?.corners || [])];
+                                newCorners[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                              }}
+                              placeholder="Cut Type"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={cut.priceModifier}
+                              onChange={(e) => {
+                                const newCorners = [...(formData.variants?.corners || [])];
+                                newCorners[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newCorners = (formData.variants?.corners || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 3. Lamination Options */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">3. Lamination Finish</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.lamination || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, lamination: [...current, { name: 'New Lamination', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Lamination
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.lamination || []).map((lam, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={lam.name}
+                              onChange={(e) => {
+                                const newLam = [...(formData.variants?.lamination || [])];
+                                newLam[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                              }}
+                              placeholder="Lamination Type"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={lam.priceModifier}
+                              onChange={(e) => {
+                                const newLam = [...(formData.variants?.lamination || [])];
+                                newLam[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newLam = (formData.variants?.lamination || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 4. Size & Format */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">4. Size Formats</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.sizeFormat || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, sizeFormat: [...current, { name: 'New Size Format', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Format
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.sizeFormat || []).map((sz, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={sz.name}
+                              onChange={(e) => {
+                                const newSz = [...(formData.variants?.sizeFormat || [])];
+                                newSz[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                              }}
+                              placeholder="Size Format Name"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={sz.priceModifier}
+                              onChange={(e) => {
+                                const newSz = [...(formData.variants?.sizeFormat || [])];
+                                newSz[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newSz = (formData.variants?.sizeFormat || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 5. Metallic Foil Accents */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">5. Metallic Foil Options</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.foilAccents || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, foilAccents: [...current, { name: 'New Foil Option', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Foil
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.foilAccents || []).map((foil, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={foil.name}
+                              onChange={(e) => {
+                                const newFoil = [...(formData.variants?.foilAccents || [])];
+                                newFoil[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                              }}
+                              placeholder="Foil Color/Type"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={foil.priceModifier}
+                              onChange={(e) => {
+                                const newFoil = [...(formData.variants?.foilAccents || [])];
+                                newFoil[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newFoil = (formData.variants?.foilAccents || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 6. Spot UV & Textures */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">6. Spot UV & Textures</h4>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const current = formData.variants?.spotUV || [];
+                            setFormData({
+                              ...formData,
+                              variants: { ...formData.variants, spotUV: [...current, { name: 'New Spot UV', priceModifier: 0 }] }
+                            });
+                          }}
+                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Spot UV
+                        </button>
+                      </div>
+
+                      <div className="space-y-2">
+                        {(formData.variants?.spotUV || []).map((uv, idx) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={uv.name}
+                              onChange={(e) => {
+                                const newUv = [...(formData.variants?.spotUV || [])];
+                                newUv[idx].name = e.target.value;
+                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                              }}
+                              placeholder="Spot UV Option"
+                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={uv.priceModifier}
+                              onChange={(e) => {
+                                const newUv = [...(formData.variants?.spotUV || [])];
+                                newUv[idx].priceModifier = parseFloat(e.target.value) || 0;
+                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                              }}
+                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newUv = (formData.variants?.spotUV || []).filter((_, i) => i !== idx);
+                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                   </div>
-                  {(formData.variants?.lamination || []).map((lam, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={lam.name}
-                        onChange={(e) => {
-                          const newLam = [...(formData.variants?.lamination || [])];
-                          newLam[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                        }}
-                        placeholder="e.g. Gloss Lamination, Velvet Soft-Touch"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={lam.priceModifier}
-                        onChange={(e) => {
-                          const newLam = [...(formData.variants?.lamination || [])];
-                          newLam[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newLam = (formData.variants?.lamination || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
                 </div>
-              </div>
-            </div>
-
-            {/* Column 2 Settings */}
-            <div className="space-y-4">
-              {/* 6. Card Size & Format Options */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">6. Card Size & Format Options</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.sizeFormat || [];
-                      setFormData({
-                        ...formData,
-                        variants: { ...formData.variants, sizeFormat: [...current, { name: 'New Format', priceModifier: 0 }] }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Size Format
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Format Name</span>
-                    <span className="col-span-5">Added Price (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.sizeFormat || []).map((sz, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={sz.name}
-                        onChange={(e) => {
-                          const newSz = [...(formData.variants?.sizeFormat || [])];
-                          newSz[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                        }}
-                        placeholder="e.g. Standard (90x55mm), Square (60x60mm)"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={sz.priceModifier}
-                        onChange={(e) => {
-                          const newSz = [...(formData.variants?.sizeFormat || [])];
-                          newSz[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newSz = (formData.variants?.sizeFormat || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 7. Metallic Foil Accents & Stamping */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">7. Metallic Foil Accents & Stamping</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.foilAccents || [];
-                      setFormData({
-                        ...formData,
-                        variants: { ...formData.variants, foilAccents: [...current, { name: 'New Foil Color', priceModifier: 0 }] }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Foil Option
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Foil Accent Type</span>
-                    <span className="col-span-5">Added Charge (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.foilAccents || []).map((foil, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={foil.name}
-                        onChange={(e) => {
-                          const newFoil = [...(formData.variants?.foilAccents || [])];
-                          newFoil[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                        }}
-                        placeholder="e.g. Raised Gold Foil, Silver Foil, Laser Holographic"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={foil.priceModifier}
-                        onChange={(e) => {
-                          const newFoil = [...(formData.variants?.foilAccents || [])];
-                          newFoil[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newFoil = (formData.variants?.foilAccents || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 8. Spot UV & 3D Textures */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">8. Spot UV & Selective Textures</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.spotUV || [];
-                      setFormData({
-                        ...formData,
-                        variants: { ...formData.variants, spotUV: [...current, { name: 'New Spot UV Option', priceModifier: 0 }] }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Spot UV
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Spot UV Option</span>
-                    <span className="col-span-5">Added Charge (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.spotUV || []).map((uv, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={uv.name}
-                        onChange={(e) => {
-                          const newUv = [...(formData.variants?.spotUV || [])];
-                          newUv[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                        }}
-                        placeholder="e.g. Single-Sided Spot UV, 3D Embossed Raised UV"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={uv.priceModifier}
-                        onChange={(e) => {
-                          const newUv = [...(formData.variants?.spotUV || [])];
-                          newUv[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newUv = (formData.variants?.spotUV || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 9. Proofing & Design Support */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">9. Artwork Proofing & Prepress Level</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.proofService || [];
-                      setFormData({
-                        ...formData,
-                        variants: { ...formData.variants, proofService: [...current, { name: 'New Proofing Level', priceModifier: 0 }] }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Proofing Level
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Proofing Level</span>
-                    <span className="col-span-5">Added Charge (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.proofService || []).map((proof, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={proof.name}
-                        onChange={(e) => {
-                          const newProof = [...(formData.variants?.proofService || [])];
-                          newProof[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
-                        }}
-                        placeholder="e.g. Print-Ready, Prepress CMYK Check (+₹99)"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={proof.priceModifier}
-                        onChange={(e) => {
-                          const newProof = [...(formData.variants?.proofService || [])];
-                          newProof[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newProof = (formData.variants?.proofService || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, proofService: newProof } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 10. Packaging & Presentation Styles */}
-              <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600">10. Packaging & Presentation Styles</h4>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const current = formData.variants?.packagingStyle || [];
-                      setFormData({
-                        ...formData,
-                        variants: { ...formData.variants, packagingStyle: [...current, { name: 'New Packaging Option', priceModifier: 0 }] }
-                      });
-                    }}
-                    className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" /> Add Packaging
-                  </button>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2 text-xs">
-                  <div className="text-[10px] font-bold text-slate-500 grid grid-cols-12 gap-2">
-                    <span className="col-span-6">Packaging Style</span>
-                    <span className="col-span-5">Added Charge (₹/unit)</span>
-                    <span className="col-span-1"></span>
-                  </div>
-                  {(formData.variants?.packagingStyle || []).map((pkg, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
-                        type="text"
-                        value={pkg.name}
-                        onChange={(e) => {
-                          const newPkg = [...(formData.variants?.packagingStyle || [])];
-                          newPkg[idx].name = e.target.value;
-                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
-                        }}
-                        placeholder="e.g. Eco Bulk Shrink, Acrylic Desk Box, Luxury Gift Box"
-                        className="col-span-6 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={pkg.priceModifier}
-                        onChange={(e) => {
-                          const newPkg = [...(formData.variants?.packagingStyle || [])];
-                          newPkg[idx].priceModifier = parseFloat(e.target.value) || 0;
-                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
-                        }}
-                        className="col-span-5 p-1.5 rounded-lg border bg-white font-semibold text-xs"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newPkg = (formData.variants?.packagingStyle || []).filter((_, i) => i !== idx);
-                          setFormData({ ...formData, variants: { ...formData.variants, packagingStyle: newPkg } });
-                        }}
-                        className="col-span-1 text-red-500 hover:text-red-700 flex justify-center border-none bg-transparent cursor-pointer"
-                        title="Delete Option"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* SEO Controls */}
-              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider text-blue-600 pt-2">6. SEO Meta Controls</h4>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">SEO Title Tag</label>
-                <input
-                  type="text"
-                  value={formData.seo?.metaTitle || ''}
-                  onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
-          </div>
+              )}
 
             </div>
 
             {/* Sticky Bottom Action Bar */}
-            <div className="sticky bottom-0 z-30 bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-between rounded-b-3xl shadow-lg">
+            <div className="bg-white px-6 py-3.5 border-t border-slate-200/80 flex items-center justify-between rounded-b-3xl shrink-0 shadow-md">
               <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-block">
-                💡 Live matrix updates instantly calculate accurate pricing for customers.
+                💡 Live matrix updates instantly calculate accurate pricing for storefront customers.
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onClick={() => setIsCreating(false)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer border-none"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-7 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs shadow-md shadow-[#FF5A1F]/20 transition cursor-pointer flex items-center gap-2 border-none"
+                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2 border-none"
                 >
                   <CheckCircle2 className="w-4 h-4 text-white" /> Save Product & Live Matrix
                 </button>

@@ -76,19 +76,19 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-100 border-r border-slate-800 select-none shadow-2xl">
+    <div className="flex flex-col h-full bg-white text-slate-800 border-r border-slate-200/85 select-none shadow-sm">
       {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 shrink-0">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-100 shrink-0">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-sky-500 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0">
             <Printer className="w-5 h-5" />
           </div>
           {(!sidebarCollapsed || isMobileOpen) && (
             <div className="flex flex-col">
-              <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-200 to-sky-300 bg-clip-text text-transparent">
+              <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-slate-900 via-slate-700 to-blue-600 bg-clip-text text-transparent">
                 PRINTIGLY
               </span>
-              <span className="text-[9px] uppercase font-bold tracking-widest text-sky-400">
+              <span className="text-[9px] uppercase font-bold tracking-widest text-blue-600">
                 Backoffice Ops v2.4
               </span>
             </div>
@@ -98,7 +98,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
         {/* Desktop Collapse Button */}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="hidden lg:flex p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+          className="hidden lg:flex p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
           title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -108,7 +108,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
         {isMobileOpen && (
           <button
             onClick={onCloseMobileSidebar}
-            className="lg:hidden p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+            className="lg:hidden p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-slate-700"
           >
             <X className="w-5 h-5" />
           </button>
@@ -117,15 +117,15 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
 
       {/* Role Indicator Banner */}
       {(!sidebarCollapsed || isMobileOpen) && (
-        <div className="px-4 py-2 bg-slate-800/50 border-b border-slate-800 flex items-center justify-between text-xs text-slate-300 shrink-0">
+        <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-xs text-slate-600 shrink-0">
           <div className="flex items-center gap-1.5">
-            <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="font-medium text-slate-300 text-[11px]">Role:</span>
+            <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="font-medium text-slate-500 text-[11px]">Role:</span>
           </div>
           <select 
             value={userRole}
             onChange={(e) => setUserRole(e.target.value)}
-            className="bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-[11px] text-sky-400 font-bold focus:outline-none focus:border-sky-500 cursor-pointer"
+            className="bg-white border border-slate-200 rounded px-2 py-0.5 text-[11px] text-blue-600 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-3xs"
           >
             <option value="Super Admin">Super Admin</option>
             <option value="Production Manager">Production Mgr</option>
@@ -152,12 +152,12 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
                   onClick={() => handleSelectTab(item.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group relative cursor-pointer ${
                     isActive 
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/70'
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                   title={sidebarCollapsed && !isMobileOpen ? item.label : undefined}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-sky-400'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-blue-600'}`} />
                   
                   {(!sidebarCollapsed || isMobileOpen) && (
                     <span className="truncate flex-1 text-left">{item.label}</span>
@@ -181,13 +181,13 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
       </div>
 
       {/* Bottom Storefront Switcher */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/40 space-y-2 shrink-0">
+      <div className="p-3 border-t border-slate-100 bg-slate-50/50 space-y-2 shrink-0">
         <button
           onClick={() => {
             if (onCloseMobileSidebar) onCloseMobileSidebar();
             onSwitchToWebsite();
           }}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-sky-400 transition-colors border border-slate-700/60 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-blue-600 transition-colors border border-slate-200 cursor-pointer shadow-3xs"
         >
           <ArrowLeftRight className="w-3.5 h-3.5" />
           {(!sidebarCollapsed || isMobileOpen) && <span>Customer Website</span>}

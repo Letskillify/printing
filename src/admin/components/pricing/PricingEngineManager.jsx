@@ -39,22 +39,22 @@ export const PricingEngineManager = () => {
     <div className="space-y-6">
       
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-2xl p-6 text-white shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-blue-50/60 via-white to-slate-50 rounded-2xl p-6 text-slate-800 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-300 mb-1">
-            <Calculator className="w-4 h-4 text-sky-400" /> Taxation & Surcharge Architecture
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+            <Calculator className="w-4 h-4 text-blue-600" /> Taxation & Surcharge Architecture
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">
+          <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
             Dynamic Pricing Engine & Bulk Discount Matrix
           </h2>
-          <p className="text-xs text-slate-300 mt-1 max-w-xl">
+          <p className="text-xs text-slate-500 mt-1 max-w-xl font-medium">
             Configure global GST tax defaults, express rush fees, volume threshold rules, and automated invoice calculation logic.
           </p>
         </div>
 
         <button
           onClick={handleSave}
-          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg transition-colors"
+          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all border-none cursor-pointer"
         >
           <Save className="w-4 h-4" /> Save Pricing Engine Rules
         </button>

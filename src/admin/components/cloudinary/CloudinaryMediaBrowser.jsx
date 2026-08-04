@@ -56,21 +56,41 @@ export const CloudinaryMediaBrowser = () => {
   return (
     <div className="space-y-6">
       
-      {/* Top Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-        <div>
-          <h2 className="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-sky-500" />
-            Embedded Cloudinary Media Library & Transformation Hub
-          </h2>
-          <p className="text-xs text-slate-500">
-            View, upload, organize tags, and copy auto-optimized transformed URLs (`/c_fill,w_800,q_auto,f_auto/`)
-          </p>
+      {/* Top Banner & Upload Dropzone */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+              <Sparkles className="w-4 h-4 text-blue-600" /> Embedded Cloudinary Asset Manager & CDN
+            </div>
+            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              Cloudinary Asset Library & Media Hub
+            </h2>
+            <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+              Upload images directly to Cloudinary CDN, manage asset tags, and copy auto-optimized transformed URLs (`/c_fill,w_800,q_auto,f_auto/`).
+            </p>
+          </div>
+
+          <label className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer shadow-md shadow-blue-500/20 transition-all border-none">
+            <Upload className="w-4 h-4" />
+            <span>{uploading ? 'Uploading to Cloudinary...' : 'Upload New Media Asset'}</span>
+            <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+          </label>
         </div>
 
-        <label className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-xs transition-colors">
-          <Upload className="w-4 h-4" />
-          <span>{uploading ? 'Uploading to Cloudinary...' : 'Upload Asset to Cloudinary'}</span>
+        {/* Drag and Drop Zone Header */}
+        <label className="block border-2 border-dashed border-blue-200 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50 rounded-2xl p-6 text-center cursor-pointer transition-colors">
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-extrabold">
+              <Upload className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="font-extrabold text-slate-900 text-xs block">
+                {uploading ? 'Processing & Optimizing Image...' : 'Click or Drag & Drop File to Upload to Cloudinary'}
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">Supports PNG, JPG, WEBP, SVG • Auto-generated WebP thumbnails</span>
+            </div>
+          </div>
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
         </label>
       </div>

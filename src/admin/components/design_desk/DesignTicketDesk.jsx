@@ -42,23 +42,23 @@ export const DesignTicketDesk = () => {
     <div className="space-y-6">
       
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-2xl p-6 text-white shadow-xl flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-purple-50/60 via-white to-slate-50 rounded-2xl p-6 text-slate-800 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
-            <Sparkles className="w-4 h-4 text-purple-400" /> Dedicated Design Assistance Hub
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-600 mb-1">
+            <Sparkles className="w-4 h-4 text-purple-600" /> Dedicated Design Assistance Hub
           </div>
-          <h2 className="text-xl font-extrabold tracking-tight">
+          <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
             Custom Design Request Desk (+₹299 Fee Tier)
           </h2>
-          <p className="text-xs text-purple-200 mt-1 max-w-xl">
+          <p className="text-xs text-slate-500 mt-1 max-w-xl font-medium">
             In-house graphic design ticketing workflow. Assign requests, upload digital proof previews to Cloudinary, and trigger automated WhatsApp customer approval links.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-xl bg-white/10 border border-white/10 text-center">
-            <div className="text-lg font-black text-white">{designRequests.length}</div>
-            <div className="text-[10px] text-purple-300 uppercase font-bold">Total Tickets</div>
+          <div className="px-4 py-2 rounded-xl bg-purple-50 border border-purple-200 text-center">
+            <div className="text-lg font-black text-purple-700">{designRequests.length}</div>
+            <div className="text-[10px] text-purple-600 uppercase font-extrabold">Total Tickets</div>
           </div>
         </div>
       </div>
