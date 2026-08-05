@@ -137,57 +137,15 @@ export const ProductCatalogManager = () => {
       images: [],
       variants: {
         paperStock: [{ name: '350 GSM Matte', priceModifier: 0 }, { name: '400 GSM Velvet', priceModifier: 1.5 }],
-        finishes: [{ name: 'Matte Lamination', priceModifier: 0 }, { name: 'Gold Foil Accent', priceModifier: 2.0 }],
         sides: [
           { name: 'Single-sided', priceModifier: 0 },
           { name: 'Double-sided', priceModifier: 1.5 }
-        ],
-        corners: [
-          { name: 'Standard', priceModifier: 0 },
-          { name: 'Edge Cutting', priceModifier: 1.0 },
-          { name: 'Rounded Corners', priceModifier: 0.5 }
-        ],
-        lamination: [
-          { name: 'No Lamination', priceModifier: 0 },
-          { name: 'Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Matte Lamination', priceModifier: 0.8 },
-          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
-        ],
-        sizeFormat: [
-          { name: 'Standard (90x55mm)', priceModifier: 0 },
-          { name: 'Square (60x60mm)', priceModifier: 0.5 },
-          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
-          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
-        ],
-        foilAccents: [
-          { name: 'No Metallic Foil', priceModifier: 0 },
-          { name: 'Raised Gold Foil', priceModifier: 2.2 },
-          { name: 'Raised Silver Foil', priceModifier: 2.0 },
-          { name: 'Rose Gold Foil', priceModifier: 2.5 },
-          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
-        ],
-        spotUV: [
-          { name: 'No Spot UV', priceModifier: 0 },
-          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
-          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
-          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
-        ],
-        proofService: [
-          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
-          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
-          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
-        ],
-        packagingStyle: [
-          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
-          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
-          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
         ]
       },
       tieredPricing: [
-        { tierMin: 300, pricePerUnit: 5.5 },
+        { tierMin: 100, pricePerUnit: 5.5 },
         { tierMin: 500, pricePerUnit: 4.8 },
-        { tierMin: 1000, pricePerUnit: 4.0 },
-        { tierMin: 2500, pricePerUnit: 3.2 }
+        { tierMin: 1000, pricePerUnit: 4.0 }
       ],
       seo: { metaTitle: '', metaDescription: '', indexable: true }
     });
@@ -199,54 +157,7 @@ export const ProductCatalogManager = () => {
     setFormData({
       ...prod,
       minOrderQty: prod.minOrderQty || 100,
-      variants: {
-        paperStock: prod.variants?.paperStock || [{ name: '350 GSM Matte', priceModifier: 0 }],
-        finishes: prod.variants?.finishes || [{ name: 'Matte Lamination', priceModifier: 0 }],
-        sides: prod.variants?.sides || [
-          { name: 'Single-sided', priceModifier: 0 },
-          { name: 'Double-sided', priceModifier: 1.5 }
-        ],
-        corners: prod.variants?.corners || [
-          { name: 'Standard', priceModifier: 0 },
-          { name: 'Edge Cutting', priceModifier: 1.0 },
-          { name: 'Rounded Corners', priceModifier: 0.5 }
-        ],
-        lamination: prod.variants?.lamination || [
-          { name: 'No Lamination', priceModifier: 0 },
-          { name: 'Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Matte Lamination', priceModifier: 0.8 },
-          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
-        ],
-        sizeFormat: prod.variants?.sizeFormat || [
-          { name: 'Standard (90x55mm)', priceModifier: 0 },
-          { name: 'Square (60x60mm)', priceModifier: 0.5 },
-          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
-          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
-        ],
-        foilAccents: prod.variants?.foilAccents || [
-          { name: 'No Metallic Foil', priceModifier: 0 },
-          { name: 'Raised Gold Foil', priceModifier: 2.2 },
-          { name: 'Raised Silver Foil', priceModifier: 2.0 },
-          { name: 'Rose Gold Foil', priceModifier: 2.5 },
-          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
-        ],
-        spotUV: prod.variants?.spotUV || [
-          { name: 'No Spot UV', priceModifier: 0 },
-          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
-          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
-          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
-        ],
-        proofService: prod.variants?.proofService || [
-          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
-          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
-          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
-        ],
-        packagingStyle: prod.variants?.packagingStyle || [
-          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
-          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
-          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
-        ]
-      }
+      variants: prod.variants ? JSON.parse(JSON.stringify(prod.variants)) : {}
     });
     setEditingProduct(prod);
     setIsCreating(true);
