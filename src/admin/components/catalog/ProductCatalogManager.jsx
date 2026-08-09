@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  Package, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Upload, 
-  CheckCircle2, 
+import {
+  Package,
+  Plus,
+  Edit3,
+  Trash2,
+  Upload,
+  CheckCircle2,
   Search,
   Grid,
   Layers,
@@ -18,7 +18,7 @@ import { uploadToCloudinary } from '../../../services/cloudinary';
 
 export const ProductCatalogManager = () => {
   const { products, saveProduct, removeProduct, categories, addCategory, deleteCategory } = useAdmin();
-  
+
   const [editingProduct, setEditingProduct] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -33,9 +33,9 @@ export const ProductCatalogManager = () => {
   const [formActiveTab, setFormActiveTab] = useState('general'); // 'general', 'tiered', 'variants'
 
   const filteredProducts = products.filter(prod => {
-    const matchesSearch = (prod.title || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          (prod.category || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          (prod.summary || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (prod.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (prod.category || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (prod.summary || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCat = selectedCategory === 'All' || prod.category === selectedCategory;
     return matchesSearch && matchesCat;
   });
@@ -137,15 +137,57 @@ export const ProductCatalogManager = () => {
       images: [],
       variants: {
         paperStock: [{ name: '350 GSM Matte', priceModifier: 0 }, { name: '400 GSM Velvet', priceModifier: 1.5 }],
+        finishes: [{ name: 'Matte Lamination', priceModifier: 0 }, { name: 'Gold Foil Accent', priceModifier: 2.0 }],
         sides: [
           { name: 'Single-sided', priceModifier: 0 },
           { name: 'Double-sided', priceModifier: 1.5 }
+        ],
+        corners: [
+          { name: 'Standard', priceModifier: 0 },
+          { name: 'Edge Cutting', priceModifier: 1.0 },
+          { name: 'Rounded Corners', priceModifier: 0.5 }
+        ],
+        lamination: [
+          { name: 'No Lamination', priceModifier: 0 },
+          { name: 'Gloss Lamination', priceModifier: 0.5 },
+          { name: 'Matte Lamination', priceModifier: 0.8 },
+          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
+        ],
+        sizeFormat: [
+          { name: 'Standard (90x55mm)', priceModifier: 0 },
+          { name: 'Square (60x60mm)', priceModifier: 0.5 },
+          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
+          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
+        ],
+        foilAccents: [
+          { name: 'No Metallic Foil', priceModifier: 0 },
+          { name: 'Raised Gold Foil', priceModifier: 2.2 },
+          { name: 'Raised Silver Foil', priceModifier: 2.0 },
+          { name: 'Rose Gold Foil', priceModifier: 2.5 },
+          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
+        ],
+        spotUV: [
+          { name: 'No Spot UV', priceModifier: 0 },
+          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
+          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
+          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
+        ],
+        proofService: [
+          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
+          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
+          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
+        ],
+        packagingStyle: [
+          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
+          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
+          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
         ]
       },
       tieredPricing: [
-        { tierMin: 100, pricePerUnit: 5.5 },
+        { tierMin: 300, pricePerUnit: 5.5 },
         { tierMin: 500, pricePerUnit: 4.8 },
-        { tierMin: 1000, pricePerUnit: 4.0 }
+        { tierMin: 1000, pricePerUnit: 4.0 },
+        { tierMin: 2500, pricePerUnit: 3.2 }
       ],
       seo: { metaTitle: '', metaDescription: '', indexable: true }
     });
@@ -157,7 +199,54 @@ export const ProductCatalogManager = () => {
     setFormData({
       ...prod,
       minOrderQty: prod.minOrderQty || 100,
-      variants: prod.variants ? JSON.parse(JSON.stringify(prod.variants)) : {}
+      variants: {
+        paperStock: prod.variants?.paperStock || [{ name: '350 GSM Matte', priceModifier: 0 }],
+        finishes: prod.variants?.finishes || [{ name: 'Matte Lamination', priceModifier: 0 }],
+        sides: prod.variants?.sides || [
+          { name: 'Single-sided', priceModifier: 0 },
+          { name: 'Double-sided', priceModifier: 1.5 }
+        ],
+        corners: prod.variants?.corners || [
+          { name: 'Standard', priceModifier: 0 },
+          { name: 'Edge Cutting', priceModifier: 1.0 },
+          { name: 'Rounded Corners', priceModifier: 0.5 }
+        ],
+        lamination: prod.variants?.lamination || [
+          { name: 'No Lamination', priceModifier: 0 },
+          { name: 'Gloss Lamination', priceModifier: 0.5 },
+          { name: 'Matte Lamination', priceModifier: 0.8 },
+          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
+        ],
+        sizeFormat: prod.variants?.sizeFormat || [
+          { name: 'Standard (90x55mm)', priceModifier: 0 },
+          { name: 'Square (60x60mm)', priceModifier: 0.5 },
+          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
+          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
+        ],
+        foilAccents: prod.variants?.foilAccents || [
+          { name: 'No Metallic Foil', priceModifier: 0 },
+          { name: 'Raised Gold Foil', priceModifier: 2.2 },
+          { name: 'Raised Silver Foil', priceModifier: 2.0 },
+          { name: 'Rose Gold Foil', priceModifier: 2.5 },
+          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
+        ],
+        spotUV: prod.variants?.spotUV || [
+          { name: 'No Spot UV', priceModifier: 0 },
+          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
+          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
+          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
+        ],
+        proofService: prod.variants?.proofService || [
+          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
+          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
+          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
+        ],
+        packagingStyle: prod.variants?.packagingStyle || [
+          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
+          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
+          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
+        ]
+      }
     });
     setEditingProduct(prod);
     setIsCreating(true);
@@ -281,11 +370,10 @@ export const ProductCatalogManager = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 cursor-pointer transition border ${
-                selectedCategory === cat
+              className={`px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 cursor-pointer transition border ${selectedCategory === cat
                   ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                   : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -300,8 +388,8 @@ export const ProductCatalogManager = () => {
             <div>
               <div className="h-48 bg-slate-100 relative overflow-hidden">
                 {prod.images && prod.images[0] ? (
-                  <img 
-                    src={prod.images[0]} 
+                  <img
+                    src={prod.images[0]}
                     alt={prod.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -380,8 +468,8 @@ export const ProductCatalogManager = () => {
       {/* Form Editor Mode - 100% RELIABLE ULTRA-PREMIUM TABBED MODAL OVERLAY */}
       {isCreating && (
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
-          <form 
-            onSubmit={handleFormSubmit} 
+          <form
+            onSubmit={handleFormSubmit}
             className="bg-white rounded-3xl w-full max-w-5xl my-4 sm:my-8 shadow-2xl border border-slate-200/90 text-slate-800 animate-in fade-in zoom-in-95 duration-200 relative overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Sticky Top Header */}
@@ -414,11 +502,10 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('general')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
-                  formActiveTab === 'general'
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'general'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 <Package className="w-4 h-4" /> 1. Core Info & Cloudinary Gallery
               </button>
@@ -426,11 +513,10 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('tiered')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
-                  formActiveTab === 'tiered'
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'tiered'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 <DollarSign className="w-4 h-4" /> 2. Tiered Quantity Pricing Grid ({formData.tieredPricing?.length || 0} tiers)
               </button>
@@ -438,11 +524,10 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('variants')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
-                  formActiveTab === 'variants'
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'variants'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 <Layers className="w-4 h-4" /> 3. Print Options & Finishes
               </button>
@@ -450,7 +535,7 @@ export const ProductCatalogManager = () => {
 
             {/* Tabbed Form Body */}
             <div className="p-6 space-y-6 overflow-y-auto flex-1 text-xs custom-scrollbar bg-slate-50/30">
-              
+
               {/* TAB 1: GENERAL INFO & CLOUDINARY GALLERY */}
               {formActiveTab === 'general' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
@@ -710,7 +795,7 @@ export const ProductCatalogManager = () => {
               {formActiveTab === 'variants' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    
+
                     {/* 1. Print Sides */}
                     <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-100 pb-2">
