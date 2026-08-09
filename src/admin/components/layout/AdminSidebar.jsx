@@ -5,6 +5,7 @@ import {
   Kanban, 
   Palette, 
   Package, 
+  Sparkles,
   Calculator, 
   Image as ImageIcon, 
   Users, 
@@ -56,6 +57,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
       group: "Catalog & Pricing",
       items: [
         { id: 'catalog', label: 'Product Catalog', icon: Package },
+        { id: 'homepage_customizer', label: 'Homepage Studio', icon: Sparkles, badge: 'Live', badgeColor: 'bg-gradient-to-r from-[#FF5A1F] to-amber-500 text-white' },
         { id: 'pricing', label: 'Pricing & GST Engine', icon: Calculator },
         { id: 'cloudinary', label: 'Cloudinary Asset Hub', icon: ImageIcon },
       ]

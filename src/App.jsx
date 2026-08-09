@@ -20,6 +20,9 @@ import { HelpCenterPage } from './pages/HelpCenterPage'
 import { BlogPage } from './pages/BlogPage'
 import { CartPage } from './pages/CartPage'
 import { CustomQuotePage } from './pages/CustomQuotePage'
+import { LoginPage } from './pages/LoginPage'
+import { SignupPage } from './pages/SignupPage'
+import { AccountPage } from './pages/AccountPage'
 import { AdminApp } from './admin/AdminApp'
 
 import { AuthProvider } from './context/AuthContext'
@@ -27,41 +30,103 @@ import { AuthModal } from './Components/auth/AuthModal'
 
 function AppContent() {
   const [darkMode, setDarkMode] = useState(false)
-  const [currentPage, setCurrentPage] = useState(() => {
-    const path = window.location.pathname.toLowerCase()
-    return (path === '/admin' || path.startsWith('/admin/')) ? 'admin' : 'home'
-  })
   const [commandOpen, setCommandOpen] = useState(false)
   const progress = useScrollProgress()
   useLenis()
 
-  // Sync state with URL pathname & browser back/forward
-  useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname.toLowerCase()
-      if (path === '/admin' || path.startsWith('/admin/')) {
-        setCurrentPage('admin')
-      } else {
-        setCurrentPage('home')
-      }
-    }
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
+  // Initial page state resolved from pathname, searchParams (?page=...), or hash
+  const getPageFromUrl = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const pageParam = searchParams.get('page');
+    if (pageParam) return pageParam;
 
-  // Sync URL when currentPage state changes
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/admin' || path.startsWith('/admin/')) return 'admin';
+    return 'home';
+  };
+
+  const [currentPage, setCurrentPageState] = useState(getPageFromUrl);
+
+  // Synchronize state with URL and browser history (pushState)
+  const setCurrentPage = (page, extraParams = {}, fragment = '') => {
+    setCurrentPageState(page);
+    try {
+      const url = new URL(window.location.href);
+      if (page === 'admin') {
+        url.pathname = '/admin';
+      } else {
+        url.pathname = '/';
+      }
+
+      url.searchParams.set('page', page);
+
+      // Clean up sku query param if not explicitly passed in extraParams
+      if (!extraParams.sku) {
+        url.searchParams.delete('sku');
+      }
+
+      // Update additional query params if provided
+      Object.entries(extraParams).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') {
+          url.searchParams.set(k, v);
+        } else {
+          url.searchParams.delete(k);
+        }
+      });
+
+      // Update URL hash fragment if provided
+      if (fragment) {
+        url.hash = fragment.startsWith('#') ? fragment : `#${fragment}`;
+      } else {
+        url.hash = '';
+      }
+
+      window.history.pushState(null, '', url.toString());
+    } catch (e) {}
+  };
+
+  // Sync state on browser back/forward buttons (popstate & hashchange)
   useEffect(() => {
-    window.scrollTo(0, 0)
-    if (currentPage === 'admin') {
-      if (window.location.pathname !== '/admin') {
-        window.history.pushState(null, '', '/admin')
+    const handleUrlChange = () => {
+      const page = getPageFromUrl();
+      setCurrentPageState(page);
+
+      // Handle smooth scrolling for hash fragments if present
+      if (window.location.hash) {
+        const targetId = window.location.hash.replace('#', '');
+        const el = document.getElementById(targetId);
+        if (el) {
+          setTimeout(() => {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
+  }, []);
+
+  // Smooth scroll to fragment if present when currentPage mounts
+  useEffect(() => {
+    if (window.location.hash) {
+      const targetId = window.location.hash.replace('#', '');
+      const el = document.getElementById(targetId);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      } else {
+        window.scrollTo(0, 0);
       }
     } else {
-      if (window.location.pathname === '/admin') {
-        window.history.pushState(null, '', '/')
-      }
+      window.scrollTo(0, 0);
     }
-  }, [currentPage])
+  }, [currentPage]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode)
@@ -89,7 +154,7 @@ function AppContent() {
       case 'home':
         return <HomePage setCurrentPage={setCurrentPage} />
       case 'products':
-        return <ProductsPage onNavigateCart={() => setCurrentPage('cart')} />
+        return <ProductsPage onNavigateCart={() => setCurrentPage('cart')} setCurrentPage={setCurrentPage} />
       case 'services':
         return <ServicesPage />
       case 'templates':
@@ -108,6 +173,12 @@ function AppContent() {
         return <CartPage setCurrentPage={setCurrentPage} />
       case 'quote':
         return <CustomQuotePage />
+      case 'login':
+        return <LoginPage setCurrentPage={setCurrentPage} />
+      case 'signup':
+        return <SignupPage setCurrentPage={setCurrentPage} />
+      case 'account':
+        return <AccountPage setCurrentPage={setCurrentPage} />
       default:
         return <HomePage setCurrentPage={setCurrentPage} />
     }

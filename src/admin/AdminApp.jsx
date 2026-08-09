@@ -12,6 +12,7 @@ import { CloudinaryMediaBrowser } from './components/cloudinary/CloudinaryMediaB
 import { CustomerDirectory } from './components/crm/CustomerDirectory';
 import { HyperlocalDispatchLog } from './components/logistics/HyperlocalDispatchLog';
 import { RolePermissionsMatrix } from './components/rbac/RolePermissionsMatrix';
+import { HomepageManager } from './components/homepage/HomepageManager';
 import { WalkInOrderModal } from './components/modals/WalkInOrderModal';
 import { QuickInvoiceModal } from './components/modals/QuickInvoiceModal';
 
@@ -29,6 +30,8 @@ const AdminContent = ({ onSwitchToWebsite }) => {
         return <DesignTicketDesk />;
       case 'catalog':
         return <ProductCatalogManager />;
+      case 'homepage_customizer':
+        return <HomepageManager />;
       case 'pricing':
         return <PricingEngineManager />;
       case 'cloudinary':

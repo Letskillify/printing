@@ -11,30 +11,44 @@ export function HomePage({ setCurrentPage }) {
   return (
     <main className="overflow-hidden bg-white">
       {/* 1. Hero — Dark Navy with headline */}
-      <Hero setCurrentPage={setCurrentPage} />
+      <section id="hero">
+        <Hero setCurrentPage={setCurrentPage} />
+      </section>
 
       {/* 2. Shop by Category — 8-grid */}
-      <ShopByCategory setCurrentPage={setCurrentPage} />
+      <section id="categories">
+        <ShopByCategory setCurrentPage={setCurrentPage} />
+      </section>
 
       {/* 3. Why Choose Us — 4 features */}
-      <WhyChooseUs />
+      <section id="why-choose-us">
+        <WhyChooseUs />
+      </section>
 
       {/* 4. How It Works — 4 steps */}
-      <HowItWorks />
+      <section id="how-it-works">
+        <HowItWorks />
+      </section>
 
       {/* 5. Stats Banner — purple-orange gradient */}
-      <StatsBanner />
+      <section id="stats">
+        <StatsBanner />
+      </section>
 
       {/* 6. Discount + CTA — split panel */}
-      <section className="py-14 bg-white">
+      <section id="cta" className="py-14 bg-white">
         <DiscountCTA setCurrentPage={setCurrentPage} />
       </section>
 
       {/* 7. Testimonials — 3 review cards */}
-      <Testimonials />
+      <section id="testimonials">
+        <Testimonials />
+      </section>
 
       {/* 8. Latest Blog + Newsletter */}
-      <LatestBlog setCurrentPage={setCurrentPage} />
+      <section id="blog">
+        <LatestBlog setCurrentPage={setCurrentPage} />
+      </section>
     </main>
   )
 }

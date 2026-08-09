@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { FiTrash2, FiShoppingBag, FiArrowRight, FiCheckCircle, FiShield, FiTag, FiX, FiZap } from 'react-icons/fi'
+import { FiTrash2, FiShoppingBag, FiArrowRight, FiCheckCircle, FiShield, FiTag, FiX, FiZap, FiMapPin, FiUser, FiCheck } from 'react-icons/fi'
 import { addOrderToFirestore } from '../services/firebase'
 import { useAuth } from '../context/AuthContext'
 
 export function CartPage({ setCurrentPage }) {
-  const { cartItems, removeFromCart, clearCart, currentUser } = useAuth()
+  const { cartItems, removeFromCart, clearCart, currentUser, userProfile } = useAuth()
 
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
+  const [selectedAddressId, setSelectedAddressId] = useState(null)
   const [customerName, setCustomerName] = useState('')
   const [customerEmail, setCustomerEmail] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
@@ -17,11 +18,23 @@ export function CartPage({ setCurrentPage }) {
   const [orderSuccess, setOrderSuccess] = useState(null)
 
   useEffect(() => {
-    if (currentUser) {
-      setCustomerName(currentUser.displayName || '')
-      setCustomerEmail(currentUser.email || '')
+    if (currentUser || userProfile) {
+      setCustomerName(userProfile?.displayName || currentUser?.displayName || '')
+      setCustomerEmail(currentUser?.email || '')
+      setCustomerPhone(userProfile?.phone || '')
+      setCustomerCompany(userProfile?.company || '')
+
+      // Auto pick default address if available
+      const defaultAddr = (userProfile?.addresses || []).find(a => a.isDefault) || (userProfile?.addresses || [])[0];
+      if (defaultAddr) {
+        setSelectedAddressId(defaultAddr.id);
+        const fullAddrStr = `${defaultAddr.addressLine1}${defaultAddr.addressLine2 ? ', ' + defaultAddr.addressLine2 : ''}, ${defaultAddr.city}, ${defaultAddr.state} - ${defaultAddr.pincode}`;
+        setAddress(fullAddrStr);
+        if (defaultAddr.phone) setCustomerPhone(defaultAddr.phone);
+        if (defaultAddr.name) setCustomerName(defaultAddr.name);
+      }
     }
-  }, [currentUser])
+  }, [currentUser, userProfile])
 
   const subtotal = cartItems.reduce((acc, item) => acc + (item.totalPrice || (item.qty * item.unitPrice)), 0)
   const shipping = subtotal > 999 || subtotal === 0 ? 0 : 99
@@ -140,17 +153,20 @@ export function CartPage({ setCurrentPage }) {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E7EAF0]">
+                  <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E7EAF0] shrink-0">
                     <div className="text-left sm:text-right">
-                      <span className="text-[18px] font-extrabold text-[#FF5A1F]">₹{item.totalPrice || (item.qty * item.unitPrice)}</span>
+                      <span className="text-lg sm:text-xl font-black text-[#FF5A1F]">
+                        ₹{(item.totalPrice || (item.qty * item.unitPrice)).toLocaleString()}
+                      </span>
                     </div>
 
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="p-2 text-slate-400 hover:text-red-500 transition border-none bg-transparent cursor-pointer"
-                      title="Remove Item"
+                      className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer border border-rose-200 shrink-0"
+                      title="Delete item from cart"
                     >
-                      <FiTrash2 className="w-5 h-5" />
+                      <FiTrash2 className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span>Delete</span>
                     </button>
                   </div>
                 </div>
@@ -216,7 +232,75 @@ export function CartPage({ setCurrentPage }) {
               </button>
             </div>
 
-            <form onSubmit={handlePlaceOrder} className="p-6 space-y-4 text-xs font-sans">
+            <form onSubmit={handlePlaceOrder} className="p-6 space-y-4 text-xs font-sans max-h-[85vh] overflow-y-auto">
+              
+              {/* Account / Saved Address Selector Banner */}
+              {currentUser ? (
+                <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-blue-900 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-extrabold text-[11px] flex items-center gap-1.5 text-blue-950">
+                      <FiUser className="w-3.5 h-3.5 text-[#FF5A1F]" /> Logged in as: <strong className="text-blue-900">{currentUser.displayName || currentUser.email}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage && setCurrentPage('account')}
+                      className="text-[10.5px] font-bold text-blue-700 hover:underline border-none bg-transparent cursor-pointer"
+                    >
+                      Manage Address Book →
+                    </button>
+                  </div>
+
+                  {userProfile?.addresses && userProfile.addresses.length > 0 && (
+                    <div>
+                      <span className="block font-bold text-slate-700 text-[10.5px] uppercase tracking-wider mb-1.5">
+                        Select From Saved Addresses:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {userProfile.addresses.map((addr) => {
+                          const isSelected = selectedAddressId === addr.id;
+                          return (
+                            <button
+                              key={addr.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedAddressId(addr.id);
+                                const fullAddrStr = `${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}, ${addr.city}, ${addr.state} - ${addr.pincode}`;
+                                setAddress(fullAddrStr);
+                                if (addr.phone) setCustomerPhone(addr.phone);
+                                if (addr.name) setCustomerName(addr.name);
+                              }}
+                              className={`p-2.5 rounded-xl border text-left font-sans transition cursor-pointer flex flex-col justify-between ${
+                                isSelected
+                                  ? 'bg-white border-[#FF5A1F] ring-2 ring-[#FF5A1F]/20 text-slate-900 shadow-xs'
+                                  : 'bg-white/70 border-slate-200 text-slate-700 hover:border-slate-300'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-extrabold text-[11px] text-slate-900">{addr.name} ({addr.type || 'Home'})</span>
+                                {isSelected && <FiCheck className="w-3.5 h-3.5 text-[#FF5A1F]" />}
+                              </div>
+                              <p className="text-[10px] text-slate-600 truncate">{addr.addressLine1}, {addr.city}</p>
+                              <span className="text-[9.5px] font-bold text-slate-400 mt-1">Pincode: {addr.pincode}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium flex items-center justify-between gap-2">
+                  <span>💡 Sign in to use saved addresses and track live press production in your account.</span>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage && setCurrentPage('login')}
+                    className="px-3 py-1 rounded-lg bg-[#07152F] text-white font-extrabold text-[10px] shrink-0 border-none cursor-pointer"
+                  >
+                    Sign In
+                  </button>
+                </div>
+              )}
+
               <div>
                 <label className="block font-bold text-slate-800 mb-1">Full Name *</label>
                 <input
@@ -298,14 +382,14 @@ export function CartPage({ setCurrentPage }) {
                   <button
                     type="button"
                     onClick={() => setCheckoutModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-600"
+                    className="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-600 border-none cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={placingOrder}
-                    className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-bold shadow-md cursor-pointer"
+                    className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-bold shadow-md cursor-pointer border-none"
                   >
                     {placingOrder ? 'Transmitting to Admin...' : 'Place Order & Pay'}
                   </button>

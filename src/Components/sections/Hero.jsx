@@ -1,10 +1,36 @@
 import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { FiArrowRight, FiShield, FiTruck, FiStar, FiCheckCircle } from 'react-icons/fi'
+import { subscribeToHomepageSettings, DEFAULT_HOMEPAGE_SETTINGS } from '../../services/firebase'
 
 export function Hero({ setCurrentPage }) {
   const prefersReducedMotion = useReducedMotion()
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [heroData, setHeroData] = useState(DEFAULT_HOMEPAGE_SETTINGS.hero)
+
+  useEffect(() => {
+    const handleUpdateEvent = () => {
+      try {
+        const stored = localStorage.getItem('printigly_homepage_settings');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.hero) setHeroData(parsed.hero);
+        }
+      } catch (e) {}
+    };
+
+    const unsubscribe = subscribeToHomepageSettings((data) => {
+      if (data && data.hero) {
+        setHeroData(data.hero);
+      }
+    });
+
+    window.addEventListener('homepage_settings_updated', handleUpdateEvent);
+    return () => {
+      unsubscribe();
+      window.removeEventListener('homepage_settings_updated', handleUpdateEvent);
+    };
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion) return
@@ -92,7 +118,7 @@ export function Hero({ setCurrentPage }) {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF5A1F]"></span>
             </span>
             <span className="bg-[#FF5A1F]/15 border border-[#FF5A1F]/30 text-[#FF5A1F] text-[11px] sm:text-xs font-extrabold tracking-widest uppercase px-3.5 py-1.5 rounded-full backdrop-blur-md">
-              Enterprise Print & Packaging
+              {heroData.eyebrowText || "Enterprise Print & Packaging"}
             </span>
           </motion.div>
 
@@ -101,9 +127,9 @@ export function Hero({ setCurrentPage }) {
             variants={h1Variants}
             className="text-4xl sm:text-5xl lg:text-[58px] font-bold text-white leading-[1.08] tracking-tight mb-5"
           >
-            Print Your Imagination,<br />
+            {heroData.headlineLine1 || "Print Your Imagination,"}<br />
             <span className="text-[#FF5A1F]">
-              Perfected.
+              {heroData.headlineLine2 || "Perfected."}
             </span>
           </motion.h1>
 
@@ -112,7 +138,7 @@ export function Hero({ setCurrentPage }) {
             variants={descVariants}
             className="text-lg sm:text-[20px] text-[#909AB0] font-normal leading-relaxed mb-8 max-w-xl tracking-wide"
           >
-            Enterprise-grade print production engineered for ambitious brands. Enjoy tactile luxury textures, vibrant color accuracy, instant quotes, and rapid doorstep delivery.
+            {heroData.description || "Enterprise-grade print production engineered for ambitious brands. Enjoy tactile luxury textures, vibrant color accuracy, instant quotes, and rapid doorstep delivery."}
           </motion.p>
 
           {/* Action Buttons */}
@@ -121,14 +147,14 @@ export function Hero({ setCurrentPage }) {
               onClick={() => handleLink('products')}
               className="inline-flex items-center justify-center bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold px-8 py-4 rounded-[12px] text-[15px] transition-all duration-250 shadow-xl shadow-[#FF5A1F]/25 hover:shadow-2xl hover:shadow-[#FF5A1F]/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer border-none gap-2.5 group"
             >
-              Shop All Products
+              {heroData.primaryCtaText || "Shop All Products"}
               <FiArrowRight className="w-4 h-4 transition-transform duration-250 group-hover:translate-x-1" />
             </button>
             <button
               onClick={() => handleLink('contact')}
               className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 backdrop-blur-md border border-slate-700 hover:border-white text-white font-semibold px-7 py-4 rounded-[12px] text-[15px] transition-all duration-250 cursor-pointer gap-2 shadow-sm"
             >
-              Get Custom Quote
+              {heroData.secondaryCtaText || "Get Custom Quote"}
             </button>
           </motion.div>
 
@@ -166,7 +192,7 @@ export function Hero({ setCurrentPage }) {
           </motion.div>
         </motion.div>
 
-        {/* Right Column — Product Visual Composition with Subtle Motion & Parallax */}
+        {/* Right Column — Product Visual Composition with Cloudinary Hero Image */}
         <motion.div
           className="lg:col-span-5 relative flex items-center justify-center py-6 lg:py-0"
           variants={visualVariants}
@@ -190,10 +216,10 @@ export function Hero({ setCurrentPage }) {
               ease: "easeInOut"
             }}
           >
-            {/* Showcase Image */}
+            {/* Showcase Image dynamically from Cloudinary */}
             <div className="relative h-[320px] sm:h-[370px] w-full rounded-[16px] overflow-hidden shadow-inner">
               <img
-                src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&q=80&w=1000"
+                src={heroData.bannerImage || "https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&q=80&w=1000"}
                 alt="Luxury Print Products Showcase"
                 className="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
               />
@@ -201,15 +227,15 @@ export function Hero({ setCurrentPage }) {
 
               {/* Top Verified Badge */}
               <div className="absolute top-3.5 left-3.5 bg-[#07152F]/90 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full text-[11px] font-bold text-white flex items-center gap-1.5 shadow-md">
-                <FiCheckCircle className="text-[#FF5A1F]" /> Verified High-Resolution Output
+                <FiCheckCircle className="text-[#FF5A1F]" /> {heroData.badgeText || "Verified High-Resolution Output"}
               </div>
 
               {/* Bottom Info Pill */}
               <div className="absolute bottom-3.5 left-3.5 right-3.5 bg-white/10 backdrop-blur-xl border border-white/20 p-3.5 rounded-[12px] text-white">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h3 className="font-bold text-[14px]">Enterprise Packaging & Cards</h3>
-                    <p className="text-[12px] text-slate-300">Gold Foil, Soft-Touch Matte & Spot UV</p>
+                    <h3 className="font-bold text-[14px]">{heroData.productTitle || "Enterprise Packaging & Cards"}</h3>
+                    <p className="text-[12px] text-slate-300">{heroData.productSubtitle || "Gold Foil, Soft-Touch Matte & Spot UV"}</p>
                   </div>
                   <span className="bg-[#FF5A1F] text-white font-extrabold text-[10px] px-2.5 py-1 rounded-[8px] shadow">
                     Top Rated
@@ -228,8 +254,8 @@ export function Hero({ setCurrentPage }) {
                 ★
               </div>
               <div className="text-left">
-                <p className="text-[13px] font-bold text-white">4.98 / 5.0 Rating</p>
-                <p className="text-[11px] text-[#667085] font-medium">From 50,000+ Verified Clients</p>
+                <p className="text-[13px] font-bold text-white">{heroData.ratingText || "4.98 / 5.0 Rating"}</p>
+                <p className="text-[11px] text-[#667085] font-medium">{heroData.ratingSubtext || "From 50,000+ Verified Clients"}</p>
               </div>
             </motion.div>
 

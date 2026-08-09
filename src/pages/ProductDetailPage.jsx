@@ -9,7 +9,12 @@ import {
   FiUploadCloud, 
   FiZap,
   FiFileText,
-  FiPackage
+  FiPackage,
+  FiStar,
+  FiClock,
+  FiChevronDown,
+  FiChevronUp,
+  FiInfo
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
@@ -17,13 +22,14 @@ import { useAuth } from '../context/AuthContext';
 const formatKeyToTitle = (key) => {
   const titles = {
     paperStock: 'Paper Stock & Board Weight',
-    finishes: 'Special Finishes',
+    finishes: 'Special Finishes & Finishing Effects',
     sides: 'Print Sides Option',
     corners: 'Edge Cutting & Corner Finishing',
     sizeFormat: 'Card Size & Aspect Ratio Format',
-    lamination: 'Lamination Option & Coating',
+    lamination: 'Lamination Option & Protective Coating',
     foilAccents: 'Metallic Foil Accents & Hot Stamping',
     spotUV: 'Spot UV & Selective Gloss Textures',
+    bindingStyle: 'Binding & Booklet Construction',
     proofService: 'Prepress File Check & Proofing Service',
     packagingStyle: 'Packaging & Presentation Box',
     baseType: 'Base & Frame Specification',
@@ -59,8 +65,10 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   const [customQtyInput, setCustomQtyInput] = useState(minPieces);
   const [quantity, setQuantity] = useState(minPieces);
 
+  // Accordion Tabs Toggle
+  const [openAccordion, setOpenAccordion] = useState('overview'); // 'overview', 'shipping', 'guarantee'
+
   // Parse available variants dynamically from product object ONLY
-  // Only include keys that exist in product.variants and have non-empty arrays
   const availableVariantEntries = Object.entries(product.variants || {}).filter(
     ([_, options]) => Array.isArray(options) && options.length > 0
   );
@@ -106,6 +114,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
   // Dynamic Price Calculator based on product base price, tier, and selected variant modifiers
   const calculatePrice = () => {
+    const validQty = Math.max(1, quantity || minPieces);
     let baseUnitPrice = product.basePrice || product.price || 0;
     if (activeTier) {
       baseUnitPrice = activeTier.pricePerUnit;
@@ -124,12 +133,12 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
       }
     });
 
-    const calculatedTotal = (baseUnitPrice + totalModifiers) * quantity;
+    const calculatedTotal = (baseUnitPrice + totalModifiers) * validQty;
     return Math.max(1, Math.round(calculatedTotal));
   };
 
   const totalPrice = calculatePrice();
-  const unitPrice = Math.max(0.01, Math.round((totalPrice / quantity) * 100) / 100);
+  const unitPrice = Math.max(0.01, Math.round((totalPrice / Math.max(1, quantity)) * 100) / 100);
 
   const handleOptionChange = (key, optionName) => {
     setSelectedVariants((prev) => ({
@@ -139,6 +148,25 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   };
 
   const handleAddToCart = () => {
+    if (isCustomQty) {
+      const parsed = parseInt(customQtyInput);
+      if (!customQtyInput || isNaN(parsed) || parsed <= 0) {
+        alert(`Mandatory Custom Quantity Required!\n\nPlease enter your desired quantity (Minimum ${minPieces} pieces) before adding to cart.`);
+        const inputEl = document.getElementById('customQtyField');
+        if (inputEl) {
+          inputEl.focus();
+          inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      if (parsed < minPieces) {
+        alert(`Minimum Order Quantity Requirement:\n\nThis product requires a minimum of ${minPieces} pieces. Please enter ${minPieces} or more.`);
+        const inputEl = document.getElementById('customQtyField');
+        if (inputEl) inputEl.focus();
+        return;
+      }
+    }
+
     if (quantity < minPieces) {
       alert(`Minimum order quantity for this product is ${minPieces} pieces.`);
       return;
@@ -162,6 +190,25 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   };
 
   const handleBuyNow = () => {
+    if (isCustomQty) {
+      const parsed = parseInt(customQtyInput);
+      if (!customQtyInput || isNaN(parsed) || parsed <= 0) {
+        alert(`Mandatory Custom Quantity Required!\n\nPlease enter your desired quantity (Minimum ${minPieces} pieces) before proceeding to checkout.`);
+        const inputEl = document.getElementById('customQtyField');
+        if (inputEl) {
+          inputEl.focus();
+          inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      if (parsed < minPieces) {
+        alert(`Minimum Order Quantity Requirement:\n\nThis product requires a minimum of ${minPieces} pieces. Please enter ${minPieces} or more.`);
+        const inputEl = document.getElementById('customQtyField');
+        if (inputEl) inputEl.focus();
+        return;
+      }
+    }
+
     handleAddToCart();
     if (onNavigateCart) onNavigateCart();
   };
@@ -170,67 +217,77 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   let stepCounter = 1;
 
   return (
-    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633] pb-16">
-      {/* Top Breadcrumbs Bar */}
-      <div className="bg-[#07152F] text-white py-6 px-4 sm:px-8 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633] pb-20">
+      
+      {/* Top Breadcrumb & Quick Navigation Bar */}
+      <div className="bg-[#07152F] text-white py-5 px-4 sm:px-8 border-b border-slate-800/80 sticky top-0 z-30 backdrop-blur-md bg-[#07152F]/95">
+        <div className="max-w-7xl mx-auto flex flex-row items-center justify-between gap-4">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white transition cursor-pointer bg-transparent border-none"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-[#FF5A1F] transition cursor-pointer bg-transparent border-none"
           >
             <FiArrowLeft className="w-4 h-4 text-[#FF5A1F]" /> Back to Products Catalog
           </button>
 
           <div className="flex items-center gap-2 text-xs text-slate-400">
-            <span>Catalog</span>
+            <span>Products</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">{product.category}</span>
-            <span>/</span>
-            <span className="text-white font-bold truncate max-w-[150px]">{product.title}</span>
+            <span className="hidden xs:inline">/</span>
+            <span className="text-white font-extrabold truncate max-w-[160px] hidden xs:inline">{product.title}</span>
           </div>
         </div>
       </div>
 
-      {/* Main Detail Container */}
+      {/* Main Product Details Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
-          {/* Left Column: Image Gallery & Specs (5 cols) */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="relative bg-white rounded-[20px] overflow-hidden border border-[#E7EAF0] shadow-sm h-[380px] sm:h-[420px]">
+          {/* LEFT COLUMN: STICKY IMAGE GALLERY & TECHNICAL SPECS (5 cols) */}
+          <div className="lg:col-span-5 sticky top-24 self-start space-y-5">
+            
+            {/* Main Stage Image Box */}
+            <div className="relative bg-white rounded-3xl overflow-hidden border border-[#E7EAF0] shadow-xl group h-[400px] sm:h-[460px] flex items-center justify-center">
               {selectedImage ? (
                 <img 
                   src={selectedImage} 
                   alt={product.title} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
               ) : (
-                <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-slate-400">
-                  <FiPackage className="w-16 h-16 text-slate-300 mb-2" />
-                  <span className="text-xs font-bold">No Image Uploaded</span>
+                <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center text-slate-400">
+                  <FiPackage className="w-20 h-20 text-slate-300 mb-3" />
+                  <span className="text-xs font-extrabold">No Image Uploaded</span>
                 </div>
               )}
 
+              {/* Wishlist Glass Heart Button */}
               <button
                 onClick={() => toggleWishlist(product)}
-                className={`absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-xs shadow-md flex items-center justify-center transition border-none cursor-pointer ${
+                className={`absolute top-4 right-4 w-11 h-11 rounded-2xl bg-white/90 backdrop-blur-md shadow-lg flex items-center justify-center transition-all duration-200 border-none cursor-pointer hover:scale-110 ${
                   isSaved ? 'text-rose-600' : 'text-slate-400 hover:text-rose-600'
                 }`}
                 title="Save to Wishlist"
               >
-                <FiHeart className={`w-5 h-5 ${isSaved ? 'fill-rose-600' : ''}`} />
+                <FiHeart className={`w-5 h-5 ${isSaved ? 'fill-rose-600 text-rose-600' : ''}`} />
               </button>
+
+              {/* Verified Press Quality Badge */}
+              <div className="absolute bottom-4 left-4 bg-[#07152F]/90 backdrop-blur-md text-white text-[11px] font-extrabold px-3 py-1.5 rounded-xl border border-white/20 flex items-center gap-1.5 shadow-md">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>300 DPI Prepress Proofed</span>
+              </div>
             </div>
 
-            {/* Thumbnail Row */}
+            {/* Thumbnail Carousel Row */}
             {imagesList.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
+              <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
                 {imagesList.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(img)}
-                    className={`w-20 h-20 rounded-[14px] overflow-hidden border-2 transition cursor-pointer shrink-0 ${
-                      selectedImage === img ? 'border-[#FF5A1F]' : 'border-[#E7EAF0] opacity-70 hover:opacity-100'
+                    className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all duration-200 cursor-pointer shrink-0 shadow-xs ${
+                      selectedImage === img ? 'border-[#FF5A1F] ring-2 ring-[#FF5A1F]/30 scale-105' : 'border-slate-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
@@ -241,97 +298,139 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
             {/* Technical Specifications Card if available */}
             {product.specs && Object.keys(product.specs).length > 0 && (
-              <div className="bg-white rounded-[16px] p-5 border border-[#E7EAF0] space-y-3 text-xs">
-                <h4 className="font-extrabold text-[#0B1633] flex items-center gap-1.5 border-b border-slate-100 pb-2">
+              <div id="specs" className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-4 text-xs">
+                <h4 className="font-black text-[#0B1633] flex items-center gap-2 border-b border-slate-100 pb-3 text-sm uppercase tracking-wider">
                   <FiFileText className="w-4 h-4 text-[#FF5A1F]" /> Technical Specs & Print Specifications
                 </h4>
-                <div className="grid grid-cols-2 gap-2 text-slate-600 font-medium">
-                  {product.specs.paperGsm && <div><span className="font-bold text-slate-900">Paper GSM:</span> {product.specs.paperGsm}</div>}
-                  {product.specs.dimensions && <div><span className="font-bold text-slate-900">Dimensions:</span> {product.specs.dimensions}</div>}
-                  {product.specs.printTech && <div><span className="font-bold text-slate-900">Print Tech:</span> {product.specs.printTech}</div>}
-                  {product.specs.turnaround && <div><span className="font-bold text-slate-900">Turnaround:</span> {product.specs.turnaround}</div>}
+                <div className="grid grid-cols-2 gap-3 text-slate-600 font-medium">
+                  {product.specs.paperGsm && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Paper Weight</span>
+                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.paperGsm}</strong>
+                    </div>
+                  )}
+                  {product.specs.dimensions && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Dimensions</span>
+                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.dimensions}</strong>
+                    </div>
+                  )}
+                  {product.specs.printTech && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Press Tech</span>
+                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.printTech}</strong>
+                    </div>
+                  )}
+                  {product.specs.turnaround && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Turnaround</span>
+                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.turnaround}</strong>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Trust Badges */}
-            <div className="bg-white rounded-[16px] p-4 border border-[#E7EAF0] grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-slate-700">
-              <div className="flex flex-col items-center gap-1">
+            {/* Press Guarantee Badges */}
+            <div className="bg-white rounded-3xl p-5 border border-[#E7EAF0] shadow-sm grid grid-cols-3 gap-3 text-center text-[11px] font-bold text-slate-700">
+              <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-orange-50/50">
                 <FiTruck className="w-5 h-5 text-[#FF5A1F]" />
-                <span>Express Shipping</span>
+                <span className="text-[11px] font-black text-slate-900">Express Delivery</span>
+                <span className="text-[9.5px] text-slate-500 font-medium">Pan-India Doorstep</span>
               </div>
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-emerald-50/50">
                 <FiCheckCircle className="w-5 h-5 text-emerald-600" />
-                <span>300 DPI Proof</span>
+                <span className="text-[11px] font-black text-slate-900">300 DPI Pre-Flight</span>
+                <span className="text-[9.5px] text-slate-500 font-medium">Free File Proof</span>
               </div>
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-blue-50/50">
                 <FiShield className="w-5 h-5 text-blue-600" />
-                <span>Quality Guarantee</span>
+                <span className="text-[11px] font-black text-slate-900">100% Quality</span>
+                <span className="text-[9.5px] text-slate-500 font-medium">Re-print Guarantee</span>
               </div>
             </div>
+
           </div>
 
-          {/* Right Column: Configuration & Price (7 cols) */}
+          {/* RIGHT COLUMN: PRODUCT CONFIGURATOR & PRICING ENGINE (7 cols) */}
           <div className="lg:col-span-7 space-y-6">
             
-            {/* Title & Category Header */}
-            <div>
-              <span className="inline-block bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
-                {product.category}
-              </span>
-              <h1 className="text-3xl font-extrabold text-[#0B1633] tracking-tight">
+            {/* Header: Title, Rating, Summary */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="px-3.5 py-1 rounded-full bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-black uppercase tracking-wider border border-[#FF5A1F]/20">
+                  {product.category}
+                </span>
+                <div className="flex items-center gap-1 text-amber-500 text-xs font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  <FiStar className="w-3.5 h-3.5 fill-amber-400" />
+                  <span>4.9</span>
+                  <span className="text-slate-400 font-normal">(148 Press Reviews)</span>
+                </div>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl font-black text-[#0B1633] tracking-tight leading-tight">
                 {product.title}
               </h1>
-              <p className="text-slate-600 text-sm mt-2 leading-relaxed">
+
+              <p className="text-slate-600 text-sm leading-relaxed font-medium">
                 {product.description || product.summary}
               </p>
             </div>
 
-            {/* Price Preview Card */}
-            <div className="bg-white rounded-[16px] p-5 border border-[#E7EAF0] shadow-sm flex items-center justify-between">
-              <div>
-                <span className="text-xs text-[#667085] font-semibold block">Calculated Total (Incl. 18% GST)</span>
-                <span className="text-3xl font-black text-[#FF5A1F]">₹{totalPrice.toLocaleString()}</span>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className="text-xs text-slate-700 font-bold font-mono">₹{unitPrice} / unit</span>
-                  {activeTier && (
-                    <span className="text-[11px] bg-blue-50 text-blue-700 font-bold px-2.5 py-0.5 rounded-full border border-blue-200">
-                      Listed rate for up to {activeTier.tierMin} units: ₹{activeTier.pricePerUnit}/unit
+            {/* LIVE DYNAMIC PRICING ENGINE BAR */}
+            <div id="pricing" className="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-[#E7EAF0] shadow-md space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-1">
+                    Calculated Total (Incl. 18% GST)
+                  </span>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-4xl font-black text-[#FF5A1F] tracking-tight">
+                      ₹{totalPrice.toLocaleString()}
                     </span>
-                  )}
+                    <span className="text-sm text-slate-600 font-extrabold font-mono">
+                      (₹{unitPrice} / unit)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300 inline-flex items-center gap-1.5 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    In Stock & Press Ready
+                  </span>
                 </div>
               </div>
 
-              <div className="text-right">
-                <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-extrabold border border-emerald-200 inline-block">
-                  In Stock & Ready for Press
-                </span>
-              </div>
+              {activeTier && (
+                <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs font-bold text-blue-900 bg-blue-50/80 p-3 rounded-2xl border border-blue-200/90">
+                  <span>🎉 Volume Discount Applied: Tier Rate for up to {activeTier.tierMin} units</span>
+                  <span className="font-extrabold text-blue-700">₹{activeTier.pricePerUnit}/unit</span>
+                </div>
+              )}
             </div>
 
-            {/* Product Customizer Form */}
-            <div className="bg-white rounded-[20px] p-6 border border-[#E7EAF0] shadow-sm space-y-5 text-left text-xs">
-              <h3 className="font-extrabold text-sm text-[#0B1633] uppercase tracking-wider text-[#FF5A1F] border-b border-slate-100 pb-2">
-                Configure Print Specs
+            {/* STEP-BY-STEP PRODUCT CONFIGURATOR FORM */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E7EAF0] shadow-sm space-y-6 text-xs">
+              <h3 className="font-black text-sm text-[#0B1633] uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+                <span>Configure Print Specifications</span>
+                <span className="text-[11px] font-bold text-[#FF5A1F] uppercase">Interactive Press Studio</span>
               </h3>
 
-              {/* Step: Select Quantity Tier */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <label className="block font-bold text-[#0B1633]">
-                      {stepCounter++}. Select Quantity Tier (Listed prices apply UP TO given units):
-                    </label>
-                    <span className="text-[10px] font-extrabold text-slate-700 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-full">
-                      Min {minPieces} pcs
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-bold text-[#FF5A1F] bg-[#FF5A1F]/10 px-2.5 py-0.5 rounded-full">
-                    {quantity} units selected
+              {/* STEP 1: QUANTITY TIER & MANDATORY CUSTOM UNIT SELECTION */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepCounter++}</span>
+                    <span>Select Quantity Tier:</span>
+                  </label>
+                  <span className="text-xs font-black text-[#FF5A1F] bg-[#FF5A1F]/10 px-3 py-1 rounded-full border border-[#FF5A1F]/20">
+                    {quantity || 0} units selected
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
+                {/* Preset Tier Pills */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
                   {(product.tieredPricing && product.tieredPricing.length > 0 ? product.tieredPricing : [
                     { tierMin: minPieces, pricePerUnit: product.basePrice || product.price || 5 }
                   ]).map((t, idx) => (
@@ -342,14 +441,14 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                         setIsCustomQty(false);
                         setQuantity(t.tierMin);
                       }}
-                      className={`py-2 px-2 rounded-[12px] font-bold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                      className={`py-3 px-2.5 rounded-2xl font-extrabold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
                         !isCustomQty && quantity === t.tierMin
-                          ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-sm'
+                          ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-md scale-105'
                           : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
                       }`}
                     >
                       <span>Up to {t.tierMin} units</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-semibold ${
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                         !isCustomQty && quantity === t.tierMin ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
                       }`}>
                         ₹{t.pricePerUnit}/unit
@@ -362,70 +461,95 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                       setIsCustomQty(true);
                       setQuantity(customQtyInput || minPieces);
                     }}
-                    className={`py-2 px-2 rounded-[12px] font-bold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                    className={`py-3 px-2.5 rounded-2xl font-extrabold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
                       isCustomQty
-                        ? 'bg-[#07152F] text-white border-[#07152F] shadow-sm'
+                        ? 'bg-[#07152F] text-white border-[#07152F] shadow-md scale-105'
                         : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
                     }`}
                   >
                     <span>Custom Qty</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded font-semibold ${
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                       isCustomQty ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
                     }`}>
-                      Any Units
+                      Enter Units
                     </span>
                   </button>
                 </div>
 
-                {/* Custom Quantity Input Box */}
+                {/* Custom Quantity Input Box with Mandatory Flag */}
                 {isCustomQty && (
-                  <div className="bg-[#F7F8FA] p-3 rounded-[14px] border border-[#E7EAF0] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 w-full sm:w-auto">
-                      <span className="font-bold text-xs text-[#0B1633] shrink-0">Enter Custom Units:</span>
-                      <input
-                        type="number"
-                        min={minPieces}
-                        value={customQtyInput}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || '';
-                          setCustomQtyInput(val);
-                          setQuantity(val ? Math.max(1, val) : 1);
-                        }}
-                        placeholder={`Min ${minPieces} pcs`}
-                        className="w-32 bg-white border border-[#E7EAF0] rounded-xl px-3 py-1.5 font-bold text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
-                      />
+                  <div className={`p-4.5 rounded-2xl border transition-all duration-200 ${
+                    !customQtyInput || parseInt(customQtyInput) < minPieces || isNaN(parseInt(customQtyInput))
+                      ? 'bg-rose-50/80 border-rose-300 ring-2 ring-rose-200'
+                      : 'bg-[#F7F8FA] border-[#E7EAF0]'
+                  }`}>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 w-full sm:w-auto">
+                        <label htmlFor="customQtyField" className="font-extrabold text-xs text-[#0B1633] shrink-0 flex items-center gap-1">
+                          <span>Enter Custom Units (Mandatory)</span>
+                          <span className="text-rose-600 font-extrabold text-sm">*</span>:
+                        </label>
+                        <input
+                          id="customQtyField"
+                          type="number"
+                          min={minPieces}
+                          value={customQtyInput}
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            setCustomQtyInput(raw);
+                            const val = parseInt(raw);
+                            if (!isNaN(val) && val > 0) {
+                              setQuantity(val);
+                            } else {
+                              setQuantity(0);
+                            }
+                          }}
+                          placeholder={`Min ${minPieces} pcs`}
+                          className={`w-36 bg-white border rounded-xl px-3.5 py-2 font-black text-sm text-[#0B1633] focus:outline-none shadow-xs ${
+                            !customQtyInput || parseInt(customQtyInput) < minPieces || isNaN(parseInt(customQtyInput))
+                              ? 'border-rose-400 focus:border-rose-600 text-rose-900 ring-1 ring-rose-300'
+                              : 'border-[#E7EAF0] focus:border-[#FF5A1F]'
+                          }`}
+                        />
+                      </div>
+                      {activeTier && (
+                        <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                          Tier Rate (Up to {activeTier.tierMin} units): ₹{activeTier.pricePerUnit}/unit
+                        </span>
+                      )}
                     </div>
-                    {activeTier && (
-                      <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
-                        Tier Rate (Up to {activeTier.tierMin} units): ₹{activeTier.pricePerUnit}/unit
-                      </span>
-                    )}
-                  </div>
-                )}
 
-                {/* MOQ Warning Banner if quantity is below minimum */}
-                {quantity < minPieces && (
-                  <div className="mt-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-bold flex items-center gap-2">
-                    <span>⚠️ Minimum order requirement for this product is <span className="font-black text-amber-900">{minPieces} pieces</span>. Please increase your quantity.</span>
+                    {(!customQtyInput || parseInt(customQtyInput) <= 0 || isNaN(parseInt(customQtyInput))) ? (
+                      <div className="mt-2.5 text-rose-700 text-[11.5px] font-extrabold flex items-center gap-1.5">
+                        <span>⚠️ Mandatory Field: Please enter your desired quantity (Minimum {minPieces} pcs) to calculate price.</span>
+                      </div>
+                    ) : parseInt(customQtyInput) < minPieces ? (
+                      <div className="mt-2.5 text-amber-700 text-[11.5px] font-extrabold flex items-center gap-1.5">
+                        <span>⚠️ Minimum Order Quantity for this item is {minPieces} pieces. Please enter {minPieces} or more.</span>
+                      </div>
+                    ) : null}
                   </div>
                 )}
               </div>
 
-              {/* DYNAMIC VARIANT OPTION SECTIONS — ONLY rendered if uploaded/configured in product data! */}
+              {/* DYNAMIC VARIANT OPTION SECTIONS */}
               {availableVariantEntries.map(([key, optionsList]) => {
                 const stepNum = stepCounter++;
                 const title = formatKeyToTitle(key);
                 const currentSelected = selectedVariants[key];
 
-                // Dropdown layout for paperStock and finishes
+                // Dropdown layout for paperStock & finishes
                 if (key === 'paperStock' || key === 'finishes') {
                   return (
-                    <div key={key}>
-                      <label className="block font-bold text-[#0B1633] mb-2">{stepNum}. {title}:</label>
+                    <div key={key} className="space-y-2">
+                      <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                        <span>{title}:</span>
+                      </label>
                       <select
                         value={currentSelected}
                         onChange={(e) => handleOptionChange(key, e.target.value)}
-                        className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[12px] p-3 font-semibold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                        className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-2xl p-3.5 font-bold text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs cursor-pointer"
                       >
                         {optionsList.map((opt, i) => {
                           const optName = typeof opt === 'string' ? opt : opt.name;
@@ -443,8 +567,11 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
                 // Grid button layout for all other option types
                 return (
-                  <div key={key}>
-                    <label className="block font-bold text-[#0B1633] mb-2">{stepNum}. {title}:</label>
+                  <div key={key} className="space-y-2">
+                    <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                      <span>{title}:</span>
+                    </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                       {optionsList.map((opt, i) => {
                         const optName = typeof opt === 'string' ? opt : opt.name;
@@ -456,17 +583,17 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                             key={i}
                             type="button"
                             onClick={() => handleOptionChange(key, optName)}
-                            className={`py-3 px-3 rounded-[12px] font-bold text-xs transition border flex flex-col items-center justify-center gap-1 cursor-pointer text-center ${
+                            className={`py-3 px-3 rounded-2xl font-extrabold text-xs transition-all duration-150 border flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center ${
                               isSelected
-                                ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-sm'
+                                ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-md scale-105 ring-2 ring-[#FF5A1F]/30'
                                 : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
                             }`}
                           >
                             <span>{optName}</span>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full ${
+                            <span className={`text-[9.5px] px-2 py-0.5 rounded-full font-bold ${
                               isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
                             }`}>
-                              {optPrice > 0 ? `+₹${optPrice}/unit` : 'Standard'}
+                              {optPrice > 0 ? `+₹${optPrice}/unit` : 'Included'}
                             </span>
                           </button>
                         );
@@ -476,15 +603,19 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 );
               })}
 
-              {/* Step: Upload Artwork File Dropzone */}
-              <div>
-                <label className="block font-bold text-[#0B1633] mb-2">
-                  {stepCounter++}. Upload Print Artwork File (PDF, AI, PSD, PNG):
+              {/* STEP: UPLOAD PRINT ARTWORK DROPZONE */}
+              <div className="space-y-2 pt-2">
+                <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepCounter++}</span>
+                  <span>Upload Print Artwork File (PDF, AI, PSD, PNG):</span>
                 </label>
-                <label className="border-2 border-dashed border-[#E7EAF0] hover:border-[#FF5A1F] rounded-[14px] p-4 text-center block bg-[#F7F8FA] cursor-pointer transition">
-                  <FiUploadCloud className="w-7 h-7 text-[#FF5A1F] mx-auto mb-1" />
-                  <span className="text-xs text-[#667085] font-semibold block">
-                    {uploadedFile ? uploadedFile.name : 'Click to select artwork file or drag here'}
+                <label className="border-2 border-dashed border-[#E7EAF0] hover:border-[#FF5A1F] rounded-2xl p-5 text-center block bg-[#F7F8FA] cursor-pointer transition-all duration-200 group">
+                  <FiUploadCloud className="w-8 h-8 text-[#FF5A1F] mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs text-slate-800 font-extrabold block">
+                    {uploadedFile ? `Uploaded: ${uploadedFile.name}` : 'Click to select artwork file or drag here'}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-medium block mt-1">
+                    Accepts 300 DPI High-Res PDF, PSD, AI, EPS, PNG up to 100MB
                   </span>
                   <input
                     type="file"
@@ -496,11 +627,11 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
             </div>
 
-            {/* Add to Cart & Buy Now Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            {/* ACTION BUTTONS: ADD TO CART & BUY NOW */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 py-4 rounded-[14px] bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-sm shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-2 cursor-pointer transition border-none"
+                className="flex-1 py-4 px-6 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-black text-sm tracking-wider uppercase shadow-xl shadow-[#FF5A1F]/25 flex items-center justify-center gap-2 cursor-pointer transition border-none hover:scale-[1.02]"
               >
                 {addedSuccess ? (
                   <>
@@ -515,10 +646,77 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
               <button
                 onClick={handleBuyNow}
-                className="py-4 px-8 rounded-[14px] bg-[#07152F] hover:bg-slate-800 text-white font-extrabold text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer transition border-none"
+                className="py-4 px-8 rounded-2xl bg-[#07152F] hover:bg-slate-800 text-white font-black text-sm tracking-wider uppercase shadow-xl flex items-center justify-center gap-2 cursor-pointer transition border-none hover:scale-[1.02]"
               >
                 <FiZap className="w-4 h-4 text-amber-400 fill-amber-400" /> Buy Now / Checkout
               </button>
+            </div>
+
+            {/* PRODUCT INFORMATION ACCORDION TABS */}
+            <div className="bg-white rounded-3xl border border-[#E7EAF0] shadow-sm divide-y divide-slate-100 overflow-hidden text-xs">
+              
+              {/* Tab 1: Overview & Guidelines */}
+              <div>
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === 'overview' ? null : 'overview')}
+                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                >
+                  <span className="flex items-center gap-2">
+                    <FiInfo className="w-4 h-4 text-[#FF5A1F]" /> Print Guidelines & File Pre-flight Rules
+                  </span>
+                  {openAccordion === 'overview' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                </button>
+                {openAccordion === 'overview' && (
+                  <div className="p-4 pt-0 text-slate-600 leading-relaxed space-y-2">
+                    <p>
+                      For optimal CMYK press calibration, submit artwork files with 3mm bleed margins and minimum 300 DPI resolution.
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1 font-medium">
+                      <li>Vector PDF, AI, or PSD preferred for crisp typography</li>
+                      <li>CMYK color space (RGB files auto-converted during RIP processing)</li>
+                      <li>Font outlines enabled or embedded</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Tab 2: Shipping & Turnaround */}
+              <div>
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === 'shipping' ? null : 'shipping')}
+                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                >
+                  <span className="flex items-center gap-2">
+                    <FiTruck className="w-4 h-4 text-[#FF5A1F]" /> Production Turnaround & Shipping
+                  </span>
+                  {openAccordion === 'shipping' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                </button>
+                {openAccordion === 'shipping' && (
+                  <div className="p-4 pt-0 text-slate-600 leading-relaxed space-y-1 font-medium">
+                    <p>⚡ Standard Production: 3-5 business days after artwork approval.</p>
+                    <p>⚡ Same-Day Express: Select Express at checkout for 24-hour dispatch.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Tab 3: Guarantee */}
+              <div>
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === 'guarantee' ? null : 'guarantee')}
+                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                >
+                  <span className="flex items-center gap-2">
+                    <FiShield className="w-4 h-4 text-[#FF5A1F]" /> 100% Quality & Re-print Guarantee
+                  </span>
+                  {openAccordion === 'guarantee' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                </button>
+                {openAccordion === 'guarantee' && (
+                  <div className="p-4 pt-0 text-slate-600 leading-relaxed font-medium">
+                    If your print order arrives with any press defects, trim errors, or damage, we will re-print and re-ship your complete order at zero additional cost.
+                  </div>
+                )}
+              </div>
+
             </div>
 
           </div>
@@ -529,4 +727,3 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
     </div>
   );
 }
-

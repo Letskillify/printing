@@ -1,29 +1,51 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FiSearch, FiPackage, FiTruck, FiCheckCircle, FiClock } from 'react-icons/fi'
 
 export function TrackOrderPage() {
-  const [orderId, setOrderId] = useState('')
-  const [phone, setPhone] = useState('')
-  const [trackingResult, setTrackingResult] = useState(null)
+  const getSearchParams = () => new URLSearchParams(window.location.search);
+  const initialOrderId = getSearchParams().get('orderId') || '';
+
+  const [orderId, setOrderId] = useState(initialOrderId);
+  const [phone, setPhone] = useState('');
+  const [trackingResult, setTrackingResult] = useState(null);
+
+  // Auto track if orderId is present in URL
+  useEffect(() => {
+    if (initialOrderId) {
+      triggerTracking(initialOrderId);
+    }
+  }, []);
+
+  const triggerTracking = (idToTrack) => {
+    if (idToTrack) {
+      setTrackingResult({
+        id: idToTrack.toUpperCase(),
+        status: 'In Production & Quality Proofing',
+        estimatedDelivery: '3-5 Business Days',
+        carrier: 'Express Doorstep Logistics',
+        trackingNumber: `${idToTrack.toUpperCase()}-LOGISTICS-IN`,
+        steps: [
+          { label: 'Order Received & File Pre-flight Checked', completed: true, date: 'Step 1 Passed' },
+          { label: 'Plates Generated & CMYK Offset Press Calibrated', completed: true, date: 'Step 2 Passed' },
+          { label: 'Printing, Spot UV Finish & Precision Die-Cut', completed: true, date: 'Step 3 Active' },
+          { label: 'Quality Check & Express Doorstep Courier Handoff', completed: false, date: 'Scheduled Next' },
+        ]
+      });
+
+      // Update URL query param
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', 'track');
+        url.searchParams.set('orderId', idToTrack);
+        window.history.pushState(null, '', url.toString());
+      } catch (e) {}
+    }
+  };
 
   const handleTrack = (e) => {
-    e.preventDefault()
-    if (orderId) {
-      setTrackingResult({
-        id: orderId.toUpperCase(),
-        status: 'In Production & Quality Proofing',
-        estimatedDelivery: 'Oct 28, 2024',
-        carrier: 'Express Doorstep Logistics',
-        trackingNumber: 'PRT-987456123-IN',
-        steps: [
-          { label: 'Order Received & File Pre-flight Checked', completed: true, date: 'Oct 24, 09:30 AM' },
-          { label: 'Plates Generated & CMYK Offset Press Calibrated', completed: true, date: 'Oct 24, 02:15 PM' },
-          { label: 'Printing, Spot UV Finish & Precision Die-Cut', completed: true, date: 'Oct 25, 11:00 AM' },
-          { label: 'Quality Check & Express Doorstep Courier Handoff', completed: false, date: 'Estimated Oct 27' },
-        ]
-      })
-    }
-  }
+    e.preventDefault();
+    triggerTracking(orderId);
+  };
 
   return (
     <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">

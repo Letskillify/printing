@@ -5,9 +5,10 @@ export function Footer({ setCurrentPage }) {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
-  const handleLink = (pageId) => {
-    setCurrentPage(pageId)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  const handleLink = (pageId, extraParams = {}, fragment = '') => {
+    if (typeof setCurrentPage === 'function') {
+      setCurrentPage(pageId, extraParams, fragment)
+    }
   }
 
   const handleSubscribe = (e) => {

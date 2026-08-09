@@ -13,13 +13,51 @@ import {
   addProductToFirestore,
   updateProductInFirestore,
   deleteProductFromFirestore,
-  addDesignRequestToFirestore
+  addDesignRequestToFirestore,
+  subscribeToHomepageSettings,
+  saveHomepageSettingsToFirestore,
+  subscribeToCatalogOptions,
+  saveCatalogOptionsToFirestore,
+  DEFAULT_HOMEPAGE_SETTINGS,
+  DEFAULT_CATALOG_OPTIONS
 } from '../../services/firebase';
 
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const getTabFromUrl = () => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get('tab') || 'dashboard';
+    } catch {
+      return 'dashboard';
+    }
+  };
+
+  const [activeTab, setActiveTabState] = useState(getTabFromUrl);
+
+  const setActiveTab = (tab, fragment = '') => {
+    setActiveTabState(tab);
+    try {
+      const url = new URL(window.location.href);
+      url.pathname = '/admin';
+      url.searchParams.set('page', 'admin');
+      url.searchParams.set('tab', tab);
+      if (fragment) {
+        url.hash = fragment.startsWith('#') ? fragment : `#${fragment}`;
+      }
+      window.history.pushState(null, '', url.toString());
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const tab = getTabFromUrl();
+      setActiveTabState(tab);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   const [userRole, setUserRole] = useState('Super Admin'); // Super Admin, Production Manager, In-House Designer
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -29,6 +67,10 @@ export const AdminProvider = ({ children }) => {
   const [pricingRules, setPricingRules] = useState(INITIAL_PRICING_RULES);
   const [cloudinaryMedia, setCloudinaryMedia] = useState(INITIAL_CLOUDINARY_MEDIA);
   const [logisticsLogs, setLogisticsLogs] = useState(INITIAL_LOGISTICS_LOGS);
+
+  // Dynamic Homepage & Catalog Customization States
+  const [homepageSettings, setHomepageSettings] = useState(DEFAULT_HOMEPAGE_SETTINGS);
+  const [catalogOptions, setCatalogOptions] = useState(DEFAULT_CATALOG_OPTIONS);
 
   // Dynamic Categories Management
   const [categories, setCategories] = useState([
@@ -110,12 +152,53 @@ export const AdminProvider = ({ children }) => {
       }
     });
 
+    const unsubscribeHomepage = subscribeToHomepageSettings((data) => {
+      if (data) {
+        setHomepageSettings(data);
+      }
+    });
+
+    const unsubscribeCatalogOptions = subscribeToCatalogOptions((data) => {
+      if (data) {
+        setCatalogOptions(data);
+      }
+    });
+
     return () => {
       unsubscribeOrders();
       unsubscribeProducts();
       unsubscribeDesignReqs();
+      unsubscribeHomepage();
+      unsubscribeCatalogOptions();
     };
   }, []);
+
+  // Update Homepage Settings (Syncs to Firestore)
+  const updateHomepageSettings = async (newSettings) => {
+    setHomepageSettings(newSettings);
+    await saveHomepageSettingsToFirestore(newSettings);
+  };
+
+  // Update Catalog Options (Syncs to Firestore)
+  const updateCatalogOptions = async (newOptions) => {
+    setCatalogOptions(newOptions);
+    await saveCatalogOptionsToFirestore(newOptions);
+  };
+
+  // Add Custom Catalog Option to a category (e.g. paperStock, finishes, etc.)
+  const addCustomCatalogOption = async (groupKey, optionObj) => {
+    const currentList = catalogOptions[groupKey] || [];
+    const exists = currentList.some(opt => opt.name === optionObj.name);
+    if (exists) return;
+
+    const updatedGroup = [...currentList, optionObj];
+    const updatedOptions = {
+      ...catalogOptions,
+      [groupKey]: updatedGroup
+    };
+    setCatalogOptions(updatedOptions);
+    await saveCatalogOptionsToFirestore(updatedOptions);
+  };
 
   // Update Order Status Handler (Syncs to Firestore)
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -216,6 +299,11 @@ export const AdminProvider = ({ children }) => {
       categories,
       addCategory,
       deleteCategory,
+      homepageSettings,
+      updateHomepageSettings,
+      catalogOptions,
+      updateCatalogOptions,
+      addCustomCatalogOption,
       designRequests,
       assignDesignerToTicket,
       uploadTicketProof,
@@ -254,3 +342,4 @@ export const useAdmin = () => {
   }
   return context;
 };
+

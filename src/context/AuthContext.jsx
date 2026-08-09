@@ -8,37 +8,144 @@ import {
   syncUserCartToFirestore,
   getUserCartFromFirestore,
   syncUserWishlistToFirestore,
-  getUserWishlistFromFirestore
+  getUserWishlistFromFirestore,
+  subscribeToUserProfile,
+  saveUserProfileToFirestore
 } from '../services/firebase';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState('login'); // 'login' or 'signup'
 
-  // Cart & Wishlist Global State
-  const [cartItems, setCartItems] = useState([]);
-  const [wishlistItems, setWishlistItems] = useState([]);
+  // Cart & Wishlist Global State with instant LocalStorage fallback for guests
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const stored = localStorage.getItem('printigly_cart');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
-  // Subscribe to Firebase Auth state
+  const [wishlistItems, setWishlistItems] = useState(() => {
+    try {
+      const stored = localStorage.getItem('printigly_wishlist');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Sync cartItems to LocalStorage whenever modified
   useEffect(() => {
-    const unsubscribe = subscribeToAuth(async (user) => {
+    try {
+      localStorage.setItem('printigly_cart', JSON.stringify(cartItems));
+    } catch (e) {}
+  }, [cartItems]);
+
+  // Sync wishlistItems to LocalStorage whenever modified
+  useEffect(() => {
+    try {
+      localStorage.setItem('printigly_wishlist', JSON.stringify(wishlistItems));
+    } catch (e) {}
+  }, [wishlistItems]);
+
+  // Subscribe to Firebase Auth state & User Profile Document
+  useEffect(() => {
+    let unsubscribeProfile = () => {};
+
+    const unsubscribeAuth = subscribeToAuth(async (user) => {
       setCurrentUser(user);
       if (user) {
-        // Fetch saved cart & wishlist from Firestore for logged in user
+        // Real-time listener to Firestore user document
+        unsubscribeProfile = subscribeToUserProfile(user.uid, (data) => {
+          if (data) {
+            setUserProfile(data);
+            if (data.cart && Array.isArray(data.cart) && data.cart.length > 0) {
+              setCartItems(data.cart);
+            }
+            if (data.wishlist && Array.isArray(data.wishlist) && data.wishlist.length > 0) {
+              setWishlistItems(data.wishlist);
+            }
+          }
+        });
+
+        // Initial fetch from Firestore
         const savedCart = await getUserCartFromFirestore(user.uid);
         const savedWishlist = await getUserWishlistFromFirestore(user.uid);
-        if (savedCart && savedCart.length > 0) setCartItems(savedCart);
-        if (savedWishlist && savedWishlist.length > 0) setWishlistItems(savedWishlist);
+        if (savedCart && savedCart.length > 0) {
+          setCartItems(savedCart);
+        } else {
+          // Sync existing guest localStorage cart to Firestore if user had cart before signing in
+          const localCart = JSON.parse(localStorage.getItem('printigly_cart') || '[]');
+          if (localCart.length > 0) {
+            syncUserCartToFirestore(user.uid, localCart);
+          }
+        }
+
+        if (savedWishlist && savedWishlist.length > 0) {
+          setWishlistItems(savedWishlist);
+        }
+      } else {
+        setUserProfile(null);
       }
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      unsubscribeProfile();
+    };
   }, []);
+
+  const updateUserProfile = async (profileData) => {
+    if (!currentUser) return false;
+    setUserProfile(prev => ({ ...prev, ...profileData }));
+    return await saveUserProfileToFirestore(currentUser.uid, profileData);
+  };
+
+  const saveAddress = async (newAddr) => {
+    if (!currentUser) return false;
+    const currentAddresses = userProfile?.addresses || [];
+    const addrId = newAddr.id || `ADDR-${Date.now()}`;
+    const formattedAddr = { ...newAddr, id: addrId };
+
+    let updatedAddresses;
+    if (newAddr.isDefault) {
+      updatedAddresses = currentAddresses.map(a => ({ ...a, isDefault: false }));
+      updatedAddresses.push(formattedAddr);
+    } else {
+      const existingIdx = currentAddresses.findIndex(a => a.id === addrId);
+      if (existingIdx > -1) {
+        updatedAddresses = [...currentAddresses];
+        updatedAddresses[existingIdx] = formattedAddr;
+      } else {
+        updatedAddresses = [...currentAddresses, formattedAddr];
+      }
+    }
+
+    return await updateUserProfile({ addresses: updatedAddresses });
+  };
+
+  const deleteAddress = async (addrId) => {
+    if (!currentUser) return false;
+    const updated = (userProfile?.addresses || []).filter(a => a.id !== addrId);
+    return await updateUserProfile({ addresses: updated });
+  };
+
+  const setDefaultAddress = async (addrId) => {
+    if (!currentUser) return false;
+    const updated = (userProfile?.addresses || []).map(a => ({
+      ...a,
+      isDefault: a.id === addrId
+    }));
+    return await updateUserProfile({ addresses: updated });
+  };
 
   // Cart Operations
   const addToCart = (product) => {
@@ -136,6 +243,11 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       currentUser,
+      userProfile,
+      updateUserProfile,
+      saveAddress,
+      deleteAddress,
+      setDefaultAddress,
       loading,
       authModalOpen,
       setAuthModalOpen,

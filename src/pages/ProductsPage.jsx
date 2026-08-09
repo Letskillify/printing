@@ -5,12 +5,22 @@ import { useAuth } from '../context/AuthContext'
 import { subscribeToProducts } from '../services/firebase'
 import { ProductDetailPage } from './ProductDetailPage'
 
-export function ProductsPage({ onNavigateCart }) {
+export function ProductsPage({ onNavigateCart, setCurrentPage }) {
   const { addToCart, toggleWishlist, isInWishlist } = useAuth()
   const prefersReducedMotion = useReducedMotion()
-  const [activeCategory, setActiveCategory] = useState('All')
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  
+
+  const getSearchParams = () => new URLSearchParams(window.location.search);
+
+  const [activeCategory, setActiveCategoryState] = useState(() => {
+    return getSearchParams().get('category') || 'All';
+  });
+
+  const [searchTerm, setSearchTermState] = useState(() => {
+    return getSearchParams().get('search') || '';
+  });
+
+  const [selectedProduct, setSelectedProductState] = useState(null);
+
   // Real-time Products State from Firestore
   const [liveProducts, setLiveProducts] = useState([])
   const [loadingProducts, setLoadingProducts] = useState(true)
@@ -23,6 +33,41 @@ export function ProductsPage({ onNavigateCart }) {
     });
     return () => unsubscribe();
   }, []);
+
+  // Sync selectedProduct with URL sku parameter on mount & history popstate
+  useEffect(() => {
+    const handleUrlSync = () => {
+      const currentSku = getSearchParams().get('sku');
+      if (currentSku && liveProducts.length > 0) {
+        const found = liveProducts.find(p => p.id === currentSku || p.slug === currentSku);
+        if (found) setSelectedProductState(found);
+      } else if (!currentSku) {
+        setSelectedProductState(null);
+      }
+    };
+
+    handleUrlSync();
+    window.addEventListener('popstate', handleUrlSync);
+    return () => window.removeEventListener('popstate', handleUrlSync);
+  }, [liveProducts]);
+
+  const setActiveCategory = (cat) => {
+    setActiveCategoryState(cat);
+    if (setCurrentPage) {
+      setCurrentPage('products', { category: cat === 'All' ? '' : cat, search: searchTerm }, '#catalog');
+    }
+  };
+
+  const setSelectedProduct = (prod) => {
+    setSelectedProductState(prod);
+    if (setCurrentPage) {
+      if (prod) {
+        setCurrentPage('products', { sku: prod.id, category: activeCategory !== 'All' ? activeCategory : '' }, '#specs');
+      } else {
+        setCurrentPage('products', { category: activeCategory !== 'All' ? activeCategory : '' }, '#catalog');
+      }
+    }
+  };
 
   const categories = ['All', 'Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch', 'Marketing']
 
@@ -62,7 +107,7 @@ export function ProductsPage({ onNavigateCart }) {
       </section>
 
       {/* Main Catalog Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div id="catalog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
         {/* Category Filter Tabs */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-4 mb-8 no-scrollbar">

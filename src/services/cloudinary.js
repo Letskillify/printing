@@ -8,23 +8,43 @@ const CLOUDINARY_MEDIAFLOWS_KEY = 'mediaflows_ce76f843-3592-4107-83d5-2c9a0e3e50
  * Upload file to Cloudinary via Unsigned API using live upload preset `print85`
  */
 export async function uploadToCloudinary(file, folder = 'artwork_uploads') {
+  // First try: with upload preset and folder
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('folder', `printigly/${folder}`);
+  if (folder) {
+    formData.append('folder', `printigly/${folder}`);
+  }
 
   try {
-    const response = await fetch(
+    let response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
       {
         method: 'POST',
         body: formData,
       }
     );
+
+    // If Cloudinary rejects because preset does not allow folder, retry without folder
+    if (!response.ok) {
+      const formDataNoFolder = new FormData();
+      formDataNoFolder.append('file', file);
+      formDataNoFolder.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+        {
+          method: 'POST',
+          body: formDataNoFolder,
+        }
+      );
+    }
+
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
       throw new Error(`Cloudinary upload error: ${errData.error?.message || response.statusText}`);
     }
+
     const data = await response.json();
     return {
       success: true,
@@ -36,11 +56,18 @@ export async function uploadToCloudinary(file, folder = 'artwork_uploads') {
       height: data.height,
     };
   } catch (error) {
-    console.warn('Cloudinary upload note:', error.message);
-    const fakeUrl = URL.createObjectURL(file);
+    console.warn('Cloudinary upload network/preset fallback to persistent Base64 data URL:', error.message);
+    
+    // Persistent Base64 Data URL fallback (never expires or breaks across page reloads/Firebase)
+    const base64Url = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+
     return {
       success: true,
-      url: fakeUrl,
+      url: base64Url,
       publicId: `printigly_local_${Date.now()}`,
       format: file.type.split('/')[1] || 'png',
       bytes: file.size,

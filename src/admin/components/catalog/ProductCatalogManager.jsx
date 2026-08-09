@@ -17,7 +17,17 @@ import { useAdmin } from '../../context/AdminContext';
 import { uploadToCloudinary } from '../../../services/cloudinary';
 
 export const ProductCatalogManager = () => {
-  const { products, saveProduct, removeProduct, categories, addCategory, deleteCategory } = useAdmin();
+  const { 
+    products, 
+    saveProduct, 
+    removeProduct, 
+    categories, 
+    addCategory, 
+    deleteCategory,
+    catalogOptions,
+    updateCatalogOptions,
+    addCustomCatalogOption
+  } = useAdmin();
 
   const [editingProduct, setEditingProduct] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -31,6 +41,10 @@ export const ProductCatalogManager = () => {
   const [showInlineCatInput, setShowInlineCatInput] = useState(false);
   const [inlineCatInput, setInlineCatInput] = useState('');
   const [formActiveTab, setFormActiveTab] = useState('general'); // 'general', 'tiered', 'variants'
+
+  // Dynamic Custom Tech Spec Row state
+  const [newSpecKey, setNewSpecKey] = useState('');
+  const [newSpecVal, setNewSpecVal] = useState('');
 
   const filteredProducts = products.filter(prod => {
     const matchesSearch = (prod.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -62,54 +76,7 @@ export const ProductCatalogManager = () => {
       turnaround: '24-48 Hours'
     },
     images: [],
-    variants: {
-      paperStock: [{ name: '350 GSM Matte', priceModifier: 0 }],
-      finishes: [{ name: 'Matte Lamination', priceModifier: 0 }],
-      sides: [
-        { name: 'Single-sided', priceModifier: 0 },
-        { name: 'Double-sided', priceModifier: 1.5 }
-      ],
-      corners: [
-        { name: 'Standard', priceModifier: 0 },
-        { name: 'Edge Cutting', priceModifier: 1.0 },
-        { name: 'Rounded Corners', priceModifier: 0.5 }
-      ],
-      lamination: [
-        { name: 'No Lamination', priceModifier: 0 },
-        { name: 'Gloss Lamination', priceModifier: 0.5 },
-        { name: 'Matte Lamination', priceModifier: 0.8 },
-        { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
-      ],
-      sizeFormat: [
-        { name: 'Standard (90x55mm)', priceModifier: 0 },
-        { name: 'Square (60x60mm)', priceModifier: 0.5 },
-        { name: 'Slim (90x45mm)', priceModifier: 0.3 },
-        { name: 'Foldable 4-Panel', priceModifier: 1.8 }
-      ],
-      foilAccents: [
-        { name: 'No Metallic Foil', priceModifier: 0 },
-        { name: 'Raised Gold Foil', priceModifier: 2.2 },
-        { name: 'Raised Silver Foil', priceModifier: 2.0 },
-        { name: 'Rose Gold Foil', priceModifier: 2.5 },
-        { name: 'Holographic Laser Foil', priceModifier: 3.0 }
-      ],
-      spotUV: [
-        { name: 'No Spot UV', priceModifier: 0 },
-        { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
-        { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
-        { name: '3D Embossed Raised UV', priceModifier: 2.8 }
-      ],
-      proofService: [
-        { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
-        { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
-        { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
-      ],
-      packagingStyle: [
-        { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
-        { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
-        { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
-      ]
-    },
+    variants: catalogOptions || {},
     tieredPricing: [
       { tierMin: 100, pricePerUnit: 6.0 },
       { tierMin: 500, pricePerUnit: 5.0 },
@@ -128,59 +95,70 @@ export const ProductCatalogManager = () => {
     setFormData({
       title: '',
       slug: '',
-      category: 'Business Stationery',
+      category: categories[0] || 'Business Stationery',
       basePrice: 5.0,
       minOrderQty: 100,
       summary: '',
       description: '',
-      specs: { paperGsm: '350 GSM', dimensions: '91mm x 53mm', printTech: 'Offset Litho', turnaround: '24 Hours' },
+      specs: {
+        paperGsm: '350 GSM',
+        dimensions: '91mm x 53mm',
+        printTech: 'Offset Litho',
+        turnaround: '24-48 Hours'
+      },
       images: [],
       variants: {
-        paperStock: [{ name: '350 GSM Matte', priceModifier: 0 }, { name: '400 GSM Velvet', priceModifier: 1.5 }],
-        finishes: [{ name: 'Matte Lamination', priceModifier: 0 }, { name: 'Gold Foil Accent', priceModifier: 2.0 }],
-        sides: [
-          { name: 'Single-sided', priceModifier: 0 },
-          { name: 'Double-sided', priceModifier: 1.5 }
+        paperStock: catalogOptions?.paperStock || [
+          { name: '350 GSM Matte Art Card', priceModifier: 0 },
+          { name: '400 GSM Velvet Soft-Touch Card', priceModifier: 1.5 },
+          { name: '300 GSM Recycled Kraft Board', priceModifier: 0.8 },
         ],
-        corners: [
-          { name: 'Standard', priceModifier: 0 },
-          { name: 'Edge Cutting', priceModifier: 1.0 },
-          { name: 'Rounded Corners', priceModifier: 0.5 }
-        ],
-        lamination: [
-          { name: 'No Lamination', priceModifier: 0 },
+        finishes: catalogOptions?.finishes || [
+          { name: 'Matte Lamination', priceModifier: 0 },
           { name: 'Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Matte Lamination', priceModifier: 0.8 },
+          { name: 'Raised 3D Gold Foil Stamping', priceModifier: 2.5 },
+        ],
+        sides: catalogOptions?.sides || [
+          { name: 'Single-sided Print (1/0 CMYK)', priceModifier: 0 },
+          { name: 'Double-sided Print (4/4 CMYK)', priceModifier: 1.5 }
+        ],
+        corners: catalogOptions?.corners || [
+          { name: 'Standard Square Corners', priceModifier: 0 },
+          { name: '3mm Rounded Corners (4 Edges)', priceModifier: 0.5 }
+        ],
+        lamination: catalogOptions?.lamination || [
+          { name: 'No Lamination Coating', priceModifier: 0 },
+          { name: 'Thermal Gloss Lamination', priceModifier: 0.5 },
           { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
         ],
-        sizeFormat: [
-          { name: 'Standard (90x55mm)', priceModifier: 0 },
-          { name: 'Square (60x60mm)', priceModifier: 0.5 },
-          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
-          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
+        sizeFormat: catalogOptions?.sizeFormat || [
+          { name: 'Standard Business Card (90x55mm)', priceModifier: 0 },
+          { name: 'Square Mini Card (60x60mm)', priceModifier: 0.5 }
         ],
-        foilAccents: [
-          { name: 'No Metallic Foil', priceModifier: 0 },
-          { name: 'Raised Gold Foil', priceModifier: 2.2 },
-          { name: 'Raised Silver Foil', priceModifier: 2.0 },
-          { name: 'Rose Gold Foil', priceModifier: 2.5 },
-          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
+        foilAccents: catalogOptions?.foilAccents || [
+          { name: 'No Metallic Foil Accent', priceModifier: 0 },
+          { name: 'Raised 3D Gold Foil Accent', priceModifier: 2.2 },
+          { name: 'Raised 3D Silver Foil Accent', priceModifier: 2.0 }
         ],
-        spotUV: [
-          { name: 'No Spot UV', priceModifier: 0 },
-          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
-          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
-          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
+        spotUV: catalogOptions?.spotUV || [
+          { name: 'No Spot UV Gloss', priceModifier: 0 },
+          { name: 'Single-Sided Spot UV Logo Accent', priceModifier: 1.2 },
+          { name: '3D High-Build Embossed UV Glass', priceModifier: 2.8 }
         ],
-        proofService: [
-          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
-          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
+        bindingStyle: catalogOptions?.bindingStyle || [
+          { name: 'No Binding (Loose Sheets)', priceModifier: 0 },
+          { name: 'Saddle-Stitch Wire Staple', priceModifier: 1.0 },
+          { name: 'Perfect Glue Book Binding', priceModifier: 2.5 }
+        ],
+        proofService: catalogOptions?.proofService || [
+          { name: 'Print-Ready Artwork (Self Upload)', priceModifier: 0 },
+          { name: 'Prepress CMYK Digital Soft Proof (+₹99)', priceModifier: 0.5 },
           { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
         ],
-        packagingStyle: [
-          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
-          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
-          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
+        packagingStyle: catalogOptions?.packagingStyle || [
+          { name: 'Standard Eco Bulk Shrink Wrap', priceModifier: 0 },
+          { name: 'Acrylic Clear Desk Presentation Box', priceModifier: 1.2 },
+          { name: 'Luxury Rigid Gift Packaging Box', priceModifier: 3.5 }
         ]
       },
       tieredPricing: [
@@ -199,53 +177,19 @@ export const ProductCatalogManager = () => {
     setFormData({
       ...prod,
       minOrderQty: prod.minOrderQty || 100,
+      specs: prod.specs || { paperGsm: '350 GSM', dimensions: '91mm x 53mm', printTech: 'Offset Litho', turnaround: '24 Hours' },
       variants: {
-        paperStock: prod.variants?.paperStock || [{ name: '350 GSM Matte', priceModifier: 0 }],
-        finishes: prod.variants?.finishes || [{ name: 'Matte Lamination', priceModifier: 0 }],
-        sides: prod.variants?.sides || [
-          { name: 'Single-sided', priceModifier: 0 },
-          { name: 'Double-sided', priceModifier: 1.5 }
-        ],
-        corners: prod.variants?.corners || [
-          { name: 'Standard', priceModifier: 0 },
-          { name: 'Edge Cutting', priceModifier: 1.0 },
-          { name: 'Rounded Corners', priceModifier: 0.5 }
-        ],
-        lamination: prod.variants?.lamination || [
-          { name: 'No Lamination', priceModifier: 0 },
-          { name: 'Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Matte Lamination', priceModifier: 0.8 },
-          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
-        ],
-        sizeFormat: prod.variants?.sizeFormat || [
-          { name: 'Standard (90x55mm)', priceModifier: 0 },
-          { name: 'Square (60x60mm)', priceModifier: 0.5 },
-          { name: 'Slim (90x45mm)', priceModifier: 0.3 },
-          { name: 'Foldable 4-Panel', priceModifier: 1.8 }
-        ],
-        foilAccents: prod.variants?.foilAccents || [
-          { name: 'No Metallic Foil', priceModifier: 0 },
-          { name: 'Raised Gold Foil', priceModifier: 2.2 },
-          { name: 'Raised Silver Foil', priceModifier: 2.0 },
-          { name: 'Rose Gold Foil', priceModifier: 2.5 },
-          { name: 'Holographic Laser Foil', priceModifier: 3.0 }
-        ],
-        spotUV: prod.variants?.spotUV || [
-          { name: 'No Spot UV', priceModifier: 0 },
-          { name: 'Single-Sided Spot UV Logo', priceModifier: 1.2 },
-          { name: 'Double-Sided Spot UV Accent', priceModifier: 2.0 },
-          { name: '3D Embossed Raised UV', priceModifier: 2.8 }
-        ],
-        proofService: prod.variants?.proofService || [
-          { name: 'Print-Ready (Self Upload)', priceModifier: 0 },
-          { name: 'Prepress CMYK Proofing (+₹99)', priceModifier: 0.5 },
-          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
-        ],
-        packagingStyle: prod.variants?.packagingStyle || [
-          { name: 'Standard Eco Bulk Shrink', priceModifier: 0 },
-          { name: 'Acrylic Desk Storage Box', priceModifier: 1.2 },
-          { name: 'Luxury Gift Presentation Box', priceModifier: 3.5 }
-        ]
+        paperStock: prod.variants?.paperStock || catalogOptions?.paperStock || [{ name: '350 GSM Matte', priceModifier: 0 }],
+        finishes: prod.variants?.finishes || catalogOptions?.finishes || [{ name: 'Matte Lamination', priceModifier: 0 }],
+        sides: prod.variants?.sides || catalogOptions?.sides || [{ name: 'Single-sided', priceModifier: 0 }],
+        corners: prod.variants?.corners || catalogOptions?.corners || [{ name: 'Standard', priceModifier: 0 }],
+        lamination: prod.variants?.lamination || catalogOptions?.lamination || [{ name: 'No Lamination', priceModifier: 0 }],
+        sizeFormat: prod.variants?.sizeFormat || catalogOptions?.sizeFormat || [{ name: 'Standard (90x55mm)', priceModifier: 0 }],
+        foilAccents: prod.variants?.foilAccents || catalogOptions?.foilAccents || [{ name: 'No Metallic Foil', priceModifier: 0 }],
+        spotUV: prod.variants?.spotUV || catalogOptions?.spotUV || [{ name: 'No Spot UV', priceModifier: 0 }],
+        bindingStyle: prod.variants?.bindingStyle || catalogOptions?.bindingStyle || [{ name: 'No Binding', priceModifier: 0 }],
+        proofService: prod.variants?.proofService || catalogOptions?.proofService || [{ name: 'Print-Ready', priceModifier: 0 }],
+        packagingStyle: prod.variants?.packagingStyle || catalogOptions?.packagingStyle || [{ name: 'Standard Bulk', priceModifier: 0 }]
       }
     });
     setEditingProduct(prod);
@@ -263,11 +207,147 @@ export const ProductCatalogManager = () => {
     setUploadingImage(false);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    saveProduct(formData);
+    await saveProduct(formData);
+    // Sync all options back to Firebase catalogOptions so all future products load them
+    if (formData.variants) {
+      await updateCatalogOptions({
+        ...catalogOptions,
+        ...formData.variants
+      });
+    }
     setIsCreating(false);
     setEditingProduct(null);
+  };
+
+  const handleUpdateVariantItems = (groupKey, newItemsList) => {
+    setFormData(prev => ({
+      ...prev,
+      variants: {
+        ...prev.variants,
+        [groupKey]: newItemsList
+      }
+    }));
+  };
+
+  const handlePersistCustomOption = async (groupKey, newOptionObj) => {
+    await addCustomCatalogOption(groupKey, newOptionObj);
+  };
+
+  // Reusable Component for Option Categories with "+ Add Custom Option at Last"
+  const VariantSectionCard = ({ title, groupKey, items }) => {
+    const [newOptName, setNewOptName] = useState('');
+    const [newOptPrice, setNewOptPrice] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const handleAddCustom = async () => {
+      if (!newOptName.trim()) return;
+      const priceVal = parseFloat(newOptPrice) || 0;
+      const newObj = { name: newOptName.trim(), priceModifier: priceVal };
+
+      const updatedList = [...(items || []), newObj];
+      handleUpdateVariantItems(groupKey, updatedList);
+      await handlePersistCustomOption(groupKey, newObj);
+
+      setNewOptName('');
+      setNewOptPrice('');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2500);
+    };
+
+    return (
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">{title}</h4>
+          <span className="text-[10px] font-bold text-slate-400">({(items || []).length} active)</span>
+        </div>
+
+        <div className="space-y-2">
+          {(items || []).map((opt, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={opt.name}
+                onChange={(e) => {
+                  const updated = [...items];
+                  updated[idx].name = e.target.value;
+                  handleUpdateVariantItems(groupKey, updated);
+                }}
+                placeholder="Option Name"
+                className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+              />
+              <div className="relative w-24 shrink-0">
+                <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={opt.priceModifier}
+                  onChange={(e) => {
+                    const updated = [...items];
+                    updated[idx].priceModifier = parseFloat(e.target.value) || 0;
+                    handleUpdateVariantItems(groupKey, updated);
+                  }}
+                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const updated = items.filter((_, i) => i !== idx);
+                  handleUpdateVariantItems(groupKey, updated);
+                }}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                title="Delete Option"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+
+          {/* DEDICATED AT-LAST POSITION: "+ Add Custom Option at Last" Form */}
+          <div className="pt-2.5 border-t border-dashed border-blue-200 bg-blue-50/40 p-3 rounded-xl space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase text-blue-700 tracking-wider flex items-center gap-1">
+                <Plus className="w-3.5 h-3.5 text-blue-600" /> + Add Custom Option 
+              </span>
+              {showSuccess && (
+                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
+                  ✓ Saved to Firebase!
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={newOptName}
+                onChange={(e) => setNewOptName(e.target.value)}
+                placeholder="Custom Option Name"
+                className="flex-1 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+              />
+              <div className="relative w-24 shrink-0">
+                <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={newOptPrice}
+                  onChange={(e) => setNewOptPrice(e.target.value)}
+                  placeholder="+Mod"
+                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAddCustom}
+                className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs cursor-pointer border-none shrink-0 shadow-3xs"
+              >
+                Add Option
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -285,7 +365,7 @@ export const ProductCatalogManager = () => {
             Print Product Matrix & Pricing Engine
           </h2>
           <p className="text-xs text-slate-500 max-w-2xl mt-1 font-medium">
-            Manage live print SKUs, volume tier pricing matrices, Cloudinary galleries, and multi-variant pricing rules.
+            Manage live print SKUs, volume tier pricing matrices, Cloudinary galleries, and multi-variant pricing rules synced with Firebase.
           </p>
         </div>
 
@@ -344,8 +424,8 @@ export const ProductCatalogManager = () => {
             <Layers className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-lg font-black text-slate-900">10 Matrices</div>
-            <div className="text-[11px] font-semibold text-slate-500">Custom Options Active</div>
+            <div className="text-lg font-black text-slate-900">{Object.keys(catalogOptions || {}).length} Matrices</div>
+            <div className="text-[11px] font-semibold text-slate-500">Firebase Options Active</div>
           </div>
         </div>
       </div>
@@ -430,13 +510,8 @@ export const ProductCatalogManager = () => {
                       {v.name} (+₹{v.priceModifier})
                     </span>
                   ))}
-                  {prod.variants?.corners?.map((v, i) => (
-                    <span key={`c-${i}`} className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
-                      {v.name} (+₹{v.priceModifier})
-                    </span>
-                  ))}
-                  {prod.variants?.lamination?.map((v, i) => (
-                    <span key={`l-${i}`} className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-semibold">
+                  {prod.variants?.finishes?.map((v, i) => (
+                    <span key={`f-${i}`} className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 font-semibold">
                       {v.name} (+₹{v.priceModifier})
                     </span>
                   ))}
@@ -465,7 +540,7 @@ export const ProductCatalogManager = () => {
         ))}
       </div>
 
-      {/* Form Editor Mode - 100% RELIABLE ULTRA-PREMIUM TABBED MODAL OVERLAY */}
+      {/* Form Editor Mode - 100% RELIABLE TABBED MODAL OVERLAY */}
       {isCreating && (
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
           <form
@@ -507,7 +582,7 @@ export const ProductCatalogManager = () => {
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
               >
-                <Package className="w-4 h-4" /> 1. Core Info & Cloudinary Gallery
+                <Package className="w-4 h-4" /> 1. Core Info, Tech Specs & Gallery
               </button>
 
               <button
@@ -529,7 +604,7 @@ export const ProductCatalogManager = () => {
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
               >
-                <Layers className="w-4 h-4" /> 3. Print Options & Finishes
+                <Layers className="w-4 h-4" /> 3. Print Options & Finishes Matrix
               </button>
             </div>
 
@@ -645,6 +720,77 @@ export const ProductCatalogManager = () => {
                           placeholder="Brief description visible on product cards..."
                         />
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Technical Specifications Custom Key-Values Card */}
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
+                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center justify-between">
+                      <span>Technical Specifications & Custom Attributes</span>
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {Object.entries(formData.specs || {}).map(([key, val]) => (
+                        <div key={key} className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                          <span className="font-bold text-slate-700 text-[11px] w-28 truncate shrink-0">{key}:</span>
+                          <input
+                            type="text"
+                            value={val}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                specs: { ...formData.specs, [key]: e.target.value }
+                              });
+                            }}
+                            className="flex-1 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updatedSpecs = { ...formData.specs };
+                              delete updatedSpecs[key];
+                              setFormData({ ...formData, specs: updatedSpecs });
+                            }}
+                            className="p-1 text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Inline Add Custom Spec Row */}
+                    <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Spec Name (e.g. Grammage, Inks)"
+                        value={newSpecKey}
+                        onChange={(e) => setNewSpecKey(e.target.value)}
+                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Spec Value (e.g. 350 GSM, CMYK Soy)"
+                        value={newSpecVal}
+                        onChange={(e) => setNewSpecVal(e.target.value)}
+                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (newSpecKey.trim()) {
+                            setFormData({
+                              ...formData,
+                              specs: { ...formData.specs, [newSpecKey.trim()]: newSpecVal.trim() || 'Standard' }
+                            });
+                            setNewSpecKey('');
+                            setNewSpecVal('');
+                          }
+                        }}
+                        className="px-4 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0"
+                      >
+                        + Add Spec
+                      </button>
                     </div>
                   </div>
 
@@ -791,365 +937,81 @@ export const ProductCatalogManager = () => {
                 </div>
               )}
 
-              {/* TAB 3: PRINT OPTIONS & FINISHES */}
+              {/* TAB 3: PRINT OPTIONS & FINISHES MATRIX WITH "+ ADD CUSTOM OPTION AT LAST" */}
               {formActiveTab === 'variants' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-xs flex items-center justify-between">
+                    <span className="font-bold">
+                      💡 All newly added custom options are automatically persisted to Firebase and loaded into all future products.
+                    </span>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <VariantSectionCard
+                      title="1. Paper Stock & Board Weight"
+                      groupKey="paperStock"
+                      items={formData.variants?.paperStock || []}
+                    />
 
-                    {/* 1. Print Sides */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">1. Print Sides</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.sides || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, sides: [...current, { name: 'New Side', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Option
-                        </button>
-                      </div>
+                    <VariantSectionCard
+                      title="2. Special Finishes"
+                      groupKey="finishes"
+                      items={formData.variants?.finishes || []}
+                    />
 
-                      <div className="space-y-2">
-                        {(formData.variants?.sides || []).map((side, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={side.name}
-                              onChange={(e) => {
-                                const newSides = [...(formData.variants?.sides || [])];
-                                newSides[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
-                              }}
-                              placeholder="Side Name"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={side.priceModifier}
-                              onChange={(e) => {
-                                const newSides = [...(formData.variants?.sides || [])];
-                                newSides[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newSides = (formData.variants?.sides || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, sides: newSides } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <VariantSectionCard
+                      title="3. Print Sides Option"
+                      groupKey="sides"
+                      items={formData.variants?.sides || []}
+                    />
 
-                    {/* 2. Edge Cutting & Corners */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">2. Edge Cuts & Corners</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.corners || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, corners: [...current, { name: 'New Cut', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Cut Option
-                        </button>
-                      </div>
+                    <VariantSectionCard
+                      title="4. Edge Cuts & Corner Finishing"
+                      groupKey="corners"
+                      items={formData.variants?.corners || []}
+                    />
 
-                      <div className="space-y-2">
-                        {(formData.variants?.corners || []).map((cut, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={cut.name}
-                              onChange={(e) => {
-                                const newCorners = [...(formData.variants?.corners || [])];
-                                newCorners[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                              }}
-                              placeholder="Cut Type"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={cut.priceModifier}
-                              onChange={(e) => {
-                                const newCorners = [...(formData.variants?.corners || [])];
-                                newCorners[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newCorners = (formData.variants?.corners || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, corners: newCorners } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <VariantSectionCard
+                      title="5. Lamination Finish & Coating"
+                      groupKey="lamination"
+                      items={formData.variants?.lamination || []}
+                    />
 
-                    {/* 3. Lamination Options */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">3. Lamination Finish</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.lamination || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, lamination: [...current, { name: 'New Lamination', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Lamination
-                        </button>
-                      </div>
+                    <VariantSectionCard
+                      title="6. Size Formats & Aspect Ratio"
+                      groupKey="sizeFormat"
+                      items={formData.variants?.sizeFormat || []}
+                    />
 
-                      <div className="space-y-2">
-                        {(formData.variants?.lamination || []).map((lam, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={lam.name}
-                              onChange={(e) => {
-                                const newLam = [...(formData.variants?.lamination || [])];
-                                newLam[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                              }}
-                              placeholder="Lamination Type"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={lam.priceModifier}
-                              onChange={(e) => {
-                                const newLam = [...(formData.variants?.lamination || [])];
-                                newLam[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newLam = (formData.variants?.lamination || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, lamination: newLam } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <VariantSectionCard
+                      title="7. Metallic Foil Accents & Stamping"
+                      groupKey="foilAccents"
+                      items={formData.variants?.foilAccents || []}
+                    />
 
-                    {/* 4. Size & Format */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">4. Size Formats</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.sizeFormat || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, sizeFormat: [...current, { name: 'New Size Format', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Format
-                        </button>
-                      </div>
+                    <VariantSectionCard
+                      title="8. Spot UV & Raised Gloss Textures"
+                      groupKey="spotUV"
+                      items={formData.variants?.spotUV || []}
+                    />
 
-                      <div className="space-y-2">
-                        {(formData.variants?.sizeFormat || []).map((sz, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={sz.name}
-                              onChange={(e) => {
-                                const newSz = [...(formData.variants?.sizeFormat || [])];
-                                newSz[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                              }}
-                              placeholder="Size Format Name"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={sz.priceModifier}
-                              onChange={(e) => {
-                                const newSz = [...(formData.variants?.sizeFormat || [])];
-                                newSz[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newSz = (formData.variants?.sizeFormat || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, sizeFormat: newSz } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <VariantSectionCard
+                      title="9. Binding & Booklet Construction"
+                      groupKey="bindingStyle"
+                      items={formData.variants?.bindingStyle || []}
+                    />
 
-                    {/* 5. Metallic Foil Accents */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">5. Metallic Foil Options</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.foilAccents || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, foilAccents: [...current, { name: 'New Foil Option', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Foil
-                        </button>
-                      </div>
+                    <VariantSectionCard
+                      title="10. Prepress Proofing Service"
+                      groupKey="proofService"
+                      items={formData.variants?.proofService || []}
+                    />
 
-                      <div className="space-y-2">
-                        {(formData.variants?.foilAccents || []).map((foil, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={foil.name}
-                              onChange={(e) => {
-                                const newFoil = [...(formData.variants?.foilAccents || [])];
-                                newFoil[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                              }}
-                              placeholder="Foil Color/Type"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={foil.priceModifier}
-                              onChange={(e) => {
-                                const newFoil = [...(formData.variants?.foilAccents || [])];
-                                newFoil[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newFoil = (formData.variants?.foilAccents || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, foilAccents: newFoil } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 6. Spot UV & Textures */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">6. Spot UV & Textures</h4>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const current = formData.variants?.spotUV || [];
-                            setFormData({
-                              ...formData,
-                              variants: { ...formData.variants, spotUV: [...current, { name: 'New Spot UV', priceModifier: 0 }] }
-                            });
-                          }}
-                          className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded hover:bg-blue-100 border-none cursor-pointer flex items-center gap-1"
-                        >
-                          <Plus className="w-3 h-3" /> Add Spot UV
-                        </button>
-                      </div>
-
-                      <div className="space-y-2">
-                        {(formData.variants?.spotUV || []).map((uv, idx) => (
-                          <div key={idx} className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={uv.name}
-                              onChange={(e) => {
-                                const newUv = [...(formData.variants?.spotUV || [])];
-                                newUv[idx].name = e.target.value;
-                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                              }}
-                              placeholder="Spot UV Option"
-                              className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <input
-                              type="number"
-                              step="0.1"
-                              value={uv.priceModifier}
-                              onChange={(e) => {
-                                const newUv = [...(formData.variants?.spotUV || [])];
-                                newUv[idx].priceModifier = parseFloat(e.target.value) || 0;
-                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                              }}
-                              className="w-20 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newUv = (formData.variants?.spotUV || []).filter((_, i) => i !== idx);
-                                setFormData({ ...formData, variants: { ...formData.variants, spotUV: newUv } });
-                              }}
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
+                    <VariantSectionCard
+                      title="11. Packaging & Presentation Style"
+                      groupKey="packagingStyle"
+                      items={formData.variants?.packagingStyle || []}
+                    />
                   </div>
                 </div>
               )}
