@@ -7,6 +7,8 @@ import { DashboardOverview } from './components/dashboard/DashboardOverview';
 import { OrderPipelineHub } from './components/orders/OrderPipelineHub';
 import { DesignTicketDesk } from './components/design_desk/DesignTicketDesk';
 import { ProductCatalogManager } from './components/catalog/ProductCatalogManager';
+import { PrintOptionsMatrixManager } from './components/catalog/PrintOptionsMatrixManager';
+import { CategoryManager } from './components/catalog/CategoryManager';
 import { PricingEngineManager } from './components/pricing/PricingEngineManager';
 import { CloudinaryMediaBrowser } from './components/cloudinary/CloudinaryMediaBrowser';
 import { CustomerDirectory } from './components/crm/CustomerDirectory';
@@ -30,6 +32,10 @@ const AdminContent = ({ onSwitchToWebsite }) => {
         return <DesignTicketDesk />;
       case 'catalog':
         return <ProductCatalogManager />;
+      case 'print_matrix':
+        return <PrintOptionsMatrixManager />;
+      case 'category_manager':
+        return <CategoryManager />;
       case 'homepage_customizer':
         return <HomepageManager />;
       case 'pricing':

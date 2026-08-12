@@ -65,8 +65,8 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   const [customQtyInput, setCustomQtyInput] = useState(minPieces);
   const [quantity, setQuantity] = useState(minPieces);
 
-  // Accordion Tabs Toggle
-  const [openAccordion, setOpenAccordion] = useState('overview'); // 'overview', 'shipping', 'guarantee'
+  // Accordion Tabs Toggle (description open by default)
+  const [openAccordion, setOpenAccordion] = useState('description'); // 'overview', 'shipping', 'guarantee'
 
   // Parse available variants dynamically from product object ONLY
   const availableVariantEntries = Object.entries(product.variants || {}).filter(
@@ -371,10 +371,6 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               <h1 className="text-3xl sm:text-4xl font-black text-[#0B1633] tracking-tight leading-tight">
                 {product.title}
               </h1>
-
-              <p className="text-slate-600 text-sm leading-relaxed font-medium">
-                {product.description || product.summary}
-              </p>
             </div>
 
             {/* LIVE DYNAMIC PRICING ENGINE BAR */}
@@ -652,67 +648,118 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               </button>
             </div>
 
-            {/* PRODUCT INFORMATION ACCORDION TABS */}
+            {/* PRODUCT INFORMATION ACCORDION DROPDOWN TABS */}
             <div className="bg-white rounded-3xl border border-[#E7EAF0] shadow-sm divide-y divide-slate-100 overflow-hidden text-xs">
               
-              {/* Tab 1: Overview & Guidelines */}
+              {/* TAB 1: PRODUCT DESCRIPTION & HIGHLIGHTS (OPEN BY DEFAULT) */}
+              <div>
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === 'description' ? null : 'description')}
+                  className="w-full p-4 sm:p-5 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <FiFileText className="w-4.5 h-4.5 text-[#FF5A1F]" /> Product Description & Overview
+                  </span>
+                  {openAccordion === 'description' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
+                </button>
+                {openAccordion === 'description' && (
+                  <div className="p-5 pt-1 text-slate-700 leading-relaxed text-xs space-y-4">
+                    <p className="font-medium text-slate-800 text-xs sm:text-sm leading-relaxed">
+                      {product.description || product.summary || 'High-quality custom print product crafted with premium finishing and industrial offset precision.'}
+                    </p>
+
+                    {/* Summary Quick Chips */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100">
+                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Selected Quantity</span>
+                        <span className="font-extrabold text-[#0B1633] text-xs">{quantity.toLocaleString()} Units</span>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Category</span>
+                        <span className="font-extrabold text-[#0B1633] text-xs truncate block">{product.category}</span>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Est. Turnaround</span>
+                        <span className="font-extrabold text-emerald-700 text-xs">{product.specs?.turnaround || product.turnaround || '24-48 Hours Express'}</span>
+                      </div>
+                    </div>
+
+                    {/* Active Variant Configuration Summary */}
+                    {Object.keys(selectedVariants).length > 0 && (
+                      <div className="pt-2 space-y-1.5">
+                        <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Selected Configuration:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {Object.entries(selectedVariants).map(([key, val]) => (
+                            <span key={key} className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-800 flex items-center gap-1">
+                              <span className="text-slate-400 font-semibold">{formatKeyToTitle(key)}:</span>
+                              <span className="text-[#0B1633] font-black">{val}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* TAB 2: PRINT SPECIFICATIONS & PRE-FLIGHT RULES */}
               <div>
                 <button
                   onClick={() => setOpenAccordion(openAccordion === 'overview' ? null : 'overview')}
-                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                  className="w-full p-4 sm:p-5 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
                 >
-                  <span className="flex items-center gap-2">
-                    <FiInfo className="w-4 h-4 text-[#FF5A1F]" /> Print Guidelines & File Pre-flight Rules
+                  <span className="flex items-center gap-2.5">
+                    <FiInfo className="w-4.5 h-4.5 text-[#FF5A1F]" /> Print Guidelines & File Pre-flight Rules
                   </span>
-                  {openAccordion === 'overview' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                  {openAccordion === 'overview' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'overview' && (
-                  <div className="p-4 pt-0 text-slate-600 leading-relaxed space-y-2">
-                    <p>
+                  <div className="p-5 pt-1 text-slate-600 leading-relaxed space-y-2">
+                    <p className="font-medium text-xs">
                       For optimal CMYK press calibration, submit artwork files with 3mm bleed margins and minimum 300 DPI resolution.
                     </p>
-                    <ul className="list-disc pl-4 space-y-1 font-medium">
-                      <li>Vector PDF, AI, or PSD preferred for crisp typography</li>
-                      <li>CMYK color space (RGB files auto-converted during RIP processing)</li>
-                      <li>Font outlines enabled or embedded</li>
+                    <ul className="list-disc pl-4 space-y-1 font-medium text-xs text-slate-700">
+                      <li>Vector PDF, AI, or PSD preferred for crisp typography and vector logos</li>
+                      <li>CMYK color space (RGB files automatically converted during RIP raster processing)</li>
+                      <li>Font outlines enabled or fonts embedded inside vector files</li>
                     </ul>
                   </div>
                 )}
               </div>
 
-              {/* Tab 2: Shipping & Turnaround */}
+              {/* TAB 3: PRODUCTION TURNAROUND & SHIPPING */}
               <div>
                 <button
                   onClick={() => setOpenAccordion(openAccordion === 'shipping' ? null : 'shipping')}
-                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                  className="w-full p-4 sm:p-5 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
                 >
-                  <span className="flex items-center gap-2">
-                    <FiTruck className="w-4 h-4 text-[#FF5A1F]" /> Production Turnaround & Shipping
+                  <span className="flex items-center gap-2.5">
+                    <FiTruck className="w-4.5 h-4.5 text-[#FF5A1F]" /> Production Turnaround & Shipping Logistics
                   </span>
-                  {openAccordion === 'shipping' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                  {openAccordion === 'shipping' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'shipping' && (
-                  <div className="p-4 pt-0 text-slate-600 leading-relaxed space-y-1 font-medium">
-                    <p>⚡ Standard Production: 3-5 business days after artwork approval.</p>
-                    <p>⚡ Same-Day Express: Select Express at checkout for 24-hour dispatch.</p>
+                  <div className="p-5 pt-1 text-slate-600 leading-relaxed space-y-1 font-medium text-xs">
+                    <p className="text-slate-800 font-bold">⚡ Standard Production: 3-5 business days after artwork approval.</p>
+                    <p className="text-slate-800 font-bold">⚡ Same-Day Express: Select Express at checkout for 24-hour priority dispatch.</p>
                   </div>
                 )}
               </div>
 
-              {/* Tab 3: Guarantee */}
+              {/* TAB 4: 100% QUALITY & RE-PRINT GUARANTEE */}
               <div>
                 <button
                   onClick={() => setOpenAccordion(openAccordion === 'guarantee' ? null : 'guarantee')}
-                  className="w-full p-4 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
+                  className="w-full p-4 sm:p-5 text-left font-extrabold text-sm text-[#0B1633] flex items-center justify-between cursor-pointer border-none bg-transparent hover:bg-slate-50 transition"
                 >
-                  <span className="flex items-center gap-2">
-                    <FiShield className="w-4 h-4 text-[#FF5A1F]" /> 100% Quality & Re-print Guarantee
+                  <span className="flex items-center gap-2.5">
+                    <FiShield className="w-4.5 h-4.5 text-[#FF5A1F]" /> 100% Quality & Re-print Guarantee
                   </span>
-                  {openAccordion === 'guarantee' ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+                  {openAccordion === 'guarantee' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'guarantee' && (
-                  <div className="p-4 pt-0 text-slate-600 leading-relaxed font-medium">
-                    If your print order arrives with any press defects, trim errors, or damage, we will re-print and re-ship your complete order at zero additional cost.
+                  <div className="p-5 pt-1 text-slate-600 leading-relaxed font-medium text-xs">
+                    If your print order arrives with any press defects, trim alignment errors, or courier transit damage, we will re-print and re-ship your complete order at zero additional cost.
                   </div>
                 )}
               </div>

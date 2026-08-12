@@ -18,8 +18,11 @@ import {
   saveHomepageSettingsToFirestore,
   subscribeToCatalogOptions,
   saveCatalogOptionsToFirestore,
+  subscribeToMegamenuCategories,
+  saveMegamenuCategoriesToFirestore,
   DEFAULT_HOMEPAGE_SETTINGS,
-  DEFAULT_CATALOG_OPTIONS
+  DEFAULT_CATALOG_OPTIONS,
+  DEFAULT_MEGAMENU_CATEGORIES
 } from '../../services/firebase';
 
 const AdminContext = createContext();
@@ -58,7 +61,7 @@ export const AdminProvider = ({ children }) => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-  const [userRole, setUserRole] = useState('Super Admin'); // Super Admin, Production Manager, In-House Designer
+  const [userRole, setUserRole] = useState('Super Admin');
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [products, setProducts] = useState([]);
@@ -68,9 +71,10 @@ export const AdminProvider = ({ children }) => {
   const [cloudinaryMedia, setCloudinaryMedia] = useState(INITIAL_CLOUDINARY_MEDIA);
   const [logisticsLogs, setLogisticsLogs] = useState(INITIAL_LOGISTICS_LOGS);
 
-  // Dynamic Homepage & Catalog Customization States
+  // Dynamic Homepage, Catalog & Megamenu Categories States
   const [homepageSettings, setHomepageSettings] = useState(DEFAULT_HOMEPAGE_SETTINGS);
   const [catalogOptions, setCatalogOptions] = useState(DEFAULT_CATALOG_OPTIONS);
+  const [megamenuCategories, setMegamenuCategories] = useState(DEFAULT_MEGAMENU_CATEGORIES);
 
   // Dynamic Categories Management
   const [categories, setCategories] = useState([
@@ -117,12 +121,11 @@ export const AdminProvider = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Firebase Real-time Firestore Listeners (Connecting Frontend with Admin Panel)
+  // Firebase Real-time Firestore Listeners
   useEffect(() => {
     const unsubscribeOrders = subscribeToOrders((firestoreOrders) => {
       if (firestoreOrders) {
         setOrders(firestoreOrders);
-        // Extract customer profiles dynamically from incoming orders
         const extractedCustomers = firestoreOrders.map((o, idx) => ({
           id: `CUST-${100 + idx}`,
           name: o.customer?.name || 'Customer',
@@ -164,12 +167,19 @@ export const AdminProvider = ({ children }) => {
       }
     });
 
+    const unsubscribeMegamenu = subscribeToMegamenuCategories((data) => {
+      if (data) {
+        setMegamenuCategories(data);
+      }
+    });
+
     return () => {
       unsubscribeOrders();
       unsubscribeProducts();
       unsubscribeDesignReqs();
       unsubscribeHomepage();
       unsubscribeCatalogOptions();
+      unsubscribeMegamenu();
     };
   }, []);
 
@@ -183,6 +193,12 @@ export const AdminProvider = ({ children }) => {
   const updateCatalogOptions = async (newOptions) => {
     setCatalogOptions(newOptions);
     await saveCatalogOptionsToFirestore(newOptions);
+  };
+
+  // Update Megamenu Categories (Syncs to Firestore)
+  const updateMegamenuCategories = async (newCategories) => {
+    setMegamenuCategories(newCategories);
+    await saveMegamenuCategoriesToFirestore(newCategories);
   };
 
   // Add Custom Catalog Option to a category (e.g. paperStock, finishes, etc.)
@@ -304,6 +320,8 @@ export const AdminProvider = ({ children }) => {
       catalogOptions,
       updateCatalogOptions,
       addCustomCatalogOption,
+      megamenuCategories,
+      updateMegamenuCategories,
       designRequests,
       assignDesignerToTicket,
       uploadTicketProof,

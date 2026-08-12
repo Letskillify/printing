@@ -1,7 +1,36 @@
 import { useState, useEffect } from 'react'
-import { FiMenu, FiX, FiShoppingBag, FiUser, FiChevronDown, FiTruck, FiShield, FiCheckCircle, FiHeart, FiLogOut, FiSearch, FiZap, FiPhoneCall } from 'react-icons/fi'
+import { 
+  FiMenu, 
+  FiX, 
+  FiShoppingBag, 
+  FiUser, 
+  FiChevronDown, 
+  FiChevronUp,
+  FiTruck, 
+  FiShield, 
+  FiCheckCircle, 
+  FiHeart, 
+  FiLogOut, 
+  FiSearch, 
+  FiZap, 
+  FiPhoneCall,
+  FiArrowRight,
+  FiGrid,
+  FiStar,
+  FiTag,
+  FiCreditCard,
+  FiMail,
+  FiPrinter,
+  FiPackage,
+  FiBriefcase,
+  FiBox,
+  FiLayers
+} from 'react-icons/fi'
 import { useAuth } from '../../context/AuthContext'
 import { SearchModal } from '../common/SearchModal'
+import { subscribeToMegamenuCategories, DEFAULT_MEGAMENU_CATEGORIES } from '../../services/firebase'
+
+export const MEGA_MENU_CATEGORIES = DEFAULT_MEGAMENU_CATEGORIES;
 
 export function Navbar({ currentPage, setCurrentPage }) {
   const { currentUser, userProfile, logout, cartItems, wishlistItems } = useAuth()
@@ -10,6 +39,32 @@ export function Navbar({ currentPage, setCurrentPage }) {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [mobileCategoryOpen, setMobileCategoryOpen] = useState(null)
+
+  const [liveMegamenuCats, setLiveMegamenuCats] = useState(DEFAULT_MEGAMENU_CATEGORIES);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToMegamenuCategories((cats) => {
+      if (cats && Array.isArray(cats) && cats.length > 0) {
+        setLiveMegamenuCats(cats);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const getIconForName = (iconName) => {
+    switch (iconName) {
+      case 'FiCreditCard': return FiCreditCard;
+      case 'FiMail': return FiMail;
+      case 'FiPrinter': return FiPrinter;
+      case 'FiPackage': return FiPackage;
+      case 'FiBriefcase': return FiBriefcase;
+      case 'FiBox': return FiBox;
+      case 'FiTag': return FiTag;
+      case 'FiLayers': return FiLayers;
+      default: return FiPackage;
+    }
+  };
 
   // Listen for Ctrl+K / Cmd+K global shortcut
   useEffect(() => {
@@ -45,13 +100,6 @@ export function Navbar({ currentPage, setCurrentPage }) {
       handleLinkClick('products', { search: searchQuery.trim() }, '#catalog')
     }
   }
-
-  const productCategories = [
-    'Business Cards', 'Brochures & Flyers', 'Posters & Banners',
-    'Stickers & Labels', 'Packaging', 'Stationery', 'Photo Printing'
-  ]
-
-  const totalCartCount = cartItems.reduce((sum, item) => sum + (item.qty || 1), 0)
 
   return (
     <header className="w-full font-sans sticky top-0 z-50 transition-all duration-300">
@@ -144,7 +192,7 @@ export function Navbar({ currentPage, setCurrentPage }) {
               }`} />
             </button>
 
-            {/* Products Dropdown */}
+            {/* Products Premium Megamenu Dropdown */}
             <div className="relative group">
               <button
                 onClick={() => handleLinkClick('products')}
@@ -158,18 +206,123 @@ export function Navbar({ currentPage, setCurrentPage }) {
                   currentPage === 'products' ? 'scale-x-100 origin-left' : 'scale-x-0 group-hover:scale-x-100 origin-left'
                 }`} />
               </button>
-              {/* Dropdown Menu */}
-              <div className="absolute top-full left-0 mt-1.5 w-60 bg-white border border-slate-200/90 rounded-2xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                {productCategories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => handleLinkClick('products', { category: cat }, '#catalog')}
-                    className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50 hover:text-[#FF5A1F] transition-colors border-none bg-transparent cursor-pointer"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A1F] flex-shrink-0 opacity-70" />
-                    {cat}
-                  </button>
-                ))}
+
+              {/* ── Ultra Premium Mega Menu Container (Decreased Top Gap: pt-1.5 with bridge) ── */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-1.5 w-[1240px] max-w-[96vw] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out z-50 pointer-events-none group-hover:pointer-events-auto">
+                <div className="bg-white/98 backdrop-blur-2xl border border-slate-200/90 rounded-3xl shadow-[0_20px_60px_-15px_rgba(7,21,47,0.18)] p-6 sm:p-7">
+                  
+                  {/* Top Quick Highlights Bar */}
+                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100 text-xs">
+                    <div className="flex items-center gap-4 text-slate-500 font-bold">
+                      <span className="flex items-center gap-1.5 text-[#07152F] font-black">
+                        <FiZap className="w-4 h-4 text-[#FF5A1F]" />
+                        Luxury Print & Packaging Studio
+                      </span>
+                      <span className="hidden xl:inline text-slate-300 font-normal">|</span>
+                      <span className="hidden xl:inline text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 rounded-full">
+                        ✓ 24-48h Express Production
+                      </span>
+                      <span className="hidden xl:inline text-sky-700 font-bold bg-sky-50 border border-sky-200/60 px-2.5 py-0.5 rounded-full">
+                        ✓ Free Digital Proofing
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handleLinkClick('products')}
+                      className="flex items-center gap-1.5 font-black text-xs text-[#FF5A1F] hover:text-[#d84813] transition border-none bg-transparent cursor-pointer group/catlink"
+                    >
+                      View Complete Catalog (250+ SKUs) <FiArrowRight className="w-3.5 h-3.5 group-hover/catlink:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+
+                  {/* 5-Column Grid + Promo Showcase Sidebar */}
+                  <div className="grid grid-cols-12 gap-5">
+                    
+                    {/* Mega Menu Categories */}
+                    <div className="col-span-10 grid grid-cols-5 gap-3.5 border-r border-slate-100 pr-4">
+                      {liveMegamenuCats.map((category) => {
+                        const Icon = category.icon || getIconForName(category.iconName);
+                        return (
+                          <div key={category.id || category.title} className="flex flex-col">
+                            
+                            {/* Category Header Box — Sleek Non-wrapping Header Card */}
+                            <button
+                              onClick={() => handleLinkClick('products', { category: category.categoryQuery || category.title }, '#catalog')}
+                              className="flex items-center justify-between w-full bg-slate-50 hover:bg-[#FF5A1F]/10 border border-slate-200/80 hover:border-[#FF5A1F]/40 p-2.5 rounded-xl transition-all duration-200 cursor-pointer mb-2 group/head select-none"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-7 h-7 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center text-[#FF5A1F] shadow-2xs group-hover/head:bg-[#FF5A1F] group-hover/head:text-white transition-colors flex-shrink-0">
+                                  {Icon && <Icon className="w-3.5 h-3.5" />}
+                                </div>
+                                <span className="text-[13px] font-black text-[#07152F] group-hover/head:text-[#FF5A1F] transition-colors truncate">
+                                  {category.title}
+                                </span>
+                              </div>
+                              {category.badge && (
+                                <span className="ml-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-white bg-[#FF5A1F] rounded-full shadow-2xs flex-shrink-0">
+                                  {category.badge}
+                                </span>
+                              )}
+                            </button>
+
+                            {/* Category Items List */}
+                            <div className="space-y-0.5">
+                              {(category.items || []).map((item) => (
+                                <button
+                                  key={item.name}
+                                  onClick={() => handleLinkClick('products', { category: category.categoryQuery || category.title, search: item.search || item.name }, '#catalog')}
+                                  className="flex flex-col w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-slate-50 hover:translate-x-1 transition-all duration-200 border-none bg-transparent cursor-pointer group/item"
+                                >
+                                  <span className="text-[12.5px] font-bold text-slate-800 group-hover/item:text-[#FF5A1F] transition-colors flex items-center justify-between leading-snug">
+                                    <span>{item.name}</span>
+                                    <FiArrowRight className="w-3 h-3 text-[#FF5A1F] opacity-0 group-hover/item:opacity-100 -translate-x-1 group-hover/item:translate-x-0 transition-all" />
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 font-medium group-hover/item:text-slate-500">
+                                    {item.tag}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Right Promo Showcase Banner (2 Columns) */}
+                    <div className="col-span-2 flex flex-col justify-between bg-gradient-to-br from-[#07152F] via-[#0b1d3f] to-[#112852] text-white p-4 rounded-2xl relative overflow-hidden shadow-lg border border-slate-800/80">
+                      <div className="absolute top-0 right-0 w-28 h-28 bg-[#FF5A1F]/20 rounded-full blur-2xl pointer-events-none" />
+                      
+                      <div>
+                        <div className="inline-flex items-center gap-1 bg-[#FF5A1F] text-white font-extrabold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-md mb-2 shadow-xs">
+                          ⚡ Custom Orders
+                        </div>
+                        <h4 className="text-sm font-extrabold leading-tight text-white mb-1.5">
+                          B2B Corporate & Bulk Printing
+                        </h4>
+                        <p className="text-[11px] text-slate-300 leading-relaxed font-medium mb-3">
+                          Need custom spot UV, foils, or sample physical kits delivered?
+                        </p>
+                      </div>
+
+                      <div className="space-y-2 pt-2 border-t border-slate-700/60">
+                        <button
+                          onClick={() => handleLinkClick('quote')}
+                          className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-black text-xs py-2 px-3 rounded-xl transition cursor-pointer border-none shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-1.5"
+                        >
+                          Get Custom Quote <FiArrowRight className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => handleLinkClick('products')}
+                          className="w-full bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-bold text-[11px] py-1.5 px-3 rounded-xl transition cursor-pointer border border-slate-700 flex items-center justify-center gap-1"
+                        >
+                          Explore Catalog
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
               </div>
             </div>
 
@@ -186,18 +339,21 @@ export function Navbar({ currentPage, setCurrentPage }) {
               }`} />
             </button>
 
-            {/* Track Order */}
+            {/* Shop (Changed from Track Order as requested) */}
             <button
-              onClick={() => handleLinkClick('track')}
+              onClick={() => handleLinkClick('products')}
               className={`relative px-3.5 py-2 text-xs font-extrabold transition-colors duration-200 border-none cursor-pointer group ${
-                currentPage === 'track' ? 'text-[#FF5A1F]' : 'text-[#0B1633] hover:text-[#FF5A1F]'
+                currentPage === 'products' ? 'text-[#FF5A1F]' : 'text-[#0B1633] hover:text-[#FF5A1F]'
               }`}
             >
-              Track Order
+              Shop
               <span className={`absolute bottom-0 left-3 right-3 h-[2.5px] bg-[#FF5A1F] rounded-full transition-transform duration-300 ${
-                currentPage === 'track' ? 'scale-x-100 origin-left' : 'scale-x-0 group-hover:scale-x-100 origin-left'
+                currentPage === 'products' ? 'scale-x-100 origin-left' : 'scale-x-0 group-hover:scale-x-100 origin-left'
               }`} />
             </button>
+
+            {/* Track Order */}
+           
 
             {/* About */}
             <button
@@ -286,7 +442,7 @@ export function Navbar({ currentPage, setCurrentPage }) {
 
       {/* Mobile Drawer Panel */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-200 shadow-2xl px-4 py-5 space-y-2 z-40">
+        <div className="lg:hidden bg-white border-b border-slate-200 shadow-2xl px-4 py-5 space-y-2 z-40 max-h-[85vh] overflow-y-auto">
           <div 
             onClick={() => {
               setMobileMenuOpen(false);
@@ -303,9 +459,68 @@ export function Navbar({ currentPage, setCurrentPage }) {
             />
           </div>
 
+          {/* Navigation Links */}
+          <button
+            onClick={() => handleLinkClick('home')}
+            className={`block w-full text-left px-4 py-2 text-xs font-extrabold rounded-xl transition-colors border-none cursor-pointer ${
+              currentPage === 'home' ? 'text-[#FF5A1F] bg-[#FF5A1F]/10' : 'text-[#0B1633] bg-transparent hover:bg-slate-50'
+            }`}
+          >
+            Home
+          </button>
+
+          {/* Expandable Mobile Products Accordion */}
+          <div className="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 my-1">
+            <button
+              onClick={() => handleLinkClick('products')}
+              className="w-full text-left px-4 py-2.5 text-xs font-extrabold text-[#0B1633] bg-transparent border-none flex items-center justify-between cursor-pointer"
+            >
+              <span>Products Catalog (All Items)</span>
+              <span className="text-[10px] bg-[#FF5A1F] text-white px-2 py-0.5 rounded-full font-extrabold">250+ SKUs</span>
+            </button>
+
+            {/* Mobile Categories Submenu */}
+            <div className="px-3 pb-3 space-y-2">
+              {liveMegamenuCats.map((cat) => {
+                const isOpen = mobileCategoryOpen === (cat.id || cat.title);
+                return (
+                  <div key={cat.id || cat.title} className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs">
+                    <button
+                      onClick={() => setMobileCategoryOpen(isOpen ? null : (cat.id || cat.title))}
+                      className="w-full flex items-center justify-between px-3 py-2 text-xs font-extrabold text-[#C2410C] bg-orange-50/40 border-none cursor-pointer"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        {cat.title}
+                        <FiChevronUp className={`w-3.5 h-3.5 transition-transform ${isOpen ? '' : 'rotate-180'}`} />
+                      </span>
+                      {cat.badge && (
+                        <span className="text-[8px] bg-[#FF5A1F] text-white px-1.5 py-0.5 rounded-full font-black">
+                          {cat.badge}
+                        </span>
+                      )}
+                    </button>
+
+                    {isOpen && (
+                      <div className="p-2 space-y-1 bg-white">
+                        {(cat.items || []).map((item) => (
+                          <button
+                            key={item.name}
+                            onClick={() => handleLinkClick('products', { category: cat.categoryQuery || cat.title, search: item.search || item.name }, '#catalog')}
+                            className="block w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:text-[#FF5A1F] hover:bg-slate-50 border-none bg-transparent cursor-pointer"
+                          >
+                            • {item.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {[
-            { label: 'Home', page: 'home' },
-            { label: 'Products Catalog', page: 'products' },
+            { label: 'Shop Catalog', page: 'products' },
             { label: 'Services', page: 'services' },
             { label: 'Track Order', page: 'track' },
             { label: 'About Us', page: 'about' },
@@ -324,6 +539,7 @@ export function Navbar({ currentPage, setCurrentPage }) {
               {label}
             </button>
           ))}
+
           <div className="pt-2">
             <button
               onClick={() => handleLinkClick('products')}
@@ -349,3 +565,4 @@ export function Navbar({ currentPage, setCurrentPage }) {
     </header>
   )
 }
+

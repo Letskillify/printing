@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import { uploadToCloudinary } from '../../../services/cloudinary';
+import { DEFAULT_CATALOG_OPTIONS } from '../../../services/firebase';
 
 export const ProductCatalogManager = () => {
   const { 
@@ -26,7 +27,10 @@ export const ProductCatalogManager = () => {
     deleteCategory,
     catalogOptions,
     updateCatalogOptions,
-    addCustomCatalogOption
+    addCustomCatalogOption,
+    megamenuCategories,
+    updateMegamenuCategories,
+    setActiveTab
   } = useAdmin();
 
   const [editingProduct, setEditingProduct] = useState(null);
@@ -35,11 +39,13 @@ export const ProductCatalogManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Category Sidebar Drawer & Quick-Add States
+  // Category & Subcategory Quick-Add States
   const [isCategorySidebarOpen, setIsCategorySidebarOpen] = useState(false);
   const [newCatSidebarInput, setNewCatSidebarInput] = useState('');
   const [showInlineCatInput, setShowInlineCatInput] = useState(false);
   const [inlineCatInput, setInlineCatInput] = useState('');
+  const [showInlineSubcatInput, setShowInlineSubcatInput] = useState(false);
+  const [inlineSubcatInput, setInlineSubcatInput] = useState('');
   const [formActiveTab, setFormActiveTab] = useState('general'); // 'general', 'tiered', 'variants'
 
   // Dynamic Custom Tech Spec Row state
@@ -108,58 +114,17 @@ export const ProductCatalogManager = () => {
       },
       images: [],
       variants: {
-        paperStock: catalogOptions?.paperStock || [
-          { name: '350 GSM Matte Art Card', priceModifier: 0 },
-          { name: '400 GSM Velvet Soft-Touch Card', priceModifier: 1.5 },
-          { name: '300 GSM Recycled Kraft Board', priceModifier: 0.8 },
-        ],
-        finishes: catalogOptions?.finishes || [
-          { name: 'Matte Lamination', priceModifier: 0 },
-          { name: 'Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Raised 3D Gold Foil Stamping', priceModifier: 2.5 },
-        ],
-        sides: catalogOptions?.sides || [
-          { name: 'Single-sided Print (1/0 CMYK)', priceModifier: 0 },
-          { name: 'Double-sided Print (4/4 CMYK)', priceModifier: 1.5 }
-        ],
-        corners: catalogOptions?.corners || [
-          { name: 'Standard Square Corners', priceModifier: 0 },
-          { name: '3mm Rounded Corners (4 Edges)', priceModifier: 0.5 }
-        ],
-        lamination: catalogOptions?.lamination || [
-          { name: 'No Lamination Coating', priceModifier: 0 },
-          { name: 'Thermal Gloss Lamination', priceModifier: 0.5 },
-          { name: 'Velvet Soft-Touch Lamination', priceModifier: 1.5 }
-        ],
-        sizeFormat: catalogOptions?.sizeFormat || [
-          { name: 'Standard Business Card (90x55mm)', priceModifier: 0 },
-          { name: 'Square Mini Card (60x60mm)', priceModifier: 0.5 }
-        ],
-        foilAccents: catalogOptions?.foilAccents || [
-          { name: 'No Metallic Foil Accent', priceModifier: 0 },
-          { name: 'Raised 3D Gold Foil Accent', priceModifier: 2.2 },
-          { name: 'Raised 3D Silver Foil Accent', priceModifier: 2.0 }
-        ],
-        spotUV: catalogOptions?.spotUV || [
-          { name: 'No Spot UV Gloss', priceModifier: 0 },
-          { name: 'Single-Sided Spot UV Logo Accent', priceModifier: 1.2 },
-          { name: '3D High-Build Embossed UV Glass', priceModifier: 2.8 }
-        ],
-        bindingStyle: catalogOptions?.bindingStyle || [
-          { name: 'No Binding (Loose Sheets)', priceModifier: 0 },
-          { name: 'Saddle-Stitch Wire Staple', priceModifier: 1.0 },
-          { name: 'Perfect Glue Book Binding', priceModifier: 2.5 }
-        ],
-        proofService: catalogOptions?.proofService || [
-          { name: 'Print-Ready Artwork (Self Upload)', priceModifier: 0 },
-          { name: 'Prepress CMYK Digital Soft Proof (+₹99)', priceModifier: 0.5 },
-          { name: 'Full Designer Support (+₹299)', priceModifier: 1.5 }
-        ],
-        packagingStyle: catalogOptions?.packagingStyle || [
-          { name: 'Standard Eco Bulk Shrink Wrap', priceModifier: 0 },
-          { name: 'Acrylic Clear Desk Presentation Box', priceModifier: 1.2 },
-          { name: 'Luxury Rigid Gift Packaging Box', priceModifier: 3.5 }
-        ]
+        paperStock: catalogOptions?.paperStock ?? DEFAULT_CATALOG_OPTIONS.paperStock,
+        finishes: catalogOptions?.finishes ?? DEFAULT_CATALOG_OPTIONS.finishes,
+        sides: catalogOptions?.sides ?? DEFAULT_CATALOG_OPTIONS.sides,
+        corners: catalogOptions?.corners ?? DEFAULT_CATALOG_OPTIONS.corners,
+        lamination: catalogOptions?.lamination ?? DEFAULT_CATALOG_OPTIONS.lamination,
+        sizeFormat: catalogOptions?.sizeFormat ?? DEFAULT_CATALOG_OPTIONS.sizeFormat,
+        foilAccents: catalogOptions?.foilAccents ?? DEFAULT_CATALOG_OPTIONS.foilAccents,
+        spotUV: catalogOptions?.spotUV ?? DEFAULT_CATALOG_OPTIONS.spotUV,
+        bindingStyle: catalogOptions?.bindingStyle ?? DEFAULT_CATALOG_OPTIONS.bindingStyle,
+        proofService: catalogOptions?.proofService ?? DEFAULT_CATALOG_OPTIONS.proofService,
+        packagingStyle: catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle
       },
       tieredPricing: [
         { tierMin: 300, pricePerUnit: 5.5 },
@@ -179,17 +144,17 @@ export const ProductCatalogManager = () => {
       minOrderQty: prod.minOrderQty || 100,
       specs: prod.specs || { paperGsm: '350 GSM', dimensions: '91mm x 53mm', printTech: 'Offset Litho', turnaround: '24 Hours' },
       variants: {
-        paperStock: prod.variants?.paperStock || catalogOptions?.paperStock || [{ name: '350 GSM Matte', priceModifier: 0 }],
-        finishes: prod.variants?.finishes || catalogOptions?.finishes || [{ name: 'Matte Lamination', priceModifier: 0 }],
-        sides: prod.variants?.sides || catalogOptions?.sides || [{ name: 'Single-sided', priceModifier: 0 }],
-        corners: prod.variants?.corners || catalogOptions?.corners || [{ name: 'Standard', priceModifier: 0 }],
-        lamination: prod.variants?.lamination || catalogOptions?.lamination || [{ name: 'No Lamination', priceModifier: 0 }],
-        sizeFormat: prod.variants?.sizeFormat || catalogOptions?.sizeFormat || [{ name: 'Standard (90x55mm)', priceModifier: 0 }],
-        foilAccents: prod.variants?.foilAccents || catalogOptions?.foilAccents || [{ name: 'No Metallic Foil', priceModifier: 0 }],
-        spotUV: prod.variants?.spotUV || catalogOptions?.spotUV || [{ name: 'No Spot UV', priceModifier: 0 }],
-        bindingStyle: prod.variants?.bindingStyle || catalogOptions?.bindingStyle || [{ name: 'No Binding', priceModifier: 0 }],
-        proofService: prod.variants?.proofService || catalogOptions?.proofService || [{ name: 'Print-Ready', priceModifier: 0 }],
-        packagingStyle: prod.variants?.packagingStyle || catalogOptions?.packagingStyle || [{ name: 'Standard Bulk', priceModifier: 0 }]
+        paperStock: prod.variants?.paperStock ?? catalogOptions?.paperStock ?? DEFAULT_CATALOG_OPTIONS.paperStock,
+        finishes: prod.variants?.finishes ?? catalogOptions?.finishes ?? DEFAULT_CATALOG_OPTIONS.finishes,
+        sides: prod.variants?.sides ?? catalogOptions?.sides ?? DEFAULT_CATALOG_OPTIONS.sides,
+        corners: prod.variants?.corners ?? catalogOptions?.corners ?? DEFAULT_CATALOG_OPTIONS.corners,
+        lamination: prod.variants?.lamination ?? catalogOptions?.lamination ?? DEFAULT_CATALOG_OPTIONS.lamination,
+        sizeFormat: prod.variants?.sizeFormat ?? catalogOptions?.sizeFormat ?? DEFAULT_CATALOG_OPTIONS.sizeFormat,
+        foilAccents: prod.variants?.foilAccents ?? catalogOptions?.foilAccents ?? DEFAULT_CATALOG_OPTIONS.foilAccents,
+        spotUV: prod.variants?.spotUV ?? catalogOptions?.spotUV ?? DEFAULT_CATALOG_OPTIONS.spotUV,
+        bindingStyle: prod.variants?.bindingStyle ?? catalogOptions?.bindingStyle ?? DEFAULT_CATALOG_OPTIONS.bindingStyle,
+        proofService: prod.variants?.proofService ?? catalogOptions?.proofService ?? DEFAULT_CATALOG_OPTIONS.proofService,
+        packagingStyle: prod.variants?.packagingStyle ?? catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle
       }
     });
     setEditingProduct(prod);
@@ -221,21 +186,28 @@ export const ProductCatalogManager = () => {
     setEditingProduct(null);
   };
 
-  const handleUpdateVariantItems = (groupKey, newItemsList) => {
+  const handleUpdateVariantItems = async (groupKey, newItemsList) => {
+    const updatedVariants = {
+      ...(formData.variants || {}),
+      [groupKey]: newItemsList
+    };
     setFormData(prev => ({
       ...prev,
-      variants: {
-        ...prev.variants,
-        [groupKey]: newItemsList
-      }
+      variants: updatedVariants
     }));
+    if (updateCatalogOptions) {
+      await updateCatalogOptions({
+        ...catalogOptions,
+        [groupKey]: newItemsList
+      });
+    }
   };
 
   const handlePersistCustomOption = async (groupKey, newOptionObj) => {
     await addCustomCatalogOption(groupKey, newOptionObj);
   };
 
-  // Reusable Component for Option Categories with "+ Add Custom Option at Last"
+  // Reusable Component for Option Categories with "+ Add Custom Option at Last" and 1-Click Delete All
   const VariantSectionCard = ({ title, groupKey, items }) => {
     const [newOptName, setNewOptName] = useState('');
     const [newOptPrice, setNewOptPrice] = useState('');
@@ -247,7 +219,7 @@ export const ProductCatalogManager = () => {
       const newObj = { name: newOptName.trim(), priceModifier: priceVal };
 
       const updatedList = [...(items || []), newObj];
-      handleUpdateVariantItems(groupKey, updatedList);
+      await handleUpdateVariantItems(groupKey, updatedList);
       await handlePersistCustomOption(groupKey, newObj);
 
       setNewOptName('');
@@ -256,54 +228,96 @@ export const ProductCatalogManager = () => {
       setTimeout(() => setShowSuccess(false), 2500);
     };
 
+    const handleRemoveAllOptions = async () => {
+      if (window.confirm(`Are you sure you want to remove ALL options from "${title}" in 1 click?`)) {
+        await handleUpdateVariantItems(groupKey, []);
+      }
+    };
+
+    const activeItems = items || [];
+
     return (
       <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">{title}</h4>
-          <span className="text-[10px] font-bold text-slate-400">({(items || []).length} active)</span>
+        {/* Section Title Header with 1-Click Delete All Button */}
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
+          <div className="flex items-center gap-2">
+            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">{title}</h4>
+            <span className="text-[10px] font-extrabold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+              ({activeItems.length} active)
+            </span>
+          </div>
+
+          {activeItems.length > 0 ? (
+            <button
+              type="button"
+              onClick={handleRemoveAllOptions}
+              className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 text-[10.5px] font-black flex items-center gap-1 transition-colors cursor-pointer border border-red-200/80 shadow-3xs"
+              title="Delete all options in this section in 1 click and sync to Firebase"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-red-600" /> Remove All (1-Click)
+            </button>
+          ) : (
+            <span className="text-[10px] font-bold text-slate-400 italic">No options selected</span>
+          )}
         </div>
 
         <div className="space-y-2">
-          {(items || []).map((opt, idx) => (
-            <div key={idx} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={opt.name}
-                onChange={(e) => {
-                  const updated = [...items];
-                  updated[idx].name = e.target.value;
-                  handleUpdateVariantItems(groupKey, updated);
-                }}
-                placeholder="Option Name"
-                className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
-              />
-              <div className="relative w-24 shrink-0">
-                <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={opt.priceModifier}
-                  onChange={(e) => {
-                    const updated = [...items];
-                    updated[idx].priceModifier = parseFloat(e.target.value) || 0;
-                    handleUpdateVariantItems(groupKey, updated);
-                  }}
-                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
-                />
-              </div>
+          {activeItems.length === 0 ? (
+            <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-medium flex items-center justify-between">
+              <span>⚠️ All options cleared. Storefront customers will see no selection box for this section.</span>
               <button
                 type="button"
                 onClick={() => {
-                  const updated = items.filter((_, i) => i !== idx);
-                  handleUpdateVariantItems(groupKey, updated);
+                  const defaultList = DEFAULT_CATALOG_OPTIONS[groupKey] || [];
+                  handleUpdateVariantItems(groupKey, defaultList);
                 }}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
-                title="Delete Option"
+                className="text-[10px] font-bold text-amber-900 underline hover:text-amber-950 border-none bg-transparent cursor-pointer ml-2 shrink-0"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                Restore Defaults
               </button>
             </div>
-          ))}
+          ) : (
+            activeItems.map((opt, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={opt.name}
+                  onChange={(e) => {
+                    const updated = [...activeItems];
+                    updated[idx].name = e.target.value;
+                    handleUpdateVariantItems(groupKey, updated);
+                  }}
+                  placeholder="Option Name"
+                  className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                />
+                <div className="relative w-24 shrink-0">
+                  <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={opt.priceModifier}
+                    onChange={(e) => {
+                      const updated = [...activeItems];
+                      updated[idx].priceModifier = parseFloat(e.target.value) || 0;
+                      handleUpdateVariantItems(groupKey, updated);
+                    }}
+                    className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = activeItems.filter((_, i) => i !== idx);
+                    handleUpdateVariantItems(groupKey, updated);
+                  }}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
+                  title="Delete Option"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))
+          )}
 
           {/* DEDICATED AT-LAST POSITION: "+ Add Custom Option at Last" Form */}
           <div className="pt-2.5 border-t border-dashed border-blue-200 bg-blue-50/40 p-3 rounded-xl space-y-2">
@@ -370,6 +384,12 @@ export const ProductCatalogManager = () => {
         </div>
 
         <div className="flex items-center gap-3 relative z-10">
+          <button
+            onClick={() => setActiveTab && setActiveTab('print_matrix')}
+            className="px-4 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-xs flex items-center gap-2 border border-purple-200 shadow-3xs transition-all cursor-pointer"
+          >
+            <Layers className="w-4 h-4 text-purple-600" /> Manage Options Matrix Center
+          </button>
           <button
             onClick={() => setIsCategorySidebarOpen(true)}
             className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs flex items-center gap-2 border border-slate-200 shadow-3xs transition-all cursor-pointer"
@@ -654,9 +674,10 @@ export const ProductCatalogManager = () => {
                         />
                       </div>
 
-                      <div className="md:col-span-2">
+                      {/* Main Category Cascading Selector */}
+                      <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Print Category</label>
+                          <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Main Category *</label>
                           <button
                             type="button"
                             onClick={() => setShowInlineCatInput(!showInlineCatInput)}
@@ -672,15 +693,24 @@ export const ProductCatalogManager = () => {
                               type="text"
                               value={inlineCatInput}
                               onChange={(e) => setInlineCatInput(e.target.value)}
-                              placeholder="e.g. Stickers & Labels"
+                              placeholder="e.g. Stickers & Decals"
                               className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
                             />
                             <button
                               type="button"
-                              onClick={() => {
+                              onClick={async () => {
                                 if (inlineCatInput.trim()) {
-                                  addCategory(inlineCatInput.trim());
-                                  setFormData({ ...formData, category: inlineCatInput.trim() });
+                                  const name = inlineCatInput.trim();
+                                  const newCat = {
+                                    id: name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+                                    title: name,
+                                    categoryQuery: name,
+                                    badge: null,
+                                    items: []
+                                  };
+                                  const updated = [...(megamenuCategories || []), newCat];
+                                  if (updateMegamenuCategories) await updateMegamenuCategories(updated);
+                                  setFormData({ ...formData, category: name, subcategory: '' });
                                   setInlineCatInput('');
                                   setShowInlineCatInput(false);
                                 }
@@ -700,12 +730,94 @@ export const ProductCatalogManager = () => {
                         ) : (
                           <select
                             value={formData.category}
-                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                            onChange={(e) => {
+                              const newCat = e.target.value;
+                              const matched = (megamenuCategories || []).find(c => (c.categoryQuery || c.title) === newCat || c.title === newCat);
+                              const firstSub = matched?.items?.[0]?.name || '';
+                              setFormData({ ...formData, category: newCat, subcategory: firstSub });
+                            }}
                             className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-xs"
                           >
-                            {(categories && categories.length > 0 ? categories : ['Business Stationery', 'Large Format Display', 'Custom Packaging', 'Apparel & Merch']).map((cat, idx) => (
-                              <option key={idx} value={cat}>{cat}</option>
+                            {(megamenuCategories && megamenuCategories.length > 0
+                              ? megamenuCategories.map(c => c.categoryQuery || c.title)
+                              : ['Business Cards', 'Invitations', 'Printing', 'Packaging', 'Corporate & Merch']
+                            ).map((catName, idx) => (
+                              <option key={idx} value={catName}>{catName}</option>
                             ))}
+                          </select>
+                        )}
+                      </div>
+
+                      {/* Subcategory / Item Type Cascading Dropdown */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Subcategory / Item Type *</label>
+                          <button
+                            type="button"
+                            onClick={() => setShowInlineSubcatInput(!showInlineSubcatInput)}
+                            className="text-[10px] font-extrabold text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer border-none"
+                          >
+                            <Plus className="w-3 h-3" /> Quick Add Subcategory
+                          </button>
+                        </div>
+
+                        {showInlineSubcatInput ? (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={inlineSubcatInput}
+                              onChange={(e) => setInlineSubcatInput(e.target.value)}
+                              placeholder="e.g. Spot UV Cards"
+                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
+                            />
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (inlineSubcatInput.trim() && formData.category) {
+                                  const subName = inlineSubcatInput.trim();
+                                  const updatedCats = (megamenuCategories || []).map(c => {
+                                    if ((c.categoryQuery || c.title) === formData.category || c.title === formData.category) {
+                                      return {
+                                        ...c,
+                                        items: [...(c.items || []), { name: subName, search: subName, tag: 'Custom Spec' }]
+                                      };
+                                    }
+                                    return c;
+                                  });
+                                  if (updateMegamenuCategories) await updateMegamenuCategories(updatedCats);
+                                  setFormData({ ...formData, subcategory: subName });
+                                  setInlineSubcatInput('');
+                                  setShowInlineSubcatInput(false);
+                                }
+                              }}
+                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
+                            >
+                              Save Subcategory
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowInlineSubcatInput(false)}
+                              className="px-2 py-2 text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer shrink-0"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={formData.subcategory || ''}
+                            onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
+                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-xs"
+                          >
+                            <option value="">-- Select Subcategory --</option>
+                            {(() => {
+                              const activeCatObj = (megamenuCategories || []).find(
+                                c => (c.categoryQuery || c.title) === formData.category || c.title === formData.category
+                              );
+                              const subList = activeCatObj?.items || [];
+                              return subList.map((sub, idx) => (
+                                <option key={idx} value={sub.name}>{sub.name} ({sub.tag || 'Item'})</option>
+                              ));
+                            })()}
                           </select>
                         )}
                       </div>
@@ -940,10 +1052,39 @@ export const ProductCatalogManager = () => {
               {/* TAB 3: PRINT OPTIONS & FINISHES MATRIX WITH "+ ADD CUSTOM OPTION AT LAST" */}
               {formActiveTab === 'variants' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-xs flex items-center justify-between">
-                    <span className="font-bold">
-                      💡 All newly added custom options are automatically persisted to Firebase and loaded into all future products.
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-xs flex flex-wrap items-center justify-between gap-3">
+                    <span className="font-bold flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
+                      All changes, custom options, and 1-click deletions automatically upload to Firebase and update live storefront products.
                     </span>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (window.confirm("Are you sure you want to clear ALL options across all 11 option matrices in 1 click?")) {
+                          const emptyVariants = {
+                            paperStock: [],
+                            finishes: [],
+                            sides: [],
+                            corners: [],
+                            lamination: [],
+                            sizeFormat: [],
+                            foilAccents: [],
+                            spotUV: [],
+                            bindingStyle: [],
+                            proofService: [],
+                            packagingStyle: []
+                          };
+                          setFormData(prev => ({ ...prev, variants: emptyVariants }));
+                          if (updateCatalogOptions) {
+                            await updateCatalogOptions(emptyVariants);
+                          }
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[11px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
+                      title="Clear options across all 11 sections in 1 click"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All 11 Option Sections (1-Click)
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

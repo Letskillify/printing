@@ -579,3 +579,139 @@ export const saveCatalogOptionsToFirestore = async (optionsData) => {
   }
 };
 
+// ── Megamenu Categories & Subcategories Firestore Sync ──
+export const DEFAULT_MEGAMENU_CATEGORIES = [
+  {
+    id: 'business-cards',
+    title: 'Business Cards',
+    badge: 'HOT',
+    categoryQuery: 'Business Cards',
+    iconName: 'FiCreditCard',
+    items: [
+      { name: 'Standard Cards', search: 'Standard Cards', tag: '350 GSM Matte/Gloss' },
+      { name: 'Spot UV Cards', search: 'Spot UV Cards', tag: '3D Gloss Accent' },
+      { name: 'Die Cut Cards', search: 'Die Cut Cards', tag: 'Custom Shapes' },
+      { name: 'Metallic Foil Cards', search: 'Metallic Foil Cards', tag: 'Gold / Silver Foil' },
+      { name: 'Soft-Touch Velvet Cards', search: 'Velvet Cards', tag: 'Silk Touch Premium' },
+      { name: 'Luxury Thick Cards', search: 'Thick Cards', tag: '400+ GSM Triplex' },
+    ]
+  },
+  {
+    id: 'invitations',
+    title: 'Invitations',
+    badge: 'POPULAR',
+    categoryQuery: 'Invitations',
+    iconName: 'FiMail',
+    items: [
+      { name: 'Wedding Cards', search: 'Wedding Cards', tag: 'Traditional & Foil' },
+      { name: 'Birthday Cards', search: 'Birthday Cards', tag: 'Vibrant & Themed' },
+      { name: 'Thank You Cards', search: 'Thank You Cards', tag: 'Personalized Notes' },
+      { name: 'Save the Date Cards', search: 'Save the Date', tag: 'Announcements' },
+      { name: 'Luxury Foil Invitations', search: 'Foil Invitations', tag: 'Metallic Detailing' },
+      { name: 'Envelope & Seal Sets', search: 'Envelopes', tag: 'Custom Wax Seals' },
+    ]
+  },
+  {
+    id: 'printing',
+    title: 'Printing',
+    badge: null,
+    categoryQuery: 'Printing',
+    iconName: 'FiPrinter',
+    items: [
+      { name: 'Brochures & Flyers', search: 'Brochures & Flyers', tag: 'Tri-fold & Bi-fold' },
+      { name: 'Banners & Standees', search: 'Banners & Standees', tag: 'Indoor & Outdoor' },
+      { name: 'Stickers & Labels', search: 'Stickers & Labels', tag: 'Waterproof Die-Cut' },
+      { name: 'Letterheads & Stationery', search: 'Letterheads & Stationery', tag: 'Executive Papers' },
+      { name: 'Posters & Wall Art', search: 'Posters', tag: 'Gallery Art Prints' },
+      { name: 'Booklets & Catalogs', search: 'Booklets', tag: 'Saddle Stitch / Bound' },
+    ]
+  },
+  {
+    id: 'packaging',
+    title: 'Packaging & Boxes',
+    badge: 'NEW',
+    categoryQuery: 'Packaging',
+    iconName: 'FiPackage',
+    items: [
+      { name: 'Custom Product Boxes', search: 'Product Boxes', tag: 'Retail & Folding' },
+      { name: 'Rigid Gift Boxes', search: 'Rigid Gift Boxes', tag: 'Magnetic Closure' },
+      { name: 'Mailer Boxes & Shipping', search: 'Mailer Boxes', tag: 'Corrugated Heavy' },
+      { name: 'Paper Bags & Pouches', search: 'Paper Bags', tag: 'Kraft & Satin Handles' },
+      { name: 'Custom Printed Tapes', search: 'Printed Tape', tag: 'Branded Shipping' },
+      { name: 'Product Hang Tags', search: 'Hang Tags', tag: 'Garment & Retail' },
+    ]
+  },
+  {
+    id: 'corporate',
+    title: 'Corporate & Merch',
+    badge: 'TRENDING',
+    categoryQuery: 'Corporate & Merch',
+    iconName: 'FiBriefcase',
+    items: [
+      { name: 'Custom T-Shirts & Polos', search: 'T-Shirts', tag: 'Embroidery & Print' },
+      { name: 'Custom Mugs & Drinkware', search: 'Mugs', tag: 'Ceramic & Tumblers' },
+      { name: 'ID Cards & Lanyards', search: 'ID Cards', tag: 'PVC Badges & Satin' },
+      { name: 'Corporate Gift Kits', search: 'Gift Kits', tag: 'Executive Box Sets' },
+      { name: 'Desk Calendars & Diaries', search: 'Calendars', tag: '365 Day Branding' },
+      { name: 'Rubber Stamps & Seals', search: 'Stamps', tag: 'Self-Inking Laser' },
+    ]
+  }
+];
+
+const MEGAMENU_CATEGORIES_KEY = 'printigly_megamenu_categories';
+
+export const subscribeToMegamenuCategories = (onUpdate) => {
+  const getLocal = () => {
+    try {
+      const stored = localStorage.getItem(MEGAMENU_CATEGORIES_KEY);
+      return stored ? JSON.parse(stored) : DEFAULT_MEGAMENU_CATEGORIES;
+    } catch (e) {
+      return DEFAULT_MEGAMENU_CATEGORIES;
+    }
+  };
+
+  onUpdate(getLocal());
+
+  try {
+    const docRef = doc(db, 'site_settings', 'megamenu_categories');
+    return onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const firestoreData = docSnap.data().categories || docSnap.data();
+        const dataArr = Array.isArray(firestoreData) ? firestoreData : DEFAULT_MEGAMENU_CATEGORIES;
+        try {
+          localStorage.setItem(MEGAMENU_CATEGORIES_KEY, JSON.stringify(dataArr));
+        } catch (e) {}
+        onUpdate(dataArr);
+      } else {
+        onUpdate(getLocal());
+      }
+    }, (err) => {
+      console.warn("Megamenu categories listener note:", err.message);
+      onUpdate(getLocal());
+    });
+  } catch (err) {
+    onUpdate(getLocal());
+    return () => {};
+  }
+};
+
+export const saveMegamenuCategoriesToFirestore = async (categoriesData) => {
+  try {
+    localStorage.setItem(MEGAMENU_CATEGORIES_KEY, JSON.stringify(categoriesData));
+    window.dispatchEvent(new Event('megamenu_categories_updated'));
+  } catch (e) {}
+
+  try {
+    const docRef = doc(db, 'site_settings', 'megamenu_categories');
+    await setDoc(docRef, {
+      categories: categoriesData,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    return true;
+  } catch (err) {
+    console.warn("Saving megamenu categories note:", err.message);
+    return false;
+  }
+};
+
+
