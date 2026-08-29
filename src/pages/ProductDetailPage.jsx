@@ -759,8 +759,8 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 </button>
                 {openAccordion === 'guarantee' && (
                   <div className="p-5 pt-1 text-slate-600 leading-relaxed font-medium text-xs">
-                    If your print order arrives with any press defects, trim alignment errors, or courier transit damage, we will re-print and re-ship your complete order at zero additional cost.
-                  </div>
+  Please note that our studio holds no responsibility or liability for any defects present upon the arrival of your print order.
+</div>
                 )}
               </div>
 
