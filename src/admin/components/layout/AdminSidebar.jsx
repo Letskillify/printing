@@ -41,7 +41,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
         { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
         { 
           id: 'orders', 
-          label: 'Production Pipeline', 
+          label: 'Orders & Production', 
           icon: Kanban, 
           badge: expressOrdersCount > 0 ? `${expressOrdersCount} Express` : null,
           badgeColor: 'bg-red-500 text-white animate-pulse'

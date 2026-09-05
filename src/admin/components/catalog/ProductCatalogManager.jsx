@@ -124,7 +124,8 @@ export const ProductCatalogManager = () => {
         spotUV: catalogOptions?.spotUV ?? DEFAULT_CATALOG_OPTIONS.spotUV,
         bindingStyle: catalogOptions?.bindingStyle ?? DEFAULT_CATALOG_OPTIONS.bindingStyle,
         proofService: catalogOptions?.proofService ?? DEFAULT_CATALOG_OPTIONS.proofService,
-        packagingStyle: catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle
+        packagingStyle: catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle,
+        customAreaPricing: catalogOptions?.customAreaPricing ?? DEFAULT_CATALOG_OPTIONS.customAreaPricing
       },
       tieredPricing: [
         { tierMin: 300, pricePerUnit: 5.5 },
@@ -154,7 +155,8 @@ export const ProductCatalogManager = () => {
         spotUV: prod.variants?.spotUV ?? catalogOptions?.spotUV ?? DEFAULT_CATALOG_OPTIONS.spotUV,
         bindingStyle: prod.variants?.bindingStyle ?? catalogOptions?.bindingStyle ?? DEFAULT_CATALOG_OPTIONS.bindingStyle,
         proofService: prod.variants?.proofService ?? catalogOptions?.proofService ?? DEFAULT_CATALOG_OPTIONS.proofService,
-        packagingStyle: prod.variants?.packagingStyle ?? catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle
+        packagingStyle: prod.variants?.packagingStyle ?? catalogOptions?.packagingStyle ?? DEFAULT_CATALOG_OPTIONS.packagingStyle,
+        customAreaPricing: prod.variants?.customAreaPricing ?? catalogOptions?.customAreaPricing ?? DEFAULT_CATALOG_OPTIONS.customAreaPricing
       }
     });
     setEditingProduct(prod);
@@ -211,12 +213,20 @@ export const ProductCatalogManager = () => {
   const VariantSectionCard = ({ title, groupKey, items }) => {
     const [newOptName, setNewOptName] = useState('');
     const [newOptPrice, setNewOptPrice] = useState('');
+    const [newMaxArea, setNewMaxArea] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
+
+    const isAreaSection = groupKey === 'customAreaPricing';
 
     const handleAddCustom = async () => {
       if (!newOptName.trim()) return;
       const priceVal = parseFloat(newOptPrice) || 0;
-      const newObj = { name: newOptName.trim(), priceModifier: priceVal };
+      const areaVal = parseFloat(newMaxArea) || 0;
+      const newObj = {
+        name: newOptName.trim(),
+        priceModifier: priceVal,
+        ...(isAreaSection || areaVal > 0 ? { maxArea: areaVal } : {})
+      };
 
       const updatedList = [...(items || []), newObj];
       await handleUpdateVariantItems(groupKey, updatedList);
@@ -224,6 +234,7 @@ export const ProductCatalogManager = () => {
 
       setNewOptName('');
       setNewOptPrice('');
+      setNewMaxArea('');
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2500);
     };
@@ -288,17 +299,35 @@ export const ProductCatalogManager = () => {
                     handleUpdateVariantItems(groupKey, updated);
                   }}
                   placeholder="Option Name"
-                  className="flex-1 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                  className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
                 />
-                <div className="relative w-24 shrink-0">
+                {isAreaSection && (
+                  <div className="relative w-20 shrink-0">
+                    <input
+                      type="number"
+                      step="1"
+                      value={opt.maxArea || ''}
+                      onChange={(e) => {
+                        const updated = [...activeItems];
+                        updated[idx].maxArea = parseFloat(e.target.value) || 0;
+                        handleUpdateVariantItems(groupKey, updated);
+                      }}
+                      placeholder="Max cm²"
+                      className="w-full px-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                      title="Max Area in sq cm (cm²)"
+                    />
+                  </div>
+                )}
+                <div className="relative w-22 shrink-0">
                   <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
                   <input
                     type="number"
-                    step="0.1"
-                    value={opt.priceModifier}
+                    step="1"
+                    value={opt.priceModifier !== undefined ? opt.priceModifier : (opt.price || 0)}
                     onChange={(e) => {
                       const updated = [...activeItems];
                       updated[idx].priceModifier = parseFloat(e.target.value) || 0;
+                      updated[idx].price = parseFloat(e.target.value) || 0;
                       handleUpdateVariantItems(groupKey, updated);
                     }}
                     className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
@@ -336,17 +365,27 @@ export const ProductCatalogManager = () => {
                 type="text"
                 value={newOptName}
                 onChange={(e) => setNewOptName(e.target.value)}
-                placeholder="Custom Option Name"
-                className="flex-1 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                placeholder={isAreaSection ? "e.g. Up to 50 sq cm" : "Custom Option Name"}
+                className="flex-1 min-w-0 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
               />
-              <div className="relative w-24 shrink-0">
+              {isAreaSection && (
+                <input
+                  type="number"
+                  value={newMaxArea}
+                  onChange={(e) => setNewMaxArea(e.target.value)}
+                  placeholder="Max cm²"
+                  className="w-20 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                  title="Max Area limit in cm²"
+                />
+              )}
+              <div className="relative w-20 shrink-0">
                 <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
                 <input
                   type="number"
-                  step="0.1"
+                  step="1"
                   value={newOptPrice}
                   onChange={(e) => setNewOptPrice(e.target.value)}
-                  placeholder="+Mod"
+                  placeholder="Price"
                   className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
                 />
               </div>
@@ -1060,7 +1099,7 @@ export const ProductCatalogManager = () => {
                     <button
                       type="button"
                       onClick={async () => {
-                        if (window.confirm("Are you sure you want to clear ALL options across all 11 option matrices in 1 click?")) {
+                        if (window.confirm("Are you sure you want to clear ALL options across all 12 option matrices in 1 click?")) {
                           const emptyVariants = {
                             paperStock: [],
                             finishes: [],
@@ -1072,7 +1111,8 @@ export const ProductCatalogManager = () => {
                             spotUV: [],
                             bindingStyle: [],
                             proofService: [],
-                            packagingStyle: []
+                            packagingStyle: [],
+                            customAreaPricing: []
                           };
                           setFormData(prev => ({ ...prev, variants: emptyVariants }));
                           if (updateCatalogOptions) {
@@ -1081,9 +1121,9 @@ export const ProductCatalogManager = () => {
                         }
                       }}
                       className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[11px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
-                      title="Clear options across all 11 sections in 1 click"
+                      title="Clear options across all 12 sections in 1 click"
                     >
-                      <Trash2 className="w-3.5 h-3.5" /> Clear All 11 Option Sections (1-Click)
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All 12 Option Sections (1-Click)
                     </button>
                   </div>
 
@@ -1152,6 +1192,12 @@ export const ProductCatalogManager = () => {
                       title="11. Packaging & Presentation Style"
                       groupKey="packagingStyle"
                       items={formData.variants?.packagingStyle || []}
+                    />
+
+                    <VariantSectionCard
+                      title="12. Custom Area Tier Pricing & Calculation (cm²)"
+                      groupKey="customAreaPricing"
+                      items={formData.variants?.customAreaPricing || []}
                     />
                   </div>
                 </div>

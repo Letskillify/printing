@@ -19,7 +19,10 @@ import {
   signInWithEmailAndPassword, 
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithCustomToken
 } from 'firebase/auth';
 
 // Firebase Config initialized with live project credentials & env var fallback
@@ -64,6 +67,83 @@ export const signUpUser = async (email, password, displayName, phone = '', compa
 export const signInUser = async (email, password) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   return userCredential.user;
+};
+
+export const signInWithGoogleProvider = async () => {
+  const provider = new GoogleAuthProvider();
+  const result = await signInWithPopup(auth, provider);
+  const user = result.user;
+
+  // Sync profile document in Firestore
+  const userRef = doc(db, 'users', user.uid);
+  const docSnap = await getDoc(userRef);
+  if (!docSnap.exists()) {
+    await setDoc(userRef, {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName || user.email.split('@')[0],
+      photoURL: user.photoURL || '',
+      authProvider: 'google',
+      createdAt: new Date().toISOString(),
+      cart: [],
+      wishlist: []
+    });
+  }
+  return user;
+};
+
+export const sendOtpToEmail = async (email) => {
+  const response = await fetch('/api/send-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to send OTP code.');
+  }
+  return data;
+};
+
+export const verifyOtpCode = async (email, otp) => {
+  const response = await fetch('/api/verify-otp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, otp })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Invalid or expired OTP.');
+  }
+  return data;
+};
+
+export const syncUserGuestOrdersApi = async (uid, email) => {
+  if (!uid || !email) return { syncedCount: 0 };
+  try {
+    const response = await fetch('/api/sync-guest-orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid, email })
+    });
+    return await response.json();
+  } catch (err) {
+    console.warn("Error syncing guest orders:", err.message);
+    return { syncedCount: 0 };
+  }
+};
+
+export const createOrderOnServerApi = async (orderPayload) => {
+  const response = await fetch('/api/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderPayload)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to process order on server.');
+  }
+  return data.order;
 };
 
 export const signOutUser = async () => {
@@ -174,6 +254,30 @@ export const subscribeToUserOrders = (userId, userEmail, onUpdate) => {
     return () => {};
   }
 };
+
+export const subscribeToOrderById = (orderId, onUpdate) => {
+  if (!orderId) return () => {};
+  try {
+    const q = query(collection(db, 'orders'));
+    return onSnapshot(q, (snapshot) => {
+      const allOrders = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+      const cleanTarget = orderId.toLowerCase().trim();
+      const matched = allOrders.find(o => 
+        (o.orderId && o.orderId.toLowerCase() === cleanTarget) ||
+        (o.id && o.id.toLowerCase() === cleanTarget)
+      );
+      onUpdate(matched || null);
+    }, (err) => {
+      console.warn("Order by ID subscription note:", err.message);
+      onUpdate(null);
+    });
+  } catch (err) {
+    onUpdate(null);
+    return () => {};
+  }
+};
+
+
 
 // ── Real-time Firestore Subscriptions for Admin & Storefront ──
 export const subscribeToOrders = (onUpdate, onError) => {
@@ -465,6 +569,10 @@ export const DEFAULT_CATALOG_OPTIONS = {
     { name: 'Acrylic Clear Desk Presentation Box', priceModifier: 1.2 },
     { name: 'Luxury Rigid Gift Packaging Box', priceModifier: 3.5 },
     { name: 'Custom Branded Sleeve Outer Packaging', priceModifier: 2.0 }
+  ],
+  customAreaPricing: [
+   
+   
   ]
 };
 

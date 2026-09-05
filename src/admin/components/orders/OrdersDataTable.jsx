@@ -13,23 +13,32 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
+import { AdminOrderDetailModal } from '../modals/AdminOrderDetailModal';
 
 export const OrdersDataTable = () => {
-  const { orders, setSelectedOrder, setPreflightModalOpen, updateOrderStatus } = useAdmin();
+  const { orders, setSelectedOrder, updateOrderStatus } = useAdmin();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [expressOnly, setExpressOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDetailOrder, setSelectedDetailOrder] = useState(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
   const itemsPerPage = 8;
+
 
   // Multi-column filtering
   const filteredOrders = orders.filter((o) => {
+    const orderId = o.id || '';
+    const custName = o.customer?.name || '';
+    const custPhone = o.customer?.phone || '';
+    const custCompany = o.customer?.company || '';
+
     const matchesSearch = 
-      o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.customer.phone.includes(searchTerm) ||
-      o.customer.company?.toLowerCase().includes(searchTerm.toLowerCase());
+      orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      custName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      custPhone.includes(searchTerm) ||
+      custCompany.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'ALL' || o.status === statusFilter;
     const matchesExpress = !expressOnly || o.isExpress;
@@ -46,14 +55,14 @@ export const OrdersDataTable = () => {
   const exportToCSV = () => {
     const headers = ["Order ID", "Customer", "Company", "Phone", "Status", "Delivery", "Total (INR)", "Created At"];
     const rows = filteredOrders.map(o => [
-      o.id,
-      `"${o.customer.name}"`,
-      `"${o.customer.company || ''}"`,
-      o.customer.phone,
-      o.status,
-      `"${o.deliveryMethod}"`,
-      o.totalAmount,
-      o.createdAt
+      o.id || '',
+      `"${o.customer?.name || ''}"`,
+      `"${o.customer?.company || ''}"`,
+      o.customer?.phone || '',
+      o.status || 'Payment Confirmed',
+      `"${o.deliveryMethod || ''}"`,
+      o.totalAmount || o.pricing?.grandTotal || 0,
+      o.createdAt || ''
     ]);
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
@@ -174,12 +183,12 @@ export const OrdersDataTable = () => {
             <div className="text-xs space-y-1.5">
               <div>
                 <span className="text-slate-500 font-semibold">Customer: </span>
-                <span className="font-bold text-slate-900">{order.customer.name}</span>
-                <span className="text-slate-400"> ({order.customer.company || 'Retail'})</span>
+                <span className="font-bold text-slate-900">{order.customer?.name || 'Customer'}</span>
+                <span className="text-slate-400"> ({order.customer?.company || 'Retail'})</span>
               </div>
               <div>
                 <span className="text-slate-500 font-semibold">Items: </span>
-                <span className="font-semibold text-slate-800">{order.items.map(i => i.productName).join(', ')}</span>
+                <span className="font-semibold text-slate-800">{(order.items || []).map(i => i.productName || i.name).join(', ')}</span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-700">
                 <Truck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
@@ -206,15 +215,13 @@ export const OrdersDataTable = () => {
                   <option value="Packed & Ready">Packed & Ready</option>
                   <option value="Dispatched">Dispatched</option>
                   <option value="Delivered">Delivered</option>
-                </select>
-
-                <button
+                </select>                <button
                   onClick={() => {
-                    setSelectedOrder(order);
-                    setPreflightModalOpen(true);
+                    setSelectedDetailOrder(order);
+                    setDetailModalOpen(true);
                   }}
                   className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold border-none cursor-pointer"
-                  title="Inspect Artwork"
+                  title="Inspect Artwork & Order Details"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
@@ -225,7 +232,7 @@ export const OrdersDataTable = () => {
 
         {paginatedOrders.length === 0 && (
           <div className="py-12 text-center text-slate-400 font-medium">
-            No orders found matching search criteria.
+            No real orders found in database. Customer orders will appear here in real-time.
           </div>
         )}
       </div>
@@ -247,12 +254,16 @@ export const OrdersDataTable = () => {
           <tbody className="divide-y divide-slate-100 text-xs">
             {paginatedOrders.map((order) => (
               <tr 
-                key={order.id}
-                className="hover:bg-slate-50/80 transition-colors group"
+                key={order.id || order.orderId}
+                className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+                onClick={() => {
+                  setSelectedDetailOrder(order);
+                  setDetailModalOpen(true);
+                }}
               >
                 <td className="py-3 px-4">
                   <div className="font-extrabold text-slate-900 flex items-center gap-1.5">
-                    <span>{order.id}</span>
+                    <span>{order.orderId || order.id}</span>
                     {order.isExpress && (
                       <span className="px-1.5 py-0.2 rounded bg-red-100 text-red-700 font-extrabold text-[9px] flex items-center gap-0.5">
                         <Zap className="w-2.5 h-2.5 fill-red-600" /> Express
@@ -260,32 +271,32 @@ export const OrdersDataTable = () => {
                     )}
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono">
-                    {new Date(order.createdAt).toLocaleDateString()}
+                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'Recent'}
                   </span>
                 </td>
 
                 <td className="py-3 px-4">
-                  <div className="font-bold text-slate-900">{order.customer.name}</div>
+                  <div className="font-bold text-slate-900">{order.customer?.name || 'Customer'}</div>
                   <div className="text-[11px] text-slate-500 flex items-center gap-2">
-                    <span>{order.customer.company || 'Retail'}</span>
+                    <span>{order.customer?.company || 'Retail'}</span>
                     <span className="text-slate-300">•</span>
-                    <span className="font-mono text-[10px]">{order.customer.phone}</span>
+                    <span className="font-mono text-[10px]">{order.customer?.phone}</span>
                   </div>
                 </td>
 
                 <td className="py-3 px-4 max-w-[220px]">
                   <p className="font-medium text-slate-800 truncate">
-                    {order.items.map(i => i.productName).join(', ')}
+                    {(order.items || []).map(i => i.productName || i.name).join(', ')}
                   </p>
                   <p className="text-[10px] text-slate-500 truncate">
-                    {order.items[0]?.variant}
+                    {order.items && order.items[0]?.variant}
                   </p>
                 </td>
 
-                <td className="py-3 px-4">
+                <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
                   <select
-                    value={order.status}
-                    onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                    value={order.status || 'Payment Confirmed'}
+                    onChange={(e) => updateOrderStatus(order.id || order.orderId, e.target.value)}
                     className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:border-blue-500 cursor-pointer"
                   >
                     <option value="Payment Confirmed">Payment Confirmed</option>
@@ -301,26 +312,26 @@ export const OrdersDataTable = () => {
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-1.5 text-slate-700 font-medium">
                     <Truck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                    <span className="truncate max-w-[140px]">{order.deliveryMethod}</span>
+                    <span className="truncate max-w-[140px]">{order.deliveryMethod || 'Standard Delivery'}</span>
                   </div>
                 </td>
 
                 <td className="py-3 px-4 text-right">
-                  <div className="font-black text-slate-900">₹{order.totalAmount.toLocaleString()}</div>
-                  <span className="text-[10px] text-emerald-600 font-semibold">Incl. 18% GST</span>
+                  <div className="font-black text-slate-900">₹{(order.totalAmount || order.pricing?.grandTotal || 0).toLocaleString()}</div>
+                  <span className="text-[10px] text-emerald-600 font-semibold">GST Inclusive</span>
                 </td>
 
-                <td className="py-3 px-4 text-center">
+                <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => {
-                      setSelectedOrder(order);
-                      setPreflightModalOpen(true);
+                      setSelectedDetailOrder(order);
+                      setDetailModalOpen(true);
                     }}
                     className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white font-semibold transition-colors inline-flex items-center gap-1 border-none cursor-pointer"
-                    title="Inspect Artwork File & Order Details"
+                    title="View Full Order Details & Download Client Artwork"
                   >
                     <Eye className="w-3.5 h-3.5" />
-                    <span className="hidden xl:inline text-[11px]">Inspect</span>
+                    <span className="hidden xl:inline text-[11px]">View Order</span>
                   </button>
                 </td>
               </tr>
@@ -329,7 +340,7 @@ export const OrdersDataTable = () => {
             {paginatedOrders.length === 0 && (
               <tr>
                 <td colSpan={7} className="py-12 text-center text-slate-400 font-medium">
-                  No orders found matching search criteria.
+                  No orders found in database matching criteria. Real-time orders will display here automatically.
                 </td>
               </tr>
             )}
@@ -364,6 +375,13 @@ export const OrdersDataTable = () => {
         </div>
       </div>
 
+      {/* Order Details & Download Documents Inspector Modal */}
+      <AdminOrderDetailModal
+        isOpen={detailModalOpen}
+        onClose={() => setDetailModalOpen(false)}
+        order={selectedDetailOrder}
+      />
     </div>
   );
 };
+

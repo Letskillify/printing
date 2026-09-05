@@ -101,82 +101,88 @@ export const ProductionKanban = () => {
 
               {/* Kanban Stage Cards Column */}
               <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar min-h-[400px]">
-                {stageOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, order.id)}
-                    className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-3xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing hover:border-blue-300 space-y-2.5 group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-xs text-slate-900">{order.id}</span>
-                      {order.isExpress && (
-                        <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-extrabold text-[10px] flex items-center gap-0.5">
-                          <Zap className="w-3 h-3 fill-red-600 animate-pulse" /> Express
-                        </span>
-                      )}
-                    </div>
+                {stageOrders.map((order) => {
+                  const targetId = order.id || order.orderId;
+                  const firstItem = (order.items && order.items[0]) || {};
+                  const artworkRef = (order.artwork && order.artwork[0]) || order.artworkFile;
+                  const totalVal = order.totalAmount || order.pricing?.grandTotal || 0;
 
-                    <div className="text-xs">
-                      <p className="font-bold text-slate-800 truncate">{order.customer.name}</p>
-                      <p className="text-slate-500 text-[11px] truncate">{order.customer.company || 'Retail Order'}</p>
-                    </div>
-
-                    <div className="bg-slate-50 rounded-lg p-2 text-[11px] border border-slate-100 space-y-1">
-                      <p className="font-semibold text-slate-700 truncate">
-                        {order.items[0]?.productName}
-                      </p>
-                      <div className="flex items-center justify-between text-slate-500 text-[10px]">
-                        <span>Qty: {order.items[0]?.quantity}</span>
-                        <span className="font-bold text-slate-900">₹{order.totalAmount.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Artwork File Indicator */}
-                    {order.artworkFile && (
-                      <div className="flex items-center justify-between text-[10px] text-slate-500 bg-blue-50/50 px-2 py-1 rounded border border-blue-100">
-                        <span className="truncate max-w-[150px] font-mono">{order.artworkFile.fileName}</span>
-                        <span className="px-1 bg-blue-100 text-blue-700 rounded uppercase font-bold text-[9px]">
-                          {order.artworkFile.fileType}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Stage Action Controls */}
-                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                      <button
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          setPreflightModalOpen(true);
-                        }}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 border-none bg-transparent cursor-pointer"
-                      >
-                        <Eye className="w-3.5 h-3.5" /> Inspect
-                      </button>
-
-                      <div className="flex items-center gap-1">
-                        {/* Move Next Button */}
-                        {stages.findIndex(s => s.name === stage.name) < stages.length - 1 && (
-                          <button
-                            onClick={() => {
-                              const nextIdx = stages.findIndex(s => s.name === stage.name) + 1;
-                              updateOrderStatus(order.id, stages[nextIdx].name);
-                            }}
-                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-blue-600 border-none bg-transparent cursor-pointer"
-                            title="Advance to Next Stage"
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </button>
+                  return (
+                    <div
+                      key={targetId}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, targetId)}
+                      className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-3xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing hover:border-blue-300 space-y-2.5 group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-xs text-slate-900">{targetId}</span>
+                        {order.isExpress && (
+                          <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-extrabold text-[10px] flex items-center gap-0.5">
+                            <Zap className="w-3 h-3 fill-red-600 animate-pulse" /> Express
+                          </span>
                         )}
                       </div>
-                    </div>
 
-                  </div>
-                ))}
+                      <div className="text-xs">
+                        <p className="font-bold text-slate-800 truncate">{order.customer?.name || 'Customer'}</p>
+                        <p className="text-slate-500 text-[11px] truncate">{order.customer?.company || 'Retail Order'}</p>
+                      </div>
+
+                      <div className="bg-slate-50 rounded-lg p-2 text-[11px] border border-slate-100 space-y-1">
+                        <p className="font-semibold text-slate-700 truncate">
+                          {firstItem.productName || firstItem.name || 'Custom Print Item'}
+                        </p>
+                        <div className="flex items-center justify-between text-slate-500 text-[10px]">
+                          <span>Qty: {firstItem.quantity || firstItem.qty || 1}</span>
+                          <span className="font-bold text-slate-900">₹{totalVal.toLocaleString()}</span>
+                        </div>
+                      </div>
+
+                      {/* Artwork File Indicator */}
+                      {artworkRef && (
+                        <div className="flex items-center justify-between text-[10px] text-slate-500 bg-blue-50/50 px-2 py-1 rounded border border-blue-100">
+                          <span className="truncate max-w-[150px] font-mono">{artworkRef.fileName || artworkRef.originalFileName || 'Artwork'}</span>
+                          <span className="px-1 bg-blue-100 text-blue-700 rounded uppercase font-bold text-[9px]">
+                            {artworkRef.format || artworkRef.fileType || 'file'}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Stage Action Controls */}
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <button
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setPreflightModalOpen(true);
+                          }}
+                          className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 border-none bg-transparent cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> View & Download
+                        </button>
+
+                        <div className="flex items-center gap-1">
+                          {stages.findIndex(s => s.name === stage.name) < stages.length - 1 && (
+                            <button
+                              onClick={() => {
+                                const nextIdx = stages.findIndex(s => s.name === stage.name) + 1;
+                                updateOrderStatus(targetId, stages[nextIdx].name);
+                              }}
+                              className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-blue-600 border-none bg-transparent cursor-pointer"
+                              title="Advance to Next Stage"
+                            >
+                              <ChevronRight className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                })}
 
                 {stageOrders.length === 0 && (
                   <div className="py-12 text-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-200 rounded-xl">
-                    Drop orders here
+                    No orders in stage
                   </div>
                 )}
               </div>

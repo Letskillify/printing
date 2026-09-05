@@ -1,405 +1,415 @@
-import { useState, useEffect } from 'react'
-import { FiTrash2, FiShoppingBag, FiArrowRight, FiCheckCircle, FiShield, FiTag, FiX, FiZap, FiMapPin, FiUser, FiCheck } from 'react-icons/fi'
-import { addOrderToFirestore } from '../services/firebase'
-import { useAuth } from '../context/AuthContext'
+import React, { useState } from 'react';
+import { 
+  FiTrash2, 
+  FiShoppingBag, 
+  FiArrowRight, 
+  FiCheckCircle, 
+  FiShield, 
+  FiTag, 
+  FiX, 
+  FiZap, 
+  FiEdit3, 
+  FiFileText, 
+  FiPaperclip,
+  FiEye,
+  FiRotateCcw,
+  FiInfo
+} from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
+import { APP_CONFIG } from '../config/appConfig';
+import { EditCartItemModal } from '../Components/cart/EditCartItemModal';
 
 export function CartPage({ setCurrentPage }) {
-  const { cartItems, removeFromCart, clearCart, currentUser, userProfile } = useAuth()
+  const { cartItems, updateCartItem, removeFromCart, clearCart } = useAuth();
 
-  const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
-  const [selectedAddressId, setSelectedAddressId] = useState(null)
-  const [customerName, setCustomerName] = useState('')
-  const [customerEmail, setCustomerEmail] = useState('')
-  const [customerPhone, setCustomerPhone] = useState('')
-  const [customerCompany, setCustomerCompany] = useState('')
-  const [address, setAddress] = useState('')
-  const [isExpress, setIsExpress] = useState(false)
-  const [placingOrder, setPlacingOrder] = useState(false)
-  const [orderSuccess, setOrderSuccess] = useState(null)
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
 
-  useEffect(() => {
-    if (currentUser || userProfile) {
-      setCustomerName(userProfile?.displayName || currentUser?.displayName || '')
-      setCustomerEmail(currentUser?.email || '')
-      setCustomerPhone(userProfile?.phone || '')
-      setCustomerCompany(userProfile?.company || '')
+  // Express delivery state
+  const [isExpress, setIsExpress] = useState(false);
 
-      // Auto pick default address if available
-      const defaultAddr = (userProfile?.addresses || []).find(a => a.isDefault) || (userProfile?.addresses || [])[0];
-      if (defaultAddr) {
-        setSelectedAddressId(defaultAddr.id);
-        const fullAddrStr = `${defaultAddr.addressLine1}${defaultAddr.addressLine2 ? ', ' + defaultAddr.addressLine2 : ''}, ${defaultAddr.city}, ${defaultAddr.state} - ${defaultAddr.pincode}`;
-        setAddress(fullAddrStr);
-        if (defaultAddr.phone) setCustomerPhone(defaultAddr.phone);
-        if (defaultAddr.name) setCustomerName(defaultAddr.name);
-      }
-    }
-  }, [currentUser, userProfile])
+  // Modal State for Editing Item
+  const [editingItem, setEditingItem] = useState(null);
+  const [viewingArtworkModal, setViewingArtworkModal] = useState(null);
 
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.totalPrice || (item.qty * item.unitPrice)), 0)
-  const shipping = subtotal > 999 || subtotal === 0 ? 0 : 99
-  const total = subtotal + shipping
+  // Calculations
+  const subtotal = cartItems.reduce((acc, item) => acc + (item.totalPrice || (item.qty * item.unitPrice)), 0);
 
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault()
-    setPlacingOrder(true)
+  // Apply Coupon Logic
+  const handleApplyCoupon = (e) => {
+    e.preventDefault();
+    setCouponError('');
+    const cleanCode = couponCode.trim().toUpperCase();
+    const match = APP_CONFIG.AVAILABLE_COUPONS[cleanCode];
 
-    const orderId = `PRT-${Math.floor(10000 + Math.random() * 90000)}`
-    const newOrderData = {
-      id: orderId,
-      customer: {
-        uid: currentUser?.uid || null,
-        name: customerName,
-        email: customerEmail,
-        phone: customerPhone,
-        company: customerCompany || 'Direct Retail',
-        isB2B: !!customerCompany,
-        creditNet15: false
-      },
-      items: cartItems.map(item => ({
-        productName: item.name,
-        variant: `Size: ${item.sizeFormat || 'Standard'} | Paper: ${item.paper || 'Standard'} | Sides: ${item.sides || 'Single-sided'} | Cut: ${item.corners || 'Standard'} | Lam: ${item.lamination || 'None'} | Foil: ${item.foil || 'None'} | SpotUV: ${item.spotUV || 'None'} | Proof: ${item.proof || 'Self Upload'} | Pkg: ${item.packaging || 'Bulk Shrink'}`,
-        quantity: item.qty,
-        unitPrice: item.unitPrice,
-        total: item.totalPrice || (item.qty * item.unitPrice)
-      })),
-      subtotal,
-      shippingFee: shipping,
-      gstAmount: Math.round(subtotal * 0.18),
-      totalAmount: total,
-      status: 'Payment Confirmed',
-      isExpress,
-      expressDeadline: isExpress ? new Date(Date.now() + 4 * 3600 * 1000).toISOString() : null,
-      deliveryMethod: isExpress ? 'Local Porter Express' : 'Pan-India BlueDart Express',
-      deliveryAddress: address,
-      artworkFile: {
-        fileName: 'checkout_artwork.pdf',
-        fileType: 'pdf',
-        dimensions: 'Standard Spec',
-        resolutionDpi: 300,
-        cmykVerified: true,
-        previewUrl: cartItems[0]?.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600'
-      }
+    if (!match) {
+      setCouponError('Invalid coupon code. Try WELCOME10 or PRINT20');
+      return;
     }
 
-    await addOrderToFirestore(newOrderData)
-    clearCart()
-    setPlacingOrder(false)
-    setOrderSuccess(orderId)
-    setCheckoutModalOpen(false)
+    if (subtotal < match.minOrder) {
+      setCouponError(`Coupon "${cleanCode}" requires a minimum order of ₹${match.minOrder}`);
+      return;
+    }
+
+    setAppliedCoupon({ code: cleanCode, ...match });
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
+  };
+
+  // Pricing breakdown calculations
+  let couponDiscount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discountPercent) {
+      couponDiscount = Math.round((subtotal * appliedCoupon.discountPercent) / 100);
+    } else if (appliedCoupon.discountAmount) {
+      couponDiscount = appliedCoupon.discountAmount;
+    }
   }
 
+  const expressFee = isExpress ? APP_CONFIG.EXPRESS_SHIPPING_FEE : 0;
+  const shipping = subtotal > APP_CONFIG.FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : APP_CONFIG.STANDARD_SHIPPING_FEE;
+  const grandTotal = Math.max(0, Math.round(subtotal - couponDiscount + expressFee + shipping));
+
+
   return (
-    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">
+    <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633] pb-20">
       
-      {/* Page Hero Header — Deep Navy #07152F */}
-      <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
+      {/* Page Hero Header */}
+      <section className="bg-[#07152F] text-white py-12 sm:py-16 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
           <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
-            <span>Home</span>
+            <span className="cursor-pointer hover:text-white" onClick={() => setCurrentPage('home')}>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Shopping Cart</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-3">
-            Your Cart & Order Summary
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-2">
+            Your Cart & Order Review
           </h1>
-          <p className="text-slate-300 text-[15px] max-w-2xl leading-relaxed">
-            Review your custom print configurations, artwork uploads, and quantities prior to secure checkout.
+          <p className="text-slate-300 text-sm max-w-2xl leading-relaxed">
+            Review your custom print specifications, uploaded artwork files, and apply coupons prior to checkout.
           </p>
         </div>
       </section>
 
-      {/* Cart Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        {orderSuccess ? (
-          <div className="bg-white rounded-[24px] p-12 text-center max-w-lg mx-auto border border-emerald-200 shadow-xl space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-              <FiCheckCircle className="w-8 h-8" />
+      {/* Cart Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        {cartItems.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 text-center max-w-md mx-auto border border-[#E7EAF0] shadow-sm space-y-4">
+            <div className="w-16 h-16 rounded-full bg-orange-50 text-[#FF5A1F] flex items-center justify-center mx-auto">
+              <FiShoppingBag className="w-8 h-8" />
             </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1633]">Order Confirmed & Transmitted!</h3>
-            <p className="text-slate-600 text-sm">
-              Your order <span className="font-bold text-[#FF5A1F]">{orderSuccess}</span> has been saved to Firestore and transmitted directly into our live production pipeline!
+            <h3 className="text-2xl font-extrabold text-[#0B1633]">Your Cart is Empty</h3>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Explore our wide range of premium print products, upload your artwork, and order with instant prepress verification.
             </p>
-            <div className="pt-4 flex justify-center gap-3">
-              <button
-                onClick={() => setCurrentPage('admin')}
-                className="bg-[#07152F] text-white font-bold text-xs px-5 py-3 rounded-xl hover:bg-slate-800 transition"
-              >
-                Track in Admin Pipeline
-              </button>
-            </div>
+            <button
+              onClick={() => setCurrentPage('products')}
+              className="bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs px-6 py-3.5 rounded-2xl inline-flex items-center gap-2 cursor-pointer border-none shadow-lg shadow-[#FF5A1F]/20 transition"
+            >
+              Start Shopping Catalog <FiArrowRight className="w-4 h-4" />
+            </button>
           </div>
-        ) : cartItems.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* Cart Items List (8 cols) */}
+            {/* CART ITEMS LIST (8 cols) */}
             <div className="lg:col-span-8 space-y-4">
-              {cartItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-[16px] p-5 border border-[#E7EAF0] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+                <h3 className="font-extrabold text-lg text-[#0B1633] flex items-center gap-2">
+                  <span>Cart Items</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#07152F] text-white text-xs font-black">
+                    {cartItems.length}
+                  </span>
+                </h3>
+                <button
+                  onClick={() => clearCart()}
+                  className="text-xs font-extrabold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer bg-transparent border-none"
                 >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover rounded-[12px] bg-[#F7F8FA]"
-                    />
-                    <div>
-                      <h3 className="text-[16px] font-bold text-[#0B1633] leading-snug">{item.name}</h3>
-                      <p className="text-[12px] text-[#667085] mt-0.5">Quantity: {item.qty} units</p>
-                      <p className="text-[11px] text-[#667085] leading-relaxed">Format: {item.sizeFormat || 'Standard'} • Sides: {item.sides || 'Single-sided'} • Cut: {item.corners || 'Standard'} • Lam: {item.lamination || 'None'} • Foil: {item.foil || 'None'} • SpotUV: {item.spotUV || 'None'} • Proof: {item.proof || 'Standard'} • Pkg: {item.packaging || 'Bulk'}</p>
+                  <FiTrash2 className="w-3.5 h-3.5" /> Clear Cart
+                </button>
+              </div>
+
+              {cartItems.map((item) => {
+                const artworkCount = item.artworkFiles ? item.artworkFiles.length : (item.uploadedFile ? 1 : 0);
+                return (
+                  <div
+                    key={item.cartItemId || item.id}
+                    className="bg-white rounded-3xl p-5 border border-[#E7EAF0] shadow-sm space-y-4 hover:shadow-md transition-all"
+                  >
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                      
+                      {/* Product Thumbnail & Details */}
+                      <div className="flex gap-4">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-24 h-24 object-cover rounded-2xl border border-slate-100 bg-slate-50 shrink-0"
+                        />
+                        <div className="space-y-1">
+                          <h4 className="text-base sm:text-lg font-extrabold text-[#0B1633] leading-snug">
+                            {item.name}
+                          </h4>
+                          
+                          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
+                            <span className="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-800 font-extrabold">
+                              {item.qty || item.quantity} Units
+                            </span>
+                            {item.paper && <span className="text-slate-500">• Paper: {item.paper}</span>}
+                            {item.finish && <span className="text-slate-500">• Finish: {item.finish}</span>}
+                            {item.sides && <span className="text-slate-500">• Sides: {item.sides}</span>}
+                          </div>
+
+                          {/* Custom Area Dimensions Pill if present */}
+                          {item.calculatedArea && (
+                            <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-900 border border-blue-200/80 px-2.5 py-1 rounded-xl text-[11px] font-extrabold mt-1">
+                              <span>📐 {item.customHeight}cm × {item.customWidth}cm ({item.calculatedArea} sq cm)</span>
+                              {item.areaTier && <span className="text-blue-700 font-bold">• {item.areaTier}</span>}
+                            </div>
+                          )}
+
+                          {/* Artwork Badge */}
+                          <div className="pt-1.5 flex flex-wrap items-center gap-2">
+                            {artworkCount > 0 ? (
+                              <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-xl text-xs font-extrabold">
+                                <FiCheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>{artworkCount} Artwork File(s) Uploaded</span>
+                                <button
+                                  onClick={() => setViewingArtworkModal(item)}
+                                  className="ml-1 text-emerald-700 hover:underline font-extrabold cursor-pointer border-none bg-transparent"
+                                >
+                                  [ View Files ]
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-xl text-xs font-bold">
+                                <FiPaperclip className="w-3.5 h-3.5 text-amber-600" /> Artwork Pending (Will be requested post-checkout)
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pricing & Item Actions */}
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 shrink-0 gap-3">
+                        <div className="text-left sm:text-right">
+                          <span className="text-xs text-slate-400 font-bold block">Total Price</span>
+                          <span className="text-xl font-black text-[#FF5A1F]">
+                            ₹{(item.totalPrice || (item.qty * item.unitPrice)).toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setEditingItem(item)}
+                            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs flex items-center gap-1 transition cursor-pointer border-none"
+                            title="Edit quantity or options"
+                          >
+                            <FiEdit3 className="w-3.5 h-3.5 text-[#FF5A1F]" /> Edit
+                          </button>
+
+                          <button
+                            onClick={() => removeFromCart(item.cartItemId || item.id)}
+                            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold text-xs flex items-center gap-1 transition cursor-pointer border border-rose-200"
+                            title="Remove item"
+                          >
+                            <FiTrash2 className="w-3.5 h-3.5" /> Remove
+                          </button>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
+                );
+              })}
 
-                  <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-[#E7EAF0] shrink-0">
-                    <div className="text-left sm:text-right">
-                      <span className="text-lg sm:text-xl font-black text-[#FF5A1F]">
-                        ₹{(item.totalPrice || (item.qty * item.unitPrice)).toLocaleString()}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer border border-rose-200 shrink-0"
-                      title="Delete item from cart"
-                    >
-                      <FiTrash2 className="w-4 h-4 text-rose-600 shrink-0" />
-                      <span>Delete</span>
-                    </button>
+              {/* Express Delivery Banner Option */}
+              <div className="p-5 rounded-3xl bg-[#07152F] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg border border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-[#FF5A1F] text-white flex items-center justify-center font-black">
+                    <FiZap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-white">24-Hour Express Priority Press Turnaround</h4>
+                    <p className="text-xs text-slate-300">
+                      Need your order fast? Enable Express for priority plate generation & 24h doorstep dispatch (+₹{APP_CONFIG.EXPRESS_SHIPPING_FEE}).
+                    </p>
                   </div>
                 </div>
-              ))}
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={isExpress}
+                    onChange={(e) => setIsExpress(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-12 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF5A1F]"></div>
+                </label>
+              </div>
+
             </div>
 
-            {/* Summary Sidebar (4 cols) */}
-            <div className="lg:col-span-4">
-              <div className="bg-white rounded-[20px] p-7 border border-[#E7EAF0] shadow-sm">
-                <h3 className="text-xl font-extrabold text-[#0B1633] mb-5">Order Summary</h3>
+            {/* SUMMARY & CHECKOUT SIDEBAR (4 cols) */}
+            <div className="lg:col-span-4 space-y-5">
+              
+              {/* Pricing Card */}
+              <div className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-5">
+                <h3 className="text-xl font-extrabold text-[#0B1633]">Order Total Summary</h3>
 
-                <div className="space-y-3 pb-5 border-b border-[#E7EAF0] text-xs">
-                  <div className="flex justify-between text-[#667085]">
+                {/* Coupon Code Input */}
+                <div className="space-y-2 pt-1 border-t border-slate-100">
+                  <label className="text-xs font-extrabold text-[#0B1633] flex items-center gap-1.5">
+                    <FiTag className="w-4 h-4 text-[#FF5A1F]" /> Have a Promo Coupon?
+                  </label>
+
+                  {appliedCoupon ? (
+                    <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-extrabold text-emerald-900">
+                      <div className="flex items-center gap-2">
+                        <FiCheckCircle className="w-4 h-4 text-emerald-600" />
+                        <span>Code "{appliedCoupon.code}" Applied ({appliedCoupon.label})</span>
+                      </div>
+                      <button onClick={handleRemoveCoupon} className="text-emerald-700 hover:text-emerald-950 font-black cursor-pointer bg-transparent border-none">
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="e.g. WELCOME10"
+                        className="flex-1 bg-[#F7F8FA] border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] uppercase"
+                      />
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-[#07152F] hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl transition cursor-pointer border-none"
+                      >
+                        Apply
+                      </button>
+                    </form>
+                  )}
+                  {couponError && <p className="text-[11px] font-bold text-rose-600">{couponError}</p>}
+                </div>
+
+                {/* Breakdown List */}
+                <div className="space-y-2.5 pt-3 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                  <div className="flex justify-between">
                     <span>Items Subtotal</span>
-                    <span className="font-bold text-[#0B1633]">₹{subtotal}</span>
+                    <span className="font-extrabold text-slate-900">₹{subtotal.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-[#667085]">
-                    <span>Estimated Shipping</span>
-                    <span className="font-bold text-[#0B1633]">{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
+
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between text-emerald-600">
+                      <span>Coupon Discount</span>
+                      <span className="font-extrabold">-₹{couponDiscount.toLocaleString()}</span>
+                    </div>
+                  )}
+
+                  {isExpress && (
+                    <div className="flex justify-between text-amber-700">
+                      <span>Express Priority Turnaround</span>
+                      <span className="font-extrabold">+₹{APP_CONFIG.EXPRESS_SHIPPING_FEE}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <span>Estimated Pan-India Shipping</span>
+                    <span className="font-extrabold text-slate-900">
+                      {shipping === 0 ? <strong className="text-emerald-600 uppercase font-black">FREE</strong> : `₹${shipping}`}
+                    </span>
                   </div>
                 </div>
 
-                <div className="py-4 flex justify-between items-center mb-6">
-                  <span className="text-sm font-bold text-[#0B1633]">Total Amount</span>
-                  <span className="text-2xl font-extrabold text-[#FF5A1F]">₹{total}</span>
+                {/* Grand Total */}
+                <div className="pt-4 border-t border-slate-200 flex justify-between items-baseline">
+                  <div>
+                    <span className="text-xs font-bold text-slate-500 block">Grand Total</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Incl. all taxes & delivery</span>
+                  </div>
+                  <span className="text-3xl font-black text-[#FF5A1F]">₹{grandTotal.toLocaleString()}</span>
                 </div>
 
+                {/* Checkout Trigger Button */}
                 <button
-                  onClick={() => setCheckoutModalOpen(true)}
-                  className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] py-3.5 rounded-[12px] transition border-none cursor-pointer shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-2"
+                  onClick={() => setCurrentPage('checkout', { express: isExpress ? '1' : '0', coupon: appliedCoupon?.code || '' })}
+                  className="w-full py-4 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-black text-sm uppercase tracking-wider shadow-xl shadow-[#FF5A1F]/25 flex items-center justify-center gap-2 cursor-pointer transition border-none hover:scale-[1.02]"
                 >
                   Proceed to Checkout <FiArrowRight className="w-4 h-4" />
                 </button>
+
+                <div className="text-center pt-1 text-[11px] text-slate-500 font-medium flex items-center justify-center gap-1.5">
+                  <FiShield className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>256-Bit SSL Encrypted & Prepress Proof Verified</span>
+                </div>
               </div>
+
             </div>
 
-          </div>
-        ) : (
-          <div className="bg-white rounded-[20px] p-12 text-center max-w-md mx-auto border border-[#E7EAF0]">
-            <div className="w-16 h-16 rounded-full bg-[#FF5A1F]/10 text-[#FF5A1F] flex items-center justify-center mx-auto mb-4">
-              <FiShoppingBag className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-extrabold text-[#0B1633] mb-2">Your Cart is Empty</h3>
-            <p className="text-[#667085] text-xs mb-6">Explore our catalog and customize print products to add them to your cart.</p>
-            <button
-              onClick={() => setCurrentPage && setCurrentPage('products')}
-              className="bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs px-6 py-3 rounded-[12px] border-none cursor-pointer shadow-md shadow-[#FF5A1F]/20 inline-flex items-center gap-2"
-            >
-              Browse Products <FiArrowRight className="w-4 h-4" />
-            </button>
           </div>
         )}
       </div>
 
-      {/* Production Checkout Modal */}
-      {checkoutModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-[20px] shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden">
-            <div className="p-4 bg-[#07152F] text-white flex items-center justify-between">
-              <h3 className="font-extrabold text-sm text-white">Production Order Checkout</h3>
-              <button onClick={() => setCheckoutModalOpen(false)} className="text-slate-400 hover:text-white">
+      {/* Edit Item Modal */}
+      {editingItem && (
+        <EditCartItemModal
+          isOpen={!!editingItem}
+          onClose={() => setEditingItem(null)}
+          item={editingItem}
+          onSaveItem={updateCartItem}
+        />
+      )}
+
+      {/* View Artwork Files Modal */}
+      {viewingArtworkModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden p-6 space-y-4 animate-in fade-in">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h4 className="font-extrabold text-base text-[#0B1633]">Uploaded Artwork Files</h4>
+              <button onClick={() => setViewingArtworkModal(null)} className="p-1 rounded-xl hover:bg-slate-100 cursor-pointer border-none text-slate-500">
                 <FiX className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handlePlaceOrder} className="p-6 space-y-4 text-xs font-sans max-h-[85vh] overflow-y-auto">
-              
-              {/* Account / Saved Address Selector Banner */}
-              {currentUser ? (
-                <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200 text-blue-900 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-extrabold text-[11px] flex items-center gap-1.5 text-blue-950">
-                      <FiUser className="w-3.5 h-3.5 text-[#FF5A1F]" /> Logged in as: <strong className="text-blue-900">{currentUser.displayName || currentUser.email}</strong>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPage && setCurrentPage('account')}
-                      className="text-[10.5px] font-bold text-blue-700 hover:underline border-none bg-transparent cursor-pointer"
-                    >
-                      Manage Address Book →
-                    </button>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {(viewingArtworkModal.artworkFiles || []).map((f, idx) => (
+                <div key={idx} className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-extrabold block text-slate-900 truncate max-w-[240px]">{f.fileName || f.originalFileName}</span>
+                    <span className="text-[10px] text-slate-400 font-mono">Format: {f.format || 'doc'}</span>
                   </div>
-
-                  {userProfile?.addresses && userProfile.addresses.length > 0 && (
-                    <div>
-                      <span className="block font-bold text-slate-700 text-[10.5px] uppercase tracking-wider mb-1.5">
-                        Select From Saved Addresses:
-                      </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {userProfile.addresses.map((addr) => {
-                          const isSelected = selectedAddressId === addr.id;
-                          return (
-                            <button
-                              key={addr.id}
-                              type="button"
-                              onClick={() => {
-                                setSelectedAddressId(addr.id);
-                                const fullAddrStr = `${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}, ${addr.city}, ${addr.state} - ${addr.pincode}`;
-                                setAddress(fullAddrStr);
-                                if (addr.phone) setCustomerPhone(addr.phone);
-                                if (addr.name) setCustomerName(addr.name);
-                              }}
-                              className={`p-2.5 rounded-xl border text-left font-sans transition cursor-pointer flex flex-col justify-between ${
-                                isSelected
-                                  ? 'bg-white border-[#FF5A1F] ring-2 ring-[#FF5A1F]/20 text-slate-900 shadow-xs'
-                                  : 'bg-white/70 border-slate-200 text-slate-700 hover:border-slate-300'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="font-extrabold text-[11px] text-slate-900">{addr.name} ({addr.type || 'Home'})</span>
-                                {isSelected && <FiCheck className="w-3.5 h-3.5 text-[#FF5A1F]" />}
-                              </div>
-                              <p className="text-[10px] text-slate-600 truncate">{addr.addressLine1}, {addr.city}</p>
-                              <span className="text-[9.5px] font-bold text-slate-400 mt-1">Pincode: {addr.pincode}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
+                  {f.secureUrl && (
+                    <a
+                      href={f.secureUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-[#07152F] text-white text-[11px] font-bold rounded-xl hover:bg-slate-800 transition text-decoration-none"
+                    >
+                      View / Download
+                    </a>
                   )}
                 </div>
-              ) : (
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium flex items-center justify-between gap-2">
-                  <span>💡 Sign in to use saved addresses and track live press production in your account.</span>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage && setCurrentPage('login')}
-                    className="px-3 py-1 rounded-lg bg-[#07152F] text-white font-extrabold text-[10px] shrink-0 border-none cursor-pointer"
-                  >
-                    Sign In
-                  </button>
-                </div>
-              )}
+              ))}
+            </div>
 
-              <div>
-                <label className="block font-bold text-slate-800 mb-1">Full Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Aarav Sharma"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
-                    placeholder="aarav@company.com"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">Mobile Phone *</label>
-                  <input
-                    type="text"
-                    required
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="+91 98450 11223"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">Company (Optional)</label>
-                  <input
-                    type="text"
-                    value={customerCompany}
-                    onChange={(e) => setCustomerCompany(e.target.value)}
-                    placeholder="Nexus Media Ltd"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
-                  />
-                </div>
-                <div>
-                  <label className="block font-bold text-slate-800 mb-1">Delivery Address *</label>
-                  <input
-                    type="text"
-                    required
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Indiranagar, Bangalore"
-                    className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
-                  />
-                </div>
-              </div>
-
-              <label className="flex items-center gap-2 cursor-pointer font-bold text-red-600 pt-1">
-                <input
-                  type="checkbox"
-                  checked={isExpress}
-                  onChange={(e) => setIsExpress(e.target.checked)}
-                  className="accent-red-600 rounded"
-                />
-                <span className="flex items-center gap-1"><FiZap className="w-3.5 h-3.5 fill-red-600" /> Mark as Express Same-Day Dispatch</span>
-              </label>
-
-              <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
-                <div>
-                  <span className="text-slate-500 text-[10px]">Total Payable Amount</span>
-                  <div className="font-extrabold text-[#FF5A1F] text-lg">₹{total}</div>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-100 font-bold text-slate-600 border-none cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={placingOrder}
-                    className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-bold shadow-md cursor-pointer border-none"
-                  >
-                    {placingOrder ? 'Transmitting to Admin...' : 'Place Order & Pay'}
-                  </button>
-                </div>
-              </div>
-            </form>
+            <button
+              onClick={() => setViewingArtworkModal(null)}
+              className="w-full py-2.5 bg-slate-200 text-slate-800 font-extrabold text-xs rounded-xl cursor-pointer border-none"
+            >
+              Close Window
+            </button>
           </div>
         </div>
       )}
 
     </div>
-  )
+  );
 }

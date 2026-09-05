@@ -14,7 +14,7 @@ import { useAdmin } from '../../context/AdminContext';
 export const LiveStatCards = () => {
   const { orders, expressOrdersCount, pendingArtworkCount } = useAdmin();
 
-  const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || o.pricing?.grandTotal || 0), 0);
   const inProductionCount = orders.filter(o => o.status === 'In Production').length;
 
   const stats = [

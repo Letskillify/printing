@@ -148,10 +148,12 @@ export const DesignTicketDesk = () => {
               {ticket.proofUrl && (
                 <button
                   onClick={() => {
-                    const msg = `Hi ${ticket.customerName}, your custom design proof for ${ticket.product} is ready! Preview here: ${ticket.proofUrl}. Reply 'APPROVE' to start printing.`;
-                    window.open(`https://wa.me/${ticket.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+                    const rawPhone = ticket.phone || '';
+                    const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+                    const msg = `Hi ${ticket.customerName || 'Client'}, your custom design proof for ${ticket.product || 'your product'} is ready! Preview here: ${ticket.proofUrl}. Reply 'APPROVE' to start printing.`;
+                    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                   }}
-                  className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs"
+                  className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs cursor-pointer border-none"
                 >
                   <Send className="w-3.5 h-3.5" /> Send Approval Link via WhatsApp
                 </button>

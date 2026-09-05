@@ -399,6 +399,13 @@ export const INITIAL_PRODUCTS = [
         { name: "Standard Eco Bulk Shrink", priceModifier: 0 },
         { name: "Acrylic Desk Storage Box", priceModifier: 1.20 },
         { name: "Luxury Gift Presentation Box", priceModifier: 3.50 }
+      ],
+      customAreaPricing: [
+        { name: "Up to 50 sq cm (cm²)", maxArea: 50, priceModifier: 180 },
+        { name: "Up to 100 sq cm (cm²)", maxArea: 100, priceModifier: 300 },
+        { name: "Up to 250 sq cm (cm²)", maxArea: 250, priceModifier: 550 },
+        { name: "Up to 500 sq cm (cm²)", maxArea: 500, priceModifier: 950 },
+        { name: "Up to 1000 sq cm (cm²)", maxArea: 1000, priceModifier: 1700 }
       ]
     },
     tieredPricing: [

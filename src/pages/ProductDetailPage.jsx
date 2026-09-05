@@ -11,12 +11,13 @@ import {
   FiFileText,
   FiPackage,
   FiStar,
-  FiClock,
   FiChevronDown,
   FiChevronUp,
   FiInfo
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
+import { DEFAULT_CATALOG_OPTIONS } from '../services/firebase';
+import { ArtworkUploadModal } from '../Components/cart/ArtworkUploadModal';
 
 // Helper to convert camelCase keys like 'boxStyle' -> 'Box Style'
 const formatKeyToTitle = (key) => {
@@ -34,6 +35,7 @@ const formatKeyToTitle = (key) => {
     packagingStyle: 'Packaging & Presentation Box',
     baseType: 'Base & Frame Specification',
     boxStyle: 'Box Construction & Style',
+    customAreaPricing: 'Custom Area Pricing & Dimensions (Height × Width)',
   };
   if (titles[key]) return titles[key];
   return key
@@ -68,15 +70,44 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   // Accordion Tabs Toggle (description open by default)
   const [openAccordion, setOpenAccordion] = useState('description'); // 'overview', 'shipping', 'guarantee'
 
-  // Parse available variants dynamically from product object ONLY
-  const availableVariantEntries = Object.entries(product.variants || {}).filter(
+  // Custom Height & Width Area Calculation States (cm)
+  const [customHeight, setCustomHeight] = useState('5');
+  const [customWidth, setCustomWidth] = useState('10');
+
+  const parsedH = parseFloat(customHeight) || 0;
+  const parsedW = parseFloat(customWidth) || 0;
+  const calculatedAreaSqCm = Math.round(parsedH * parsedW * 100) / 100;
+
+  // Effective variants merging product.variants with default customAreaPricing fallback
+  const effectiveVariants = React.useMemo(() => {
+    const rawVariants = product.variants || {};
+    const merged = { ...rawVariants };
+    if (merged.customAreaPricing === undefined) {
+      merged.customAreaPricing = DEFAULT_CATALOG_OPTIONS.customAreaPricing;
+    }
+    return merged;
+  }, [product.variants]);
+
+  // Active custom area tier matching
+  const getMatchedAreaTier = () => {
+    const areaTiers = effectiveVariants.customAreaPricing || [];
+    if (!areaTiers || areaTiers.length === 0 || calculatedAreaSqCm <= 0) return null;
+    const sorted = [...areaTiers].sort((a, b) => (a.maxArea || 0) - (b.maxArea || 0));
+    const matched = sorted.find(t => calculatedAreaSqCm <= (t.maxArea || Infinity));
+    return matched || sorted[sorted.length - 1];
+  };
+
+  const matchedAreaTier = getMatchedAreaTier();
+
+  // Parse available variants dynamically from effectiveVariants
+  const availableVariantEntries = Object.entries(effectiveVariants).filter(
     ([_, options]) => Array.isArray(options) && options.length > 0
   );
 
   // Initialize selected option values for each available variant category
   const [selectedVariants, setSelectedVariants] = useState(() => {
     const initial = {};
-    Object.entries(product.variants || {}).forEach(([key, options]) => {
+    Object.entries(effectiveVariants).forEach(([key, options]) => {
       if (Array.isArray(options) && options.length > 0) {
         const first = options[0];
         initial[key] = typeof first === 'string' ? first : first.name;
@@ -88,17 +119,19 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   // Keep state updated if product changes
   useEffect(() => {
     const initial = {};
-    Object.entries(product.variants || {}).forEach(([key, options]) => {
+    Object.entries(effectiveVariants).forEach(([key, options]) => {
       if (Array.isArray(options) && options.length > 0) {
         const first = options[0];
         initial[key] = typeof first === 'string' ? first : first.name;
       }
     });
     setSelectedVariants(initial);
-  }, [product]);
+  }, [effectiveVariants]);
 
   const [uploadedFile, setUploadedFile] = useState(null);
   const [addedSuccess, setAddedSuccess] = useState(false);
+  const [isArtworkModalOpen, setIsArtworkModalOpen] = useState(false);
+  const [isBuyNowFlow, setIsBuyNowFlow] = useState(false);
 
   const isSaved = isInWishlist(product.id);
 
@@ -121,7 +154,8 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
     }
 
     let totalModifiers = 0;
-    Object.entries(product.variants || {}).forEach(([key, options]) => {
+    Object.entries(effectiveVariants).forEach(([key, options]) => {
+      if (key === 'customAreaPricing') return; // Handled separately with Height x Width
       if (Array.isArray(options) && options.length > 0) {
         const selectedVal = selectedVariants[key];
         const match = options.find(
@@ -132,6 +166,11 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
         }
       }
     });
+
+    if (matchedAreaTier && calculatedAreaSqCm > 0) {
+      const areaPriceVal = Number(matchedAreaTier.priceModifier !== undefined ? matchedAreaTier.priceModifier : (matchedAreaTier.price || 0)) || 0;
+      totalModifiers += areaPriceVal;
+    }
 
     const calculatedTotal = (baseUnitPrice + totalModifiers) * validQty;
     return Math.max(1, Math.round(calculatedTotal));
@@ -147,7 +186,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
     }));
   };
 
-  const handleAddToCart = () => {
+  const validateInputsBeforeModal = () => {
     if (isCustomQty) {
       const parsed = parseInt(customQtyInput);
       if (!customQtyInput || isNaN(parsed) || parsed <= 0) {
@@ -157,21 +196,37 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
           inputEl.focus();
           inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        return;
+        return false;
       }
       if (parsed < minPieces) {
         alert(`Minimum Order Quantity Requirement:\n\nThis product requires a minimum of ${minPieces} pieces. Please enter ${minPieces} or more.`);
         const inputEl = document.getElementById('customQtyField');
         if (inputEl) inputEl.focus();
-        return;
+        return false;
       }
     }
 
     if (quantity < minPieces) {
       alert(`Minimum order quantity for this product is ${minPieces} pieces.`);
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  const handleAddToCart = () => {
+    if (!validateInputsBeforeModal()) return;
+    setIsBuyNowFlow(false);
+    setIsArtworkModalOpen(true);
+  };
+
+  const handleBuyNow = () => {
+    if (!validateInputsBeforeModal()) return;
+    setIsBuyNowFlow(true);
+    setIsArtworkModalOpen(true);
+  };
+
+  const handleConfirmArtworkUpload = ({ artworkFiles, artworkNotes }) => {
     addToCart({
       id: product.id,
       name: product.title || product.name,
@@ -180,38 +235,26 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
       paper: selectedVariants.paperStock || selectedVariants.paper || '',
       finish: selectedVariants.finishes || selectedVariants.finish || '',
       sides: selectedVariants.sides || '',
+      customHeight: parsedH > 0 ? parsedH : null,
+      customWidth: parsedW > 0 ? parsedW : null,
+      calculatedArea: calculatedAreaSqCm > 0 ? calculatedAreaSqCm : null,
+      areaTier: matchedAreaTier ? (matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} cm²`) : null,
+      areaPrice: matchedAreaTier ? (matchedAreaTier.priceModifier || matchedAreaTier.price || 0) : 0,
       unitPrice: unitPrice,
       totalPrice: totalPrice,
       image: selectedImage || (imagesList.length > 0 ? imagesList[0] : null),
-      uploadedFile: uploadedFile ? uploadedFile.name : null
+      artworkFiles: artworkFiles || [],
+      artworkNotes: artworkNotes || ''
     });
+
     setAddedSuccess(true);
     setTimeout(() => setAddedSuccess(false), 2000);
-  };
 
-  const handleBuyNow = () => {
-    if (isCustomQty) {
-      const parsed = parseInt(customQtyInput);
-      if (!customQtyInput || isNaN(parsed) || parsed <= 0) {
-        alert(`Mandatory Custom Quantity Required!\n\nPlease enter your desired quantity (Minimum ${minPieces} pieces) before proceeding to checkout.`);
-        const inputEl = document.getElementById('customQtyField');
-        if (inputEl) {
-          inputEl.focus();
-          inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-      }
-      if (parsed < minPieces) {
-        alert(`Minimum Order Quantity Requirement:\n\nThis product requires a minimum of ${minPieces} pieces. Please enter ${minPieces} or more.`);
-        const inputEl = document.getElementById('customQtyField');
-        if (inputEl) inputEl.focus();
-        return;
-      }
+    if (isBuyNowFlow && onNavigateCart) {
+      onNavigateCart();
     }
-
-    handleAddToCart();
-    if (onNavigateCart) onNavigateCart();
   };
+
 
   // Step Counter tracking variable for dynamic section numbers
   let stepCounter = 1;
@@ -534,6 +577,61 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 const title = formatKeyToTitle(key);
                 const currentSelected = selectedVariants[key];
 
+                // Custom Area Height & Width Pricing Section
+                if (key === 'customAreaPricing') {
+                  const activePrice = matchedAreaTier ? (matchedAreaTier.priceModifier !== undefined ? matchedAreaTier.priceModifier : matchedAreaTier.price) : 0;
+                  return (
+                    <div key={key} className="space-y-3 bg-gradient-to-r from-blue-50/80 via-slate-50 to-orange-50/50 p-4.5 rounded-2xl border border-blue-200/80 shadow-xs">
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                          <span>{title}:</span>
+                        </label>
+                        {calculatedAreaSqCm > 0 && matchedAreaTier && (
+                          <span className="text-[11px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>Matched Tier: {matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} cm²`} (+₹{activePrice})</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-extrabold text-slate-700">Enter Height (cm):</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            step="0.1"
+                            value={customHeight}
+                            onChange={(e) => setCustomHeight(e.target.value)}
+                            placeholder="e.g. 5"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[11px] font-extrabold text-slate-700">Enter Width (cm):</label>
+                          <input
+                            type="number"
+                            min="0.1"
+                            step="0.1"
+                            value={customWidth}
+                            onChange={(e) => setCustomWidth(e.target.value)}
+                            placeholder="e.g. 10"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-white rounded-xl border border-blue-100 flex items-center justify-between text-xs font-bold text-slate-700 shadow-3xs">
+                        <span>📐 Automatically Calculated Area:</span>
+                        <span className="text-sm font-black text-[#FF5A1F] font-mono">
+                          {calculatedAreaSqCm > 0 ? `${customHeight}cm × ${customWidth}cm = ${calculatedAreaSqCm} sq cm (cm²)` : 'Enter Height & Width'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }
+
                 // Dropdown layout for paperStock & finishes
                 if (key === 'paperStock' || key === 'finishes') {
                   return (
@@ -771,6 +869,13 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
         </div>
       </div>
 
+      <ArtworkUploadModal
+        isOpen={isArtworkModalOpen}
+        onClose={() => setIsArtworkModalOpen(false)}
+        onConfirmUpload={handleConfirmArtworkUpload}
+        productTitle={product.title || product.name}
+      />
     </div>
   );
 }
+

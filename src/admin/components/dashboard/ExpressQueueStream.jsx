@@ -59,13 +59,15 @@ export const ExpressQueueStream = () => {
             </div>
 
             <div className="text-xs space-y-1 mb-3">
-              <p className="font-bold text-slate-900">{order.customer.name} ({order.customer.company})</p>
+              <p className="font-bold text-slate-900">
+                {order.customer?.name || 'Express Customer'} {order.customer?.company ? `(${order.customer.company})` : ''}
+              </p>
               <p className="text-slate-500 text-[11px] truncate">
-                {order.items.map(i => i.productName).join(', ')}
+                {(order.items || []).map(i => i.productName || i.name || 'Print Item').join(', ') || 'Custom Print Item'}
               </p>
               <div className="flex items-center gap-1 text-blue-600 text-[11px] font-semibold pt-1">
                 <Truck className="w-3 h-3 shrink-0" />
-                <span>{order.deliveryMethod}</span>
+                <span>{order.deliveryMethod || 'Hyperlocal Express Courier'}</span>
               </div>
             </div>
 

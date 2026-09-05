@@ -19,6 +19,10 @@ import { TrackOrderPage } from './pages/TrackOrderPage'
 import { HelpCenterPage } from './pages/HelpCenterPage'
 import { BlogPage } from './pages/BlogPage'
 import { CartPage } from './pages/CartPage'
+import { CheckoutPage } from './pages/CheckoutPage'
+import { OrderSuccessPage } from './pages/OrderSuccessPage'
+import { OrdersPage } from './pages/OrdersPage'
+import { OrderDetailsPage } from './pages/OrderDetailsPage'
 import { CustomQuotePage } from './pages/CustomQuotePage'
 import { LoginPage } from './pages/LoginPage'
 import { SignupPage } from './pages/SignupPage'
@@ -171,6 +175,14 @@ function AppContent() {
         return <BlogPage />
       case 'cart':
         return <CartPage setCurrentPage={setCurrentPage} />
+      case 'checkout':
+        return <CheckoutPage setCurrentPage={setCurrentPage} />
+      case 'order-success':
+        return <OrderSuccessPage setCurrentPage={setCurrentPage} />
+      case 'orders':
+        return <OrdersPage setCurrentPage={setCurrentPage} />
+      case 'order-details':
+        return <OrderDetailsPage setCurrentPage={setCurrentPage} />
       case 'quote':
         return <CustomQuotePage />
       case 'login':

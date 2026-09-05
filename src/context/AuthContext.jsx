@@ -5,6 +5,10 @@ import {
   signUpUser, 
   signInUser, 
   signOutUser,
+  signInWithGoogleProvider,
+  sendOtpToEmail,
+  verifyOtpCode,
+  syncUserGuestOrdersApi,
   syncUserCartToFirestore,
   getUserCartFromFirestore,
   syncUserWishlistToFirestore,
@@ -150,25 +154,32 @@ export const AuthProvider = ({ children }) => {
   // Cart Operations
   const addToCart = (product) => {
     setCartItems(prev => {
-      const existingIdx = prev.findIndex(item => item.id === product.id && item.finish === product.finish);
-      let updatedCart;
-      if (existingIdx > -1) {
-        updatedCart = [...prev];
-        updatedCart[existingIdx].qty += (product.qty || 1);
-        updatedCart[existingIdx].totalPrice = updatedCart[existingIdx].qty * updatedCart[existingIdx].unitPrice;
-      } else {
-        const newItem = {
-          id: product.id || Date.now(),
-          name: product.name || product.title,
-          qty: product.qty || 100,
-          paper: product.paper || '350gsm Premium Matte',
-          finish: product.finish || 'Standard Matte',
-          unitPrice: product.unitPrice || product.basePrice || 1.5,
-          totalPrice: (product.qty || 100) * (product.unitPrice || product.basePrice || 1.5),
-          image: product.image || (product.images && product.images[0]) || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600'
-        };
-        updatedCart = [newItem, ...prev];
-      }
+      const cartItemId = product.cartItemId || `cart_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      const newItem = {
+        cartItemId,
+        id: product.id || Date.now(),
+        productId: product.id,
+        name: product.name || product.title,
+        qty: product.qty || 100,
+        quantity: product.qty || 100,
+        selectedOptions: product.selectedOptions || {},
+        paper: product.paper || '',
+        finish: product.finish || '',
+        sides: product.sides || '',
+        customHeight: product.customHeight || null,
+        customWidth: product.customWidth || null,
+        calculatedArea: product.calculatedArea || null,
+        areaTier: product.areaTier || null,
+        areaPrice: product.areaPrice || 0,
+        unitPrice: product.unitPrice || product.basePrice || 1.5,
+        totalPrice: product.totalPrice || (product.qty * (product.unitPrice || 1.5)),
+        image: product.image || (product.images && product.images[0]) || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600',
+        artworkFiles: product.artworkFiles || [],
+        artworkNotes: product.artworkNotes || '',
+        uploadedFile: product.artworkFiles && product.artworkFiles.length > 0 ? product.artworkFiles[0].fileName : null
+      };
+
+      const updatedCart = [newItem, ...prev];
 
       if (currentUser) {
         syncUserCartToFirestore(currentUser.uid, updatedCart);
@@ -177,9 +188,34 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (id) => {
+  const updateCartItem = (cartItemId, updatedFields) => {
     setCartItems(prev => {
-      const updated = prev.filter(item => item.id !== id);
+      const updated = prev.map(item => {
+        if (item.cartItemId === cartItemId || item.id === cartItemId) {
+          const newQty = updatedFields.qty !== undefined ? updatedFields.qty : item.qty;
+          const newUnitPrice = updatedFields.unitPrice !== undefined ? updatedFields.unitPrice : item.unitPrice;
+          const newTotalPrice = updatedFields.totalPrice !== undefined ? updatedFields.totalPrice : (newQty * newUnitPrice);
+          return {
+            ...item,
+            ...updatedFields,
+            qty: newQty,
+            quantity: newQty,
+            totalPrice: newTotalPrice
+          };
+        }
+        return item;
+      });
+
+      if (currentUser) {
+        syncUserCartToFirestore(currentUser.uid, updated);
+      }
+      return updated;
+    });
+  };
+
+  const removeFromCart = (cartItemId) => {
+    setCartItems(prev => {
+      const updated = prev.filter(item => item.cartItemId !== cartItemId && item.id !== cartItemId);
       if (currentUser) {
         syncUserCartToFirestore(currentUser.uid, updated);
       }
@@ -224,14 +260,42 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const user = await signInUser(email, password);
+    if (user && user.email) {
+      await syncUserGuestOrdersApi(user.uid, user.email);
+    }
     setAuthModalOpen(false);
     return user;
   };
 
   const signup = async (email, password, displayName, phone, company) => {
     const user = await signUpUser(email, password, displayName, phone, company);
+    if (user && user.email) {
+      await syncUserGuestOrdersApi(user.uid, user.email);
+    }
     setAuthModalOpen(false);
     return user;
+  };
+
+  const loginWithGoogle = async () => {
+    const user = await signInWithGoogleProvider();
+    if (user && user.email) {
+      await syncUserGuestOrdersApi(user.uid, user.email);
+    }
+    setAuthModalOpen(false);
+    return user;
+  };
+
+  const sendOTP = async (email) => {
+    return await sendOtpToEmail(email);
+  };
+
+  const verifyOTP = async (email, otp) => {
+    const res = await verifyOtpCode(email, otp);
+    if (res.uid && email) {
+      await syncUserGuestOrdersApi(res.uid, email);
+    }
+    setAuthModalOpen(false);
+    return res;
   };
 
   const logout = async () => {
@@ -255,10 +319,14 @@ export const AuthProvider = ({ children }) => {
       setAuthModalTab,
       login,
       signup,
+      loginWithGoogle,
+      sendOTP,
+      verifyOTP,
       logout,
       cartItems,
       setCartItems,
       addToCart,
+      updateCartItem,
       removeFromCart,
       clearCart,
       wishlistItems,
@@ -277,3 +345,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

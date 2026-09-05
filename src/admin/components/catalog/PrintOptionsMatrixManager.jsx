@@ -47,7 +47,8 @@ export const PrintOptionsMatrixManager = () => {
     spotUV: '8. Spot UV & Raised Gloss Textures',
     bindingStyle: '9. Binding & Booklet Construction',
     proofService: '10. Prepress Proofing Service',
-    packagingStyle: '11. Packaging & Presentation Style'
+    packagingStyle: '11. Packaging & Presentation Style',
+    customAreaPricing: '12. Custom Area Tier Pricing & Calculation (cm²)'
   };
 
   // Currently disabled sections array
@@ -356,14 +357,23 @@ const MatrixSectionCard = ({
 }) => {
   const [newOptName, setNewOptName] = useState('');
   const [newOptPrice, setNewOptPrice] = useState('');
+  const [newMaxArea, setNewMaxArea] = useState('');
 
   const handleAdd = () => {
     if (!newOptName.trim()) return;
     const priceVal = parseFloat(newOptPrice) || 0;
-    onAddOption({ name: newOptName.trim(), priceModifier: priceVal });
+    const areaVal = parseFloat(newMaxArea) || 0;
+    onAddOption({ 
+      name: newOptName.trim(), 
+      priceModifier: priceVal,
+      ...(groupKey === 'customAreaPricing' || areaVal > 0 ? { maxArea: areaVal } : {})
+    });
     setNewOptName('');
     setNewOptPrice('');
+    setNewMaxArea('');
   };
+
+  const isAreaSection = groupKey === 'customAreaPricing';
 
   return (
     <div className={`bg-white rounded-2xl border transition-all duration-200 shadow-xs flex flex-col justify-between overflow-hidden ${
@@ -431,16 +441,29 @@ const MatrixSectionCard = ({
                 type="text"
                 value={opt.name}
                 onChange={(e) => onUpdateOptionItem(idx, { ...opt, name: e.target.value })}
-                className="flex-1 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
+                className="flex-1 min-w-0 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
                 placeholder="Option name"
               />
-              <div className="relative w-24 shrink-0">
+              {isAreaSection && (
+                <div className="relative w-20 shrink-0">
+                  <input
+                    type="number"
+                    step="1"
+                    value={opt.maxArea || ''}
+                    onChange={(e) => onUpdateOptionItem(idx, { ...opt, maxArea: parseFloat(e.target.value) || 0 })}
+                    placeholder="Max cm²"
+                    className="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-xs focus:outline-none focus:border-blue-500"
+                    title="Max Area in sq cm (cm²)"
+                  />
+                </div>
+              )}
+              <div className="relative w-22 shrink-0">
                 <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
                 <input
                   type="number"
-                  step="0.1"
-                  value={opt.priceModifier}
-                  onChange={(e) => onUpdateOptionItem(idx, { ...opt, priceModifier: parseFloat(e.target.value) || 0 })}
+                  step="1"
+                  value={opt.priceModifier !== undefined ? opt.priceModifier : (opt.price || 0)}
+                  onChange={(e) => onUpdateOptionItem(idx, { ...opt, priceModifier: parseFloat(e.target.value) || 0, price: parseFloat(e.target.value) || 0 })}
                   className="w-full pl-5 pr-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-xs focus:outline-none focus:border-blue-500"
                 />
               </div>
@@ -463,17 +486,27 @@ const MatrixSectionCard = ({
           type="text"
           value={newOptName}
           onChange={(e) => setNewOptName(e.target.value)}
-          placeholder="+ New Custom Option"
-          className="flex-1 p-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
+          placeholder={isAreaSection ? "e.g. Up to 50 sq cm" : "+ New Custom Option"}
+          className="flex-1 min-w-0 p-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
         />
+        {isAreaSection && (
+          <input
+            type="number"
+            value={newMaxArea}
+            onChange={(e) => setNewMaxArea(e.target.value)}
+            placeholder="Max cm²"
+            className="w-20 p-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
+            title="Max Area limit in cm²"
+          />
+        )}
         <div className="relative w-20 shrink-0">
           <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
           <input
             type="number"
-            step="0.1"
+            step="1"
             value={newOptPrice}
             onChange={(e) => setNewOptPrice(e.target.value)}
-            placeholder="+Mod"
+            placeholder="Price"
             className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
           />
         </div>

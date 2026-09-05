@@ -19,19 +19,19 @@ export const AdminCommandPalette = () => {
   if (!commandPaletteOpen) return null;
 
   const filteredOrders = orders.filter(o => 
-    o.id.toLowerCase().includes(query.toLowerCase()) || 
-    o.customer.name.toLowerCase().includes(query.toLowerCase()) ||
-    o.customer.company?.toLowerCase().includes(query.toLowerCase())
+    (o.id || '').toLowerCase().includes(query.toLowerCase()) || 
+    (o.customer?.name || '').toLowerCase().includes(query.toLowerCase()) ||
+    (o.customer?.company || '').toLowerCase().includes(query.toLowerCase())
   );
 
   const filteredProducts = products.filter(p =>
-    p.title.toLowerCase().includes(query.toLowerCase()) ||
-    p.category.toLowerCase().includes(query.toLowerCase())
+    (p.title || '').toLowerCase().includes(query.toLowerCase()) ||
+    (p.category || '').toLowerCase().includes(query.toLowerCase())
   );
 
   const filteredCustomers = customers.filter(c =>
-    c.name.toLowerCase().includes(query.toLowerCase()) ||
-    c.company?.toLowerCase().includes(query.toLowerCase())
+    (c.name || '').toLowerCase().includes(query.toLowerCase()) ||
+    (c.company || '').toLowerCase().includes(query.toLowerCase())
   );
 
   return (

@@ -15,8 +15,10 @@ import {
   FiTruck, 
   FiClock, 
   FiShield,
-  FiFileText
+  FiFileText,
+  FiEye
 } from 'react-icons/fi';
+
 import { FiCheck, FiX, FiSliders } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { subscribeToUserOrders } from '../services/firebase';
@@ -165,6 +167,18 @@ export function AccountPage({ setCurrentPage }) {
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
+    // Validate phone - 10 digits
+    const cleanPhone = (addressForm.phone || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10 || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      alert('Please enter a valid 10-digit mobile number (starting with 6-9).');
+      return;
+    }
+    // Validate pincode - 6 digits
+    const cleanPin = (addressForm.pincode || '').replace(/\D/g, '');
+    if (cleanPin.length !== 6) {
+      alert('Please enter a valid 6-digit Pincode.');
+      return;
+    }
     await saveAddress({ ...addressForm, id: editingAddressId });
     setSaveAddressSuccess(true);
     setTimeout(() => {
@@ -318,18 +332,21 @@ export function AccountPage({ setCurrentPage }) {
                           <div className="flex items-center gap-3">
                             <span className="font-extrabold text-sm text-[#0B1633] font-mono">{ord.id}</span>
                             <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200">
-                              {ord.status || 'Payment Confirmed'}
+                              ● {ord.status || 'Payment Confirmed'}
                             </span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <span className="text-xs font-bold text-slate-500">
-                              {ord.createdAt ? new Date(ord.createdAt).toLocaleDateString() : 'Recent'}
-                            </span>
+                          <div className="flex items-center gap-2">
                             <button
-                              onClick={() => setCurrentPage && setCurrentPage('track', { orderId: ord.id })}
-                              className="px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-xs flex items-center gap-1.5 border border-blue-200 cursor-pointer"
+                              onClick={() => setCurrentPage && setCurrentPage('order-details', { orderId: ord.orderId || ord.id })}
+                              className="px-3 py-1.5 rounded-xl bg-[#07152F] text-white font-extrabold text-xs flex items-center gap-1 cursor-pointer border-none shadow-xs"
                             >
-                              <FiTruck className="w-3.5 h-3.5" /> Track Live Order
+                              <FiEye className="w-3.5 h-3.5" /> Order Details
+                            </button>
+                            <button
+                              onClick={() => setCurrentPage && setCurrentPage('track', { orderId: ord.orderId || ord.id })}
+                              className="px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-[#FF5A1F] font-extrabold text-xs flex items-center gap-1 border border-orange-200 cursor-pointer"
+                            >
+                              <FiTruck className="w-3.5 h-3.5" /> Track Status
                             </button>
                           </div>
                         </div>
@@ -341,24 +358,24 @@ export function AccountPage({ setCurrentPage }) {
                               <div className="flex items-center gap-3">
                                 <img
                                   src={item.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=200'}
-                                  alt={item.name}
+                                  alt={item.name || item.productName}
                                   className="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 shrink-0"
                                 />
                                 <div>
-                                  <span className="font-extrabold text-slate-900 block">{item.name}</span>
-                                  <span className="text-[11px] text-slate-500 font-medium">{item.paper} • {item.finish} • Qty: {item.qty} pcs</span>
+                                  <span className="font-extrabold text-slate-900 block">{item.productName || item.name}</span>
+                                  <span className="text-[11px] text-slate-500 font-medium">{item.variant || `${item.paper || ''} ${item.finish || ''}`} • Qty: {item.quantity || item.qty} pcs</span>
                                 </div>
                               </div>
-                              <span className="font-extrabold text-slate-900">₹{item.totalPrice}</span>
+                              <span className="font-extrabold text-slate-900">₹{(item.totalPrice || (item.unitPrice * (item.quantity || item.qty)) || 0).toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
 
                         <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
-                          <span className="text-slate-500 font-medium">Delivery Address: <strong className="text-slate-800">{ord.customer?.city || 'Bengaluru'}, {ord.customer?.pincode}</strong></span>
+                          <span className="text-slate-500 font-medium">Shipping Address: <strong className="text-slate-800">{ord.deliveryAddress || ord.customer?.city || 'India'}</strong></span>
                           <div className="text-right">
                             <span className="text-[10px] text-slate-400 block font-bold uppercase">Total Order Amount</span>
-                            <span className="font-black text-base text-[#FF5A1F]">₹{ord.totalAmount}</span>
+                            <span className="font-black text-base text-[#FF5A1F]">₹{(ord.totalAmount || ord.pricing?.grandTotal || 0).toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
@@ -641,13 +658,14 @@ export function AccountPage({ setCurrentPage }) {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Phone Number *</label>
+                <label className="block font-bold text-slate-700 mb-1">Phone Number * <span className="text-[10px] text-slate-400 font-normal">(10 digits)</span></label>
                 <input
                   type="tel"
                   required
+                  maxLength={10}
                   value={addressForm.phone}
-                  onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
-                  placeholder="+91 98765 43210"
+                  onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                  placeholder="9876543210"
                   className="w-full p-2.5 rounded-xl border border-slate-200 font-semibold focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
@@ -687,12 +705,13 @@ export function AccountPage({ setCurrentPage }) {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Pincode *</label>
+                <label className="block font-bold text-slate-700 mb-1">Pincode * <span className="text-[10px] text-slate-400 font-normal">(6 digits)</span></label>
                 <input
                   type="text"
                   required
+                  maxLength={6}
                   value={addressForm.pincode}
-                  onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })}
+                  onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value.replace(/\D/g, '').slice(0, 6) })}
                   placeholder="560038"
                   className="w-full p-2.5 rounded-xl border border-slate-200 font-bold focus:outline-none focus:border-[#FF5A1F]"
                 />

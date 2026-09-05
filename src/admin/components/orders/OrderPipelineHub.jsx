@@ -6,7 +6,7 @@ import { PreflightFileInspector } from './PreflightFileInspector';
 import { useAdmin } from '../../context/AdminContext';
 
 export const OrderPipelineHub = () => {
-  const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'table'
+  const [viewMode, setViewMode] = useState('table'); // 'table' or 'kanban'
   const { setWalkInModalOpen } = useAdmin();
 
   return (
@@ -15,10 +15,10 @@ export const OrderPipelineHub = () => {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
         <div>
           <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
-            Order & Production Pipeline Hub
+            Orders Management & Production Hub
           </h2>
           <p className="text-xs text-slate-500">
-            Real-time multi-stage Kanban workflow and detailed order inspector
+            Real-time table view of all customer orders, client artwork downloads, and stage updates
           </p>
         </div>
 
@@ -26,24 +26,24 @@ export const OrderPipelineHub = () => {
           {/* View Mode Switcher */}
           <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200 text-xs">
             <button
+              onClick={() => setViewMode('table')}
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer border-none ${
+                viewMode === 'table' 
+                  ? 'bg-white text-blue-600 shadow-xs' 
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" /> Table List View
+            </button>
+            <button
               onClick={() => setViewMode('kanban')}
-              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer border-none ${
                 viewMode === 'kanban' 
                   ? 'bg-white text-blue-600 shadow-xs' 
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Kanban className="w-3.5 h-3.5" /> Kanban Board
-            </button>
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all ${
-                viewMode === 'table' 
-                  ? 'bg-white text-blue-600 shadow-xs' 
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Table className="w-3.5 h-3.5" /> Data Table
             </button>
           </div>
 
