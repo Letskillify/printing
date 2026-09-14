@@ -75,7 +75,7 @@ export const ActivityFeed = () => {
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-slate-800 leading-snug">
+                  <p className="text-[14px] font-semibold text-slate-800 leading-snug">
                     {act.text}
                   </p>
                   <span className="text-[10px] text-slate-400 font-medium">
@@ -97,7 +97,7 @@ export const ActivityFeed = () => {
           <h3 className="font-extrabold text-base text-slate-900 mt-1 mb-2">
             Admin Quick Actions
           </h3>
-          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+          <p className="text-[14px] text-slate-500 mb-6 leading-relaxed">
             Execute key operational tasks instantly without leaving the dashboard view.
           </p>
         </div>
@@ -105,7 +105,7 @@ export const ActivityFeed = () => {
         <div className="space-y-2.5">
           <button
             onClick={() => setWalkInModalOpen(true)}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-xs transition-all border border-slate-200 shadow-3xs cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-[14px] transition-all border border-slate-200 shadow-3xs cursor-pointer"
           >
             <PlusCircle className="w-4 h-4 text-blue-600" />
             + New Counter Walk-In Order
@@ -113,7 +113,7 @@ export const ActivityFeed = () => {
 
           <button
             onClick={() => setQuickInvoiceModalOpen(true)}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-xs transition-all border border-slate-200 shadow-3xs cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-[14px] transition-all border border-slate-200 shadow-3xs cursor-pointer"
           >
             <Receipt className="w-4 h-4 text-amber-600" />
             Generate GST B2B Invoice
@@ -121,7 +121,7 @@ export const ActivityFeed = () => {
 
           <button
             onClick={() => setActiveTab('design_desk')}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-xs transition-all border border-slate-200 shadow-3xs cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50/80 text-slate-700 font-semibold text-[14px] transition-all border border-slate-200 shadow-3xs cursor-pointer"
           >
             <Send className="w-4 h-4 text-emerald-600" />
             Send WhatsApp Proof to Customer

@@ -123,15 +123,15 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
 
       {/* Role Indicator Banner */}
       {(!sidebarCollapsed || isMobileOpen) && (
-        <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-xs text-slate-600 shrink-0">
+        <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[14px] text-slate-600 shrink-0">
           <div className="flex items-center gap-1.5">
             <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="font-medium text-slate-500 text-[11px]">Role:</span>
+            <span className="font-medium text-slate-500 text-[14px]">Role:</span>
           </div>
           <select 
             value={userRole}
             onChange={(e) => setUserRole(e.target.value)}
-            className="bg-white border border-slate-200 rounded px-2 py-0.5 text-[11px] text-blue-600 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-3xs"
+            className="bg-white border border-slate-200 rounded px-2 py-0.5 text-[14px] text-blue-600 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-3xs"
           >
             <option value="Super Admin">Super Admin</option>
             <option value="Production Manager">Production Mgr</option>
@@ -156,7 +156,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
                 <button
                   key={item.id}
                   onClick={() => handleSelectTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group relative cursor-pointer ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-semibold transition-all group relative cursor-pointer ${
                     isActive 
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -193,7 +193,7 @@ export const AdminSidebar = ({ onSwitchToWebsite, isMobileOpen, onCloseMobileSid
             if (onCloseMobileSidebar) onCloseMobileSidebar();
             onSwitchToWebsite();
           }}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-blue-600 transition-colors border border-slate-200 cursor-pointer shadow-3xs"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[14px] font-bold bg-white hover:bg-slate-100 text-blue-600 transition-colors border border-slate-200 cursor-pointer shadow-3xs"
         >
           <ArrowLeftRight className="w-3.5 h-3.5" />
           {(!sidebarCollapsed || isMobileOpen) && <span>Customer Website</span>}

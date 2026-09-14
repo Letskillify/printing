@@ -69,11 +69,11 @@ export const PreflightFileInspector = () => {
                 <h3 className="font-extrabold text-base tracking-tight text-slate-900">
                   Pre-Flight File Inspector & Inspector Engine
                 </h3>
-                <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">
+                <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-extrabold text-[14px] border border-blue-200">
                   {selectedOrder.id}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-[14px] text-slate-500">
                 Customer: {selectedOrder.customer?.name || 'Customer'} ({selectedOrder.customer?.company || 'Retail'})
               </p>
             </div>
@@ -94,7 +94,7 @@ export const PreflightFileInspector = () => {
           <div className="lg:col-span-2 p-6 flex flex-col items-center justify-center relative overflow-hidden bg-slate-900/90 border-r border-slate-800">
             
             {/* Bleed Overlay Controls Toolbar */}
-            <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-2 text-xs text-white">
+            <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-2 text-[14px] text-white">
               <div className="flex items-center gap-3">
                 <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider">Guide Overlays:</span>
                 <label className="flex items-center gap-1.5 cursor-pointer font-medium text-red-400">
@@ -119,7 +119,7 @@ export const PreflightFileInspector = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="font-mono text-slate-400 text-[11px]">{Math.round(zoomLevel * 100)}%</span>
+                <span className="font-mono text-slate-400 text-[14px]">{Math.round(zoomLevel * 100)}%</span>
                 <button
                   onClick={() => setZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
                   className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold"
@@ -161,7 +161,7 @@ export const PreflightFileInspector = () => {
                 <div className="w-96 h-64 bg-slate-800 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center p-6 text-center text-slate-400">
                   <FileCheck className="w-12 h-12 text-slate-600 mb-2" />
                   <p className="font-extrabold text-sm text-slate-300">File Type: {art.fileType.toUpperCase()}</p>
-                  <p className="text-xs text-slate-500 mt-1 font-mono">{art.fileName}</p>
+                  <p className="text-[14px] text-slate-500 mt-1 font-mono">{art.fileName}</p>
                   <span className="mt-3 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full font-bold text-[10px] border border-blue-500/30">
                     PDF Pre-flight Inspection Loaded
                   </span>
@@ -174,12 +174,12 @@ export const PreflightFileInspector = () => {
           <div className="p-6 bg-white flex flex-col justify-between overflow-y-auto space-y-6">
             <div className="space-y-4">
               
-              <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">
+              <h4 className="font-extrabold text-[14px] text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">
                 Automated Inspection Checklist
               </h4>
 
               <div className="space-y-2">
-                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[14px]">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span className="font-semibold text-emerald-900">CMYK Color Model Verified</span>
@@ -187,7 +187,7 @@ export const PreflightFileInspector = () => {
                   <span className="font-mono text-[10px] text-emerald-700 font-bold">Passed</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[14px]">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span className="font-semibold text-emerald-900">300 DPI High-Res Print Density</span>
@@ -195,7 +195,7 @@ export const PreflightFileInspector = () => {
                   <span className="font-mono text-[10px] text-emerald-700 font-bold">Passed</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-[14px]">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span className="font-semibold text-emerald-900">3mm Cut Bleed Margins Detected</span>
@@ -203,7 +203,7 @@ export const PreflightFileInspector = () => {
                   <span className="font-mono text-[10px] text-emerald-700 font-bold">Valid</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs">
+                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-[14px]">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-600" />
                     <span className="font-semibold text-amber-900">Embedded Fonts Check</span>
@@ -213,7 +213,7 @@ export const PreflightFileInspector = () => {
               </div>
 
               {/* Customer & GST Info Box */}
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[14px] space-y-1.5">
                 <div className="font-bold text-slate-900">Customer Shipping Details</div>
                 <div className="text-slate-600 flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-slate-400" />
@@ -235,7 +235,7 @@ export const PreflightFileInspector = () => {
             <div className="pt-4 border-t border-slate-200 space-y-2">
               <button
                 onClick={sendWhatsAppProof}
-                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-xs transition-colors"
               >
                 <Send className="w-4 h-4" /> Send Proof via WhatsApp
               </button>
@@ -245,7 +245,7 @@ export const PreflightFileInspector = () => {
                   updateOrderStatus(selectedOrder.id, 'In Production');
                   setPreflightModalOpen(false);
                 }}
-                className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[14px] flex items-center justify-center gap-2 shadow-xs transition-colors"
               >
                 <Printer className="w-4 h-4" /> Mark In Production
               </button>
@@ -253,7 +253,7 @@ export const PreflightFileInspector = () => {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={generateShippingSlip}
-                  className="py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                  className="py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-[14px] flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" /> Shipping Slip
                 </button>
@@ -262,7 +262,7 @@ export const PreflightFileInspector = () => {
                   onClick={() => {
                     alert(`Refund initiated for Order ${selectedOrder.id} (₹${selectedOrder.totalAmount})`);
                   }}
-                  className="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-xs flex items-center justify-center gap-1.5 border border-red-200 transition-colors"
+                  className="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-[14px] flex items-center justify-center gap-1.5 border border-red-200 transition-colors"
                 >
                   <DollarSign className="w-3.5 h-3.5" /> Issue Refund
                 </button>

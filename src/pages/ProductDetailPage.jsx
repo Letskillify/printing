@@ -267,12 +267,12 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
         <div className="max-w-7xl mx-auto flex flex-row items-center justify-between gap-4">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-[#FF5A1F] transition cursor-pointer bg-transparent border-none"
+            className="inline-flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-[#FF5A1F] transition cursor-pointer bg-transparent border-none"
           >
             <FiArrowLeft className="w-4 h-4 text-[#FF5A1F]" /> Back to Products Catalog
           </button>
 
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-[14px] text-slate-400">
             <span>Products</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">{product.category}</span>
@@ -300,7 +300,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               ) : (
                 <div className="w-full h-full bg-slate-50 flex flex-col items-center justify-center text-slate-400">
                   <FiPackage className="w-20 h-20 text-slate-300 mb-3" />
-                  <span className="text-xs font-extrabold">No Image Uploaded</span>
+                  <span className="text-[14px] font-extrabold">No Image Uploaded</span>
                 </div>
               )}
 
@@ -316,7 +316,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               </button>
 
               {/* Verified Press Quality Badge */}
-              <div className="absolute bottom-4 left-4 bg-[#07152F]/90 backdrop-blur-md text-white text-[11px] font-extrabold px-3 py-1.5 rounded-xl border border-white/20 flex items-center gap-1.5 shadow-md">
+              <div className="absolute bottom-4 left-4 bg-[#07152F]/90 backdrop-blur-md text-white text-[14px] font-extrabold px-3 py-1.5 rounded-xl border border-white/20 flex items-center gap-1.5 shadow-md">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>300 DPI Prepress Proofed</span>
               </div>
@@ -341,7 +341,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
             {/* Technical Specifications Card if available */}
             {product.specs && Object.keys(product.specs).length > 0 && (
-              <div id="specs" className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-4 text-xs">
+              <div id="specs" className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-4 text-[14px]">
                 <h4 className="font-black text-[#0B1633] flex items-center gap-2 border-b border-slate-100 pb-3 text-sm uppercase tracking-wider">
                   <FiFileText className="w-4 h-4 text-[#FF5A1F]" /> Technical Specs & Print Specifications
                 </h4>
@@ -349,25 +349,25 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   {product.specs.paperGsm && (
                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Paper Weight</span>
-                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.paperGsm}</strong>
+                      <strong className="text-slate-900 font-extrabold text-[14px]">{product.specs.paperGsm}</strong>
                     </div>
                   )}
                   {product.specs.dimensions && (
                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Dimensions</span>
-                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.dimensions}</strong>
+                      <strong className="text-slate-900 font-extrabold text-[14px]">{product.specs.dimensions}</strong>
                     </div>
                   )}
                   {product.specs.printTech && (
                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Press Tech</span>
-                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.printTech}</strong>
+                      <strong className="text-slate-900 font-extrabold text-[14px]">{product.specs.printTech}</strong>
                     </div>
                   )}
                   {product.specs.turnaround && (
                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <span className="text-[10px] text-slate-400 font-bold uppercase block">Turnaround</span>
-                      <strong className="text-slate-900 font-extrabold text-xs">{product.specs.turnaround}</strong>
+                      <strong className="text-slate-900 font-extrabold text-[14px]">{product.specs.turnaround}</strong>
                     </div>
                   )}
                 </div>
@@ -375,20 +375,20 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             )}
 
             {/* Press Guarantee Badges */}
-            <div className="bg-white rounded-3xl p-5 border border-[#E7EAF0] shadow-sm grid grid-cols-3 gap-3 text-center text-[11px] font-bold text-slate-700">
+            <div className="bg-white rounded-3xl p-5 border border-[#E7EAF0] shadow-sm grid grid-cols-3 gap-3 text-center text-[14px] font-bold text-slate-700">
               <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-orange-50/50">
                 <FiTruck className="w-5 h-5 text-[#FF5A1F]" />
-                <span className="text-[11px] font-black text-slate-900">Express Delivery</span>
+                <span className="text-[14px] font-black text-slate-900">Express Delivery</span>
                 <span className="text-[9.5px] text-slate-500 font-medium">Pan-India Doorstep</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-emerald-50/50">
                 <FiCheckCircle className="w-5 h-5 text-emerald-600" />
-                <span className="text-[11px] font-black text-slate-900">300 DPI Pre-Flight</span>
+                <span className="text-[14px] font-black text-slate-900">300 DPI Pre-Flight</span>
                 <span className="text-[9.5px] text-slate-500 font-medium">Free File Proof</span>
               </div>
               <div className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-blue-50/50">
                 <FiShield className="w-5 h-5 text-blue-600" />
-                <span className="text-[11px] font-black text-slate-900">100% Quality</span>
+                <span className="text-[14px] font-black text-slate-900">100% Quality</span>
                 <span className="text-[9.5px] text-slate-500 font-medium">Re-print Guarantee</span>
               </div>
             </div>
@@ -401,10 +401,10 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             {/* Header: Title, Rating, Summary */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="px-3.5 py-1 rounded-full bg-[#FF5A1F]/10 text-[#FF5A1F] text-xs font-black uppercase tracking-wider border border-[#FF5A1F]/20">
+                <span className="px-3.5 py-1 rounded-full bg-[#FF5A1F]/10 text-[#FF5A1F] text-[14px] font-black uppercase tracking-wider border border-[#FF5A1F]/20">
                   {product.category}
                 </span>
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                <div className="flex items-center gap-1 text-amber-500 text-[14px] font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                   <FiStar className="w-3.5 h-3.5 fill-amber-400" />
                   <span>4.9</span>
                   <span className="text-slate-400 font-normal">(148 Press Reviews)</span>
@@ -420,7 +420,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             <div id="pricing" className="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-[#E7EAF0] shadow-md space-y-4">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                  <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block mb-1">
+                  <span className="text-[14px] text-slate-500 font-bold uppercase tracking-wider block mb-1">
                     Calculated Total (Incl. 18% GST)
                   </span>
                   <div className="flex items-baseline gap-3">
@@ -434,7 +434,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 </div>
 
                 <div className="text-right">
-                  <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300 inline-flex items-center gap-1.5 shadow-xs">
+                  <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-[14px] font-extrabold border border-emerald-300 inline-flex items-center gap-1.5 shadow-xs">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                     In Stock & Press Ready
                   </span>
@@ -442,7 +442,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               </div>
 
               {activeTier && (
-                <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs font-bold text-blue-900 bg-blue-50/80 p-3 rounded-2xl border border-blue-200/90">
+                <div className="pt-3 border-t border-slate-200/80 flex items-center justify-between text-[14px] font-bold text-blue-900 bg-blue-50/80 p-3 rounded-2xl border border-blue-200/90">
                   <span>🎉 Volume Discount Applied: Tier Rate for up to {activeTier.tierMin} units</span>
                   <span className="font-extrabold text-blue-700">₹{activeTier.pricePerUnit}/unit</span>
                 </div>
@@ -450,20 +450,20 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             </div>
 
             {/* STEP-BY-STEP PRODUCT CONFIGURATOR FORM */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E7EAF0] shadow-sm space-y-6 text-xs">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E7EAF0] shadow-sm space-y-6 text-[14px]">
               <h3 className="font-black text-sm text-[#0B1633] uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
                 <span>Configure Print Specifications</span>
-                <span className="text-[11px] font-bold text-[#FF5A1F] uppercase">Interactive Press Studio</span>
+                <span className="text-[14px] font-bold text-[#FF5A1F] uppercase">Interactive Press Studio</span>
               </h3>
 
               {/* STEP 1: QUANTITY TIER & MANDATORY CUSTOM UNIT SELECTION */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepCounter++}</span>
+                    <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-[14px] font-black">{stepCounter++}</span>
                     <span>Select Quantity Tier:</span>
                   </label>
-                  <span className="text-xs font-black text-[#FF5A1F] bg-[#FF5A1F]/10 px-3 py-1 rounded-full border border-[#FF5A1F]/20">
+                  <span className="text-[14px] font-black text-[#FF5A1F] bg-[#FF5A1F]/10 px-3 py-1 rounded-full border border-[#FF5A1F]/20">
                     {quantity || 0} units selected
                   </span>
                 </div>
@@ -480,7 +480,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                         setIsCustomQty(false);
                         setQuantity(t.tierMin);
                       }}
-                      className={`py-3 px-2.5 rounded-2xl font-extrabold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                      className={`py-3 px-2.5 rounded-2xl font-extrabold text-[14px] transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
                         !isCustomQty && quantity === t.tierMin
                           ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-md scale-105'
                           : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
@@ -500,7 +500,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                       setIsCustomQty(true);
                       setQuantity(customQtyInput || minPieces);
                     }}
-                    className={`py-3 px-2.5 rounded-2xl font-extrabold text-xs transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                    className={`py-3 px-2.5 rounded-2xl font-extrabold text-[14px] transition border cursor-pointer flex flex-col items-center justify-center gap-1 ${
                       isCustomQty
                         ? 'bg-[#07152F] text-white border-[#07152F] shadow-md scale-105'
                         : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
@@ -524,7 +524,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   }`}>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <label htmlFor="customQtyField" className="font-extrabold text-xs text-[#0B1633] shrink-0 flex items-center gap-1">
+                        <label htmlFor="customQtyField" className="font-extrabold text-[14px] text-[#0B1633] shrink-0 flex items-center gap-1">
                           <span>Enter Custom Units (Mandatory)</span>
                           <span className="text-rose-600 font-extrabold text-sm">*</span>:
                         </label>
@@ -552,18 +552,18 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                         />
                       </div>
                       {activeTier && (
-                        <span className="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                        <span className="text-[14px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
                           Tier Rate (Up to {activeTier.tierMin} units): ₹{activeTier.pricePerUnit}/unit
                         </span>
                       )}
                     </div>
 
                     {(!customQtyInput || parseInt(customQtyInput) <= 0 || isNaN(parseInt(customQtyInput))) ? (
-                      <div className="mt-2.5 text-rose-700 text-[11.5px] font-extrabold flex items-center gap-1.5">
+                      <div className="mt-2.5 text-rose-700 text-[14px] font-extrabold flex items-center gap-1.5">
                         <span>⚠️ Mandatory Field: Please enter your desired quantity (Minimum {minPieces} pcs) to calculate price.</span>
                       </div>
                     ) : parseInt(customQtyInput) < minPieces ? (
-                      <div className="mt-2.5 text-amber-700 text-[11.5px] font-extrabold flex items-center gap-1.5">
+                      <div className="mt-2.5 text-amber-700 text-[14px] font-extrabold flex items-center gap-1.5">
                         <span>⚠️ Minimum Order Quantity for this item is {minPieces} pieces. Please enter {minPieces} or more.</span>
                       </div>
                     ) : null}
@@ -584,11 +584,11 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                     <div key={key} className="space-y-3 bg-gradient-to-r from-blue-50/80 via-slate-50 to-orange-50/50 p-4.5 rounded-2xl border border-blue-200/80 shadow-xs">
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                          <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-[14px] font-black">{stepNum}</span>
                           <span>{title}:</span>
                         </label>
                         {calculatedAreaSqCm > 0 && matchedAreaTier && (
-                          <span className="text-[11px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
+                          <span className="text-[14px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                             <span>Matched Tier: {matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} cm²`} (+₹{activePrice})</span>
                           </span>
@@ -597,7 +597,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-extrabold text-slate-700">Enter Height (cm):</label>
+                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Height (cm):</label>
                           <input
                             type="number"
                             min="0.1"
@@ -605,11 +605,11 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                             value={customHeight}
                             onChange={(e) => setCustomHeight(e.target.value)}
                             placeholder="e.g. 5"
-                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="block text-[11px] font-extrabold text-slate-700">Enter Width (cm):</label>
+                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Width (cm):</label>
                           <input
                             type="number"
                             min="0.1"
@@ -617,12 +617,12 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                             value={customWidth}
                             onChange={(e) => setCustomWidth(e.target.value)}
                             placeholder="e.g. 10"
-                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
                           />
                         </div>
                       </div>
 
-                      <div className="p-3 bg-white rounded-xl border border-blue-100 flex items-center justify-between text-xs font-bold text-slate-700 shadow-3xs">
+                      <div className="p-3 bg-white rounded-xl border border-blue-100 flex items-center justify-between text-[14px] font-bold text-slate-700 shadow-3xs">
                         <span>📐 Automatically Calculated Area:</span>
                         <span className="text-sm font-black text-[#FF5A1F] font-mono">
                           {calculatedAreaSqCm > 0 ? `${customHeight}cm × ${customWidth}cm = ${calculatedAreaSqCm} sq cm (cm²)` : 'Enter Height & Width'}
@@ -637,13 +637,13 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   return (
                     <div key={key} className="space-y-2">
                       <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                        <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-[14px] font-black">{stepNum}</span>
                         <span>{title}:</span>
                       </label>
                       <select
                         value={currentSelected}
                         onChange={(e) => handleOptionChange(key, e.target.value)}
-                        className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-2xl p-3.5 font-bold text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs cursor-pointer"
+                        className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-2xl p-3.5 font-bold text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs cursor-pointer"
                       >
                         {optionsList.map((opt, i) => {
                           const optName = typeof opt === 'string' ? opt : opt.name;
@@ -663,7 +663,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 return (
                   <div key={key} className="space-y-2">
                     <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepNum}</span>
+                      <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-[14px] font-black">{stepNum}</span>
                       <span>{title}:</span>
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -677,7 +677,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                             key={i}
                             type="button"
                             onClick={() => handleOptionChange(key, optName)}
-                            className={`py-3 px-3 rounded-2xl font-extrabold text-xs transition-all duration-150 border flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center ${
+                            className={`py-3 px-3 rounded-2xl font-extrabold text-[14px] transition-all duration-150 border flex flex-col items-center justify-center gap-1.5 cursor-pointer text-center ${
                               isSelected
                                 ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-md scale-105 ring-2 ring-[#FF5A1F]/30'
                                 : 'bg-[#F7F8FA] text-[#0B1633] border-[#E7EAF0] hover:border-[#FF5A1F]'
@@ -700,12 +700,12 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
               {/* STEP: UPLOAD PRINT ARTWORK DROPZONE */}
               <div className="space-y-2 pt-2">
                 <label className="font-extrabold text-sm text-[#0B1633] flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-xs font-black">{stepCounter++}</span>
+                  <span className="w-6 h-6 rounded-full bg-[#07152F] text-white flex items-center justify-center text-[14px] font-black">{stepCounter++}</span>
                   <span>Upload Print Artwork File (PDF, AI, PSD, PNG):</span>
                 </label>
                 <label className="border-2 border-dashed border-[#E7EAF0] hover:border-[#FF5A1F] rounded-2xl p-5 text-center block bg-[#F7F8FA] cursor-pointer transition-all duration-200 group">
                   <FiUploadCloud className="w-8 h-8 text-[#FF5A1F] mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs text-slate-800 font-extrabold block">
+                  <span className="text-[14px] text-slate-800 font-extrabold block">
                     {uploadedFile ? `Uploaded: ${uploadedFile.name}` : 'Click to select artwork file or drag here'}
                   </span>
                   <span className="text-[10px] text-slate-400 font-medium block mt-1">
@@ -747,7 +747,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             </div>
 
             {/* PRODUCT INFORMATION ACCORDION DROPDOWN TABS */}
-            <div className="bg-white rounded-3xl border border-[#E7EAF0] shadow-sm divide-y divide-slate-100 overflow-hidden text-xs">
+            <div className="bg-white rounded-3xl border border-[#E7EAF0] shadow-sm divide-y divide-slate-100 overflow-hidden text-[14px]">
               
               {/* TAB 1: PRODUCT DESCRIPTION & HIGHLIGHTS (OPEN BY DEFAULT) */}
               <div>
@@ -761,8 +761,8 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   {openAccordion === 'description' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'description' && (
-                  <div className="p-5 pt-1 text-slate-700 leading-relaxed text-xs space-y-4">
-                    <p className="font-medium text-slate-800 text-xs sm:text-sm leading-relaxed">
+                  <div className="p-5 pt-1 text-slate-700 leading-relaxed text-[14px] space-y-4">
+                    <p className="font-medium text-slate-800 text-[14px] sm:text-sm leading-relaxed">
                       {product.description || product.summary || 'High-quality custom print product crafted with premium finishing and industrial offset precision.'}
                     </p>
 
@@ -770,15 +770,15 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100">
                       <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
                         <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Selected Quantity</span>
-                        <span className="font-extrabold text-[#0B1633] text-xs">{quantity.toLocaleString()} Units</span>
+                        <span className="font-extrabold text-[#0B1633] text-[14px]">{quantity.toLocaleString()} Units</span>
                       </div>
                       <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
                         <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Category</span>
-                        <span className="font-extrabold text-[#0B1633] text-xs truncate block">{product.category}</span>
+                        <span className="font-extrabold text-[#0B1633] text-[14px] truncate block">{product.category}</span>
                       </div>
                       <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
                         <span className="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Est. Turnaround</span>
-                        <span className="font-extrabold text-emerald-700 text-xs">{product.specs?.turnaround || product.turnaround || '24-48 Hours Express'}</span>
+                        <span className="font-extrabold text-emerald-700 text-[14px]">{product.specs?.turnaround || product.turnaround || '24-48 Hours Express'}</span>
                       </div>
                     </div>
 
@@ -788,7 +788,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                         <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Selected Configuration:</span>
                         <div className="flex flex-wrap gap-1.5">
                           {Object.entries(selectedVariants).map(([key, val]) => (
-                            <span key={key} className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-800 flex items-center gap-1">
+                            <span key={key} className="px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[14px] font-bold text-slate-800 flex items-center gap-1">
                               <span className="text-slate-400 font-semibold">{formatKeyToTitle(key)}:</span>
                               <span className="text-[#0B1633] font-black">{val}</span>
                             </span>
@@ -813,10 +813,10 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                 </button>
                 {openAccordion === 'overview' && (
                   <div className="p-5 pt-1 text-slate-600 leading-relaxed space-y-2">
-                    <p className="font-medium text-xs">
+                    <p className="font-medium text-[14px]">
                       For optimal CMYK press calibration, submit artwork files with 3mm bleed margins and minimum 300 DPI resolution.
                     </p>
-                    <ul className="list-disc pl-4 space-y-1 font-medium text-xs text-slate-700">
+                    <ul className="list-disc pl-4 space-y-1 font-medium text-[14px] text-slate-700">
                       <li>Vector PDF, AI, or PSD preferred for crisp typography and vector logos</li>
                       <li>CMYK color space (RGB files automatically converted during RIP raster processing)</li>
                       <li>Font outlines enabled or fonts embedded inside vector files</li>
@@ -837,7 +837,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   {openAccordion === 'shipping' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'shipping' && (
-                  <div className="p-5 pt-1 text-slate-600 leading-relaxed space-y-1 font-medium text-xs">
+                  <div className="p-5 pt-1 text-slate-600 leading-relaxed space-y-1 font-medium text-[14px]">
                     <p className="text-slate-800 font-bold">⚡ Standard Production: 3-5 business days after artwork approval.</p>
                     <p className="text-slate-800 font-bold">⚡ Same-Day Express: Select Express at checkout for 24-hour priority dispatch.</p>
                   </div>
@@ -856,7 +856,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                   {openAccordion === 'guarantee' ? <FiChevronUp className="w-4 h-4 text-slate-500" /> : <FiChevronDown className="w-4 h-4 text-slate-500" />}
                 </button>
                 {openAccordion === 'guarantee' && (
-                  <div className="p-5 pt-1 text-slate-600 leading-relaxed font-medium text-xs">
+                  <div className="p-5 pt-1 text-slate-600 leading-relaxed font-medium text-[14px]">
   Please note that our studio holds no responsibility or liability for any defects present upon the arrival of your print order.
 </div>
                 )}

@@ -394,10 +394,10 @@ export function CheckoutPage({ setCurrentPage }) {
     return (
       <div className="min-h-screen bg-[#FAFBFD] font-sans text-[#0B1633] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-extrabold text-[#0B1633] mb-2">Your Cart is Empty</h2>
-        <p className="text-slate-500 text-xs mb-6">Please add items to cart before proceeding to checkout.</p>
+        <p className="text-slate-500 text-[14px] mb-6">Please add items to cart before proceeding to checkout.</p>
         <button
           onClick={() => setCurrentPage('products')}
-          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-xs uppercase tracking-wider cursor-pointer border-none"
+          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-[14px] uppercase tracking-wider cursor-pointer border-none"
         >
           Return to Catalog
         </button>
@@ -411,7 +411,7 @@ export function CheckoutPage({ setCurrentPage }) {
       {/* Top Banner Header */}
       <section className="bg-[#07152F] text-white py-12 sm:py-16 relative overflow-hidden border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-2 text-[14px] font-semibold text-slate-400">
             <span className="cursor-pointer hover:text-white" onClick={() => setCurrentPage('cart')}>Cart</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Secure Checkout</span>
@@ -426,7 +426,7 @@ export function CheckoutPage({ setCurrentPage }) {
         
         {/* Error Alert */}
         {errorMessage && (
-          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-3">
+          <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-[14px] font-semibold flex items-center gap-3">
             <FiAlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -443,7 +443,7 @@ export function CheckoutPage({ setCurrentPage }) {
                 <FiUser className="w-4 h-4 text-[#FF5A1F]" /> 1. Customer Information
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-[14px]">
                 <div>
                   <label className="font-extrabold text-slate-700 block mb-1">Full Name *</label>
                   <input
@@ -455,7 +455,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.customerName) setFieldErrors(prev => ({ ...prev, customerName: null }));
                     }}
                     placeholder="John Doe"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.customerName ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -477,7 +477,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.customerEmail) setFieldErrors(prev => ({ ...prev, customerEmail: null }));
                     }}
                     placeholder="john@example.com"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.customerEmail ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -504,7 +504,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.customerPhone) setFieldErrors(prev => ({ ...prev, customerPhone: null }));
                     }}
                     placeholder="9876543210"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.customerPhone ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -531,11 +531,11 @@ export function CheckoutPage({ setCurrentPage }) {
               {userProfile?.addresses && userProfile.addresses.length > 0 && (
                 <div className="space-y-2 pb-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Select Saved Address:</span>
+                    <span className="text-[14px] font-bold text-slate-400 uppercase tracking-wider">Select Saved Address:</span>
                     <button
                       type="button"
                       onClick={handleAddNewAddress}
-                      className={`text-xs font-extrabold flex items-center gap-1 cursor-pointer transition ${
+                      className={`text-[14px] font-extrabold flex items-center gap-1 cursor-pointer transition ${
                         selectedAddressId === 'new' ? 'text-[#FF5A1F]' : 'text-slate-500 hover:text-[#FF5A1F]'
                       }`}
                     >
@@ -551,7 +551,7 @@ export function CheckoutPage({ setCurrentPage }) {
                           key={addr.id}
                           type="button"
                           onClick={() => handleSelectSavedAddress(addr)}
-                          className={`p-3.5 rounded-2xl border text-left text-xs transition cursor-pointer relative ${
+                          className={`p-3.5 rounded-2xl border text-left text-[14px] transition cursor-pointer relative ${
                             isSelected
                               ? 'border-[#FF5A1F] bg-orange-50/40 ring-2 ring-[#FF5A1F]/20'
                               : 'border-slate-200 bg-[#F7F8FA] hover:border-slate-300'
@@ -568,7 +568,7 @@ export function CheckoutPage({ setCurrentPage }) {
                               {addr.type || (addr.isDefault ? 'Default' : 'Address')}
                             </span>
                           </div>
-                          <p className="text-slate-600 line-clamp-2 leading-relaxed text-[11px]">
+                          <p className="text-slate-600 line-clamp-2 leading-relaxed text-[14px]">
                             {addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ''}, {addr.city}, {addr.state} - <strong className="font-extrabold text-slate-800">{addr.pincode}</strong>
                           </p>
                         </button>
@@ -579,7 +579,7 @@ export function CheckoutPage({ setCurrentPage }) {
                     <button
                       type="button"
                       onClick={handleAddNewAddress}
-                      className={`p-3.5 rounded-2xl border text-left text-xs transition cursor-pointer flex flex-col justify-center items-center text-center gap-1 ${
+                      className={`p-3.5 rounded-2xl border text-left text-[14px] transition cursor-pointer flex flex-col justify-center items-center text-center gap-1 ${
                         selectedAddressId === 'new'
                           ? 'border-[#FF5A1F] bg-orange-50/40 ring-2 ring-[#FF5A1F]/20 text-[#FF5A1F]'
                           : 'border-dashed border-slate-300 bg-white hover:border-[#FF5A1F] text-slate-500 hover:text-[#FF5A1F]'
@@ -594,7 +594,7 @@ export function CheckoutPage({ setCurrentPage }) {
               )}
 
               {/* Address Input Form */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[14px]">
                 <div className="sm:col-span-2">
                   <label className="font-extrabold text-slate-700 block mb-1">Flat / Building / House No. & Street *</label>
                   <input
@@ -606,7 +606,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.addressLine1) setFieldErrors(prev => ({ ...prev, addressLine1: null }));
                     }}
                     placeholder="e.g. Flat 304, Sunshine Towers, MG Road"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.addressLine1 ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -624,7 +624,7 @@ export function CheckoutPage({ setCurrentPage }) {
                     value={addressLine2}
                     onChange={(e) => setAddressLine2(e.target.value)}
                     placeholder="e.g. Indiranagar Layout"
-                    className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                    className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                   />
                 </div>
 
@@ -635,7 +635,7 @@ export function CheckoutPage({ setCurrentPage }) {
                     value={landmark}
                     onChange={(e) => setLandmark(e.target.value)}
                     placeholder="e.g. Near Metro Station"
-                    className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                    className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                   />
                 </div>
 
@@ -650,7 +650,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.city) setFieldErrors(prev => ({ ...prev, city: null }));
                     }}
                     placeholder="Bengaluru"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.city ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -672,7 +672,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.state) setFieldErrors(prev => ({ ...prev, state: null }));
                     }}
                     placeholder="Karnataka"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.state ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -699,7 +699,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       if (fieldErrors.pincode) setFieldErrors(prev => ({ ...prev, pincode: null }));
                     }}
                     placeholder="560001"
-                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none transition ${
+                    className={`w-full bg-[#F7F8FA] border rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none transition ${
                       fieldErrors.pincode ? 'border-rose-400 focus:border-rose-500 bg-rose-50/20' : 'border-slate-200 focus:border-[#FF5A1F]'
                     }`}
                   />
@@ -714,7 +714,7 @@ export function CheckoutPage({ setCurrentPage }) {
               </div>
 
               {currentUser && (
-                <label className="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer pt-2">
+                <label className="flex items-center gap-2 text-[14px] font-bold text-slate-700 cursor-pointer pt-2">
                   <input
                     type="checkbox"
                     checked={saveToProfile}
@@ -733,7 +733,7 @@ export function CheckoutPage({ setCurrentPage }) {
                   <FiBriefcase className="w-4 h-4 text-[#FF5A1F]" /> 3. GST & Business Details
                 </h3>
 
-                <label className="flex items-center gap-2 text-xs font-extrabold text-[#FF5A1F] cursor-pointer">
+                <label className="flex items-center gap-2 text-[14px] font-extrabold text-[#FF5A1F] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isB2B}
@@ -745,7 +745,7 @@ export function CheckoutPage({ setCurrentPage }) {
               </div>
 
               {isB2B && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2 border-t border-slate-100 animate-in fade-in">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[14px] pt-2 border-t border-slate-100 animate-in fade-in">
                   <div>
                     <label className="font-extrabold text-slate-700 block mb-1">Registered Company Name</label>
                     <input
@@ -753,7 +753,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder="e.g. Printigly Technologies Pvt Ltd"
-                      className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                      className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                     />
                   </div>
 
@@ -765,7 +765,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       value={gstin}
                       onChange={(e) => setGstin(e.target.value.toUpperCase())}
                       placeholder="e.g. 29ABCDE1234F1Z5"
-                      className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-xs font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] uppercase"
+                      className="w-full bg-[#F7F8FA] border border-slate-200 rounded-xl p-3 text-[14px] font-bold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] uppercase"
                     />
                   </div>
                 </div>
@@ -793,7 +793,7 @@ export function CheckoutPage({ setCurrentPage }) {
                     <span className="font-extrabold text-sm text-[#0B1633]">Online Payment (Razorpay)</span>
                     <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">Instant</span>
                   </div>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                  <p className="text-[14px] text-slate-500 font-medium leading-relaxed">
                     Pay securely using UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, NetBanking, or EMI.
                   </p>
                 </button>
@@ -813,7 +813,7 @@ export function CheckoutPage({ setCurrentPage }) {
                       <span className="font-extrabold text-sm text-[#0B1633]">Cash on Delivery (COD)</span>
                       <span className="px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-[10px] font-black uppercase">Pay on Doorstep</span>
                     </div>
-                    <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                    <p className="text-[14px] text-slate-500 font-medium leading-relaxed">
                       Pay cash to courier partner upon doorstep delivery of your printed products.
                     </p>
                   </button>
@@ -834,7 +834,7 @@ export function CheckoutPage({ setCurrentPage }) {
               {/* Item Snapshot List */}
               <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
                 {cartItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs">
+                  <div key={idx} className="flex items-center justify-between text-[14px]">
                     <div className="flex items-center gap-2.5">
                       <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded-xl border border-slate-100 shrink-0" />
                       <div>
@@ -848,7 +848,7 @@ export function CheckoutPage({ setCurrentPage }) {
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-2 pt-3 border-t border-slate-100 text-xs font-semibold text-slate-600">
+              <div className="space-y-2 pt-3 border-t border-slate-100 text-[14px] font-semibold text-slate-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-extrabold text-slate-900">₹{subtotal.toLocaleString()}</span>
@@ -878,7 +878,7 @@ export function CheckoutPage({ setCurrentPage }) {
 
               {/* Grand Total */}
               <div className="pt-4 border-t border-slate-200 flex justify-between items-baseline">
-                <span className="text-xs font-bold text-slate-500">Total Payable</span>
+                <span className="text-[14px] font-bold text-slate-500">Total Payable</span>
                 <span className="text-3xl font-black text-[#FF5A1F]">₹{grandTotal.toLocaleString()}</span>
               </div>
 

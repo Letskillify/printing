@@ -80,11 +80,11 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
                 <h3 className="font-extrabold text-base tracking-tight text-white">
                   Order Details: #{order.orderId || order.id}
                 </h3>
-                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-xs border border-blue-400/30">
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-extrabold text-[14px] border border-blue-400/30">
                   {order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Paid Online'}
                 </span>
               </div>
-              <p className="text-xs text-slate-400">Placed on {formattedDate}</p>
+              <p className="text-[14px] text-slate-400">Placed on {formattedDate}</p>
             </div>
           </div>
 
@@ -97,7 +97,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-xs text-slate-900 bg-slate-50/50">
+        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-[14px] text-slate-900 bg-slate-50/50">
           
           {/* Top Operational Status Changer Banner */}
           <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -111,7 +111,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
               <select
                 value={currentStatus}
                 onChange={(e) => handleStatusChange(e.target.value)}
-                className="px-3 py-2 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-blue-900 focus:outline-none focus:border-blue-500 cursor-pointer shadow-2xs"
+                className="px-3 py-2 rounded-xl bg-blue-50 border border-blue-200 text-[14px] font-bold text-blue-900 focus:outline-none focus:border-blue-500 cursor-pointer shadow-2xs"
               >
                 <option value="Payment Confirmed">Payment Confirmed</option>
                 <option value="Artwork Verification">Artwork Verification</option>
@@ -127,7 +127,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
           {/* Customer & Address Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-              <h4 className="font-extrabold text-slate-900 border-b border-slate-100 pb-2 text-xs uppercase tracking-wider text-slate-400">
+              <h4 className="font-extrabold text-slate-900 border-b border-slate-100 pb-2 text-[14px] uppercase tracking-wider text-slate-400">
                 Customer Info
               </h4>
               <div className="space-y-1.5 font-medium text-slate-700">
@@ -141,7 +141,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-2">
-              <h4 className="font-extrabold text-slate-900 border-b border-slate-100 pb-2 text-xs uppercase tracking-wider text-slate-400">
+              <h4 className="font-extrabold text-slate-900 border-b border-slate-100 pb-2 text-[14px] uppercase tracking-wider text-slate-400">
                 Shipping Destination
               </h4>
               <p className="text-slate-700 font-medium leading-relaxed">
@@ -181,13 +181,13 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
                         {isImage && url ? (
                           <img src={url} alt="Artwork" className="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0" />
                         ) : (
-                          <div className="w-12 h-12 rounded-lg bg-slate-900 text-white font-extrabold text-xs flex items-center justify-center uppercase shrink-0">
+                          <div className="w-12 h-12 rounded-lg bg-slate-900 text-white font-extrabold text-[14px] flex items-center justify-center uppercase shrink-0">
                             {ext}
                           </div>
                         )}
 
                         <div className="min-w-0">
-                          <strong className="font-extrabold text-slate-900 truncate block text-xs">
+                          <strong className="font-extrabold text-slate-900 truncate block text-[14px]">
                             {art.fileName || art.originalFileName || `Artwork File #${idx + 1}`}
                           </strong>
                           <span className="text-[10px] text-slate-500 font-mono">
@@ -202,7 +202,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
                           target="_blank"
                           rel="noopener noreferrer"
                           download
-                          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1 shrink-0 transition-colors shadow-2xs text-decoration-none"
+                          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[14px] flex items-center gap-1 shrink-0 transition-colors shadow-2xs text-decoration-none"
                         >
                           <Download className="w-3.5 h-3.5" /> Download
                         </a>
@@ -225,7 +225,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
                 <div key={idx} className="py-3 flex items-center justify-between">
                   <div>
                     <strong className="font-extrabold text-slate-900 block">{item.productName || item.name}</strong>
-                    <span className="text-slate-500 text-[11px] font-medium">{item.variant || 'Standard Spec'} • Qty: {item.quantity || item.qty} Pcs</span>
+                    <span className="text-slate-500 text-[14px] font-medium">{item.variant || 'Standard Spec'} • Qty: {item.quantity || item.qty} Pcs</span>
                   </div>
                   <span className="font-extrabold text-slate-900 text-sm">
                     ₹{(item.totalPrice || (item.unitPrice * (item.quantity || item.qty)) || 0).toLocaleString()}
@@ -235,7 +235,7 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
             </div>
 
             <div className="pt-3 border-t border-slate-200 flex justify-end">
-              <div className="w-64 space-y-1.5 text-xs font-semibold text-slate-600">
+              <div className="w-64 space-y-1.5 text-[14px] font-semibold text-slate-600">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span className="font-extrabold text-slate-900">₹{(order.subtotal || order.pricing?.subtotal || 0).toLocaleString()}</span>
@@ -262,14 +262,14 @@ export const AdminOrderDetailModal = ({ isOpen, onClose, order }) => {
         <div className="p-4 bg-slate-100 border-t border-slate-200 flex items-center justify-between">
           <button
             onClick={sendWhatsAppProof}
-            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer border-none"
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[14px] flex items-center gap-1.5 transition-colors cursor-pointer border-none"
           >
             <Send className="w-3.5 h-3.5" /> WhatsApp Status Update
           </button>
 
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs cursor-pointer border-none transition-colors"
+            className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-[14px] cursor-pointer border-none transition-colors"
           >
             Close Window
           </button>

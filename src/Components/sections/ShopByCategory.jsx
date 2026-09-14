@@ -1,160 +1,163 @@
-import { useState, useEffect } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
-import { FiArrowRight, FiCreditCard, FiBookOpen, FiTv, FiGift, FiTag, FiBox, FiFileText, FiImage, FiPackage } from 'react-icons/fi'
-import { subscribeToHomepageSettings, DEFAULT_HOMEPAGE_SETTINGS } from '../../services/firebase'
-
-const getIconByName = (name) => {
-  const map = {
-    FiCreditCard: <FiCreditCard className="w-5 h-5 text-[#FF5A1F]" />,
-    FiBookOpen: <FiBookOpen className="w-5 h-5 text-[#FF5A1F]" />,
-    FiTv: <FiTv className="w-5 h-5 text-[#FF5A1F]" />,
-    FiGift: <FiGift className="w-5 h-5 text-[#FF5A1F]" />,
-    FiTag: <FiTag className="w-5 h-5 text-[#FF5A1F]" />,
-    FiBox: <FiBox className="w-5 h-5 text-[#FF5A1F]" />,
-    FiFileText: <FiFileText className="w-5 h-5 text-[#FF5A1F]" />,
-    FiImage: <FiImage className="w-5 h-5 text-[#FF5A1F]" />,
-  };
-  return map[name] || <FiPackage className="w-5 h-5 text-[#FF5A1F]" />;
-};
+import { motion } from 'framer-motion'
+import {
+  FiArrowRight,
+  FiCreditCard,
+  FiBookOpen,
+  FiTv,
+  FiGift,
+  FiTag,
+  FiBox,
+  FiFileText,
+  FiImage,
+} from 'react-icons/fi'
 
 export function ShopByCategory({ setCurrentPage }) {
-  const prefersReducedMotion = useReducedMotion()
-  const [sectionData, setSectionData] = useState(DEFAULT_HOMEPAGE_SETTINGS.categoriesSection)
+  const categoriesList = [
+    {
+      title: 'Business Cards',
+      sub: 'Premium cards with foil & matte finishes',
+      query: 'Business Cards',
+      icon: FiCreditCard,
+      img: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Brochures & Flyers',
+      sub: 'Professional marketing & tri-fold materials',
+      query: 'Brochures',
+      icon: FiBookOpen,
+      img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Posters & Banners',
+      sub: 'Large format outdoor & event displays',
+      query: 'Posters',
+      icon: FiTv,
+      img: 'https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Invitations & Cards',
+      sub: 'Special occasions & luxury embossed cards',
+      query: 'Gifts',
+      icon: FiGift,
+      img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Stickers & Labels',
+      sub: 'Custom die-cut vinyl & roll labels',
+      query: 'Labels & Stickers',
+      icon: FiTag,
+      img: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Custom Packaging',
+      sub: 'Custom mailer boxes & packaging',
+      query: 'Packaging',
+      icon: FiBox,
+      img: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Stationery',
+      sub: 'Branded letterheads & notebooks',
+      query: 'Stationery',
+      icon: FiFileText,
+      img: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&q=80&w=600',
+    },
+    {
+      title: 'Photo Printing',
+      sub: 'High quality prints & canvas frames',
+      query: 'Displays',
+      icon: FiImage,
+      img: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=600',
+    },
+  ]
 
-  useEffect(() => {
-    const handleUpdateEvent = () => {
-      try {
-        const stored = localStorage.getItem('printigly_homepage_settings');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (parsed.categoriesSection) setSectionData(parsed.categoriesSection);
-        }
-      } catch (e) {}
-    };
-
-    const unsubscribe = subscribeToHomepageSettings((data) => {
-      if (data && data.categoriesSection) {
-        setSectionData(data.categoriesSection);
-      }
-    });
-
-    window.addEventListener('homepage_settings_updated', handleUpdateEvent);
-    return () => {
-      unsubscribe();
-      window.removeEventListener('homepage_settings_updated', handleUpdateEvent);
-    };
-  }, []);
-
-  const handleLink = () => {
-    if (setCurrentPage) setCurrentPage('products')
+  const handleLink = (categoryQuery) => {
+    if (typeof setCurrentPage === 'function') {
+      setCurrentPage('products', categoryQuery ? { category: categoryQuery } : {}, '#catalog')
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.06,
-      },
-    },
-  }
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-    },
-  }
-
   return (
-    <section className="py-16 sm:py-20 bg-[#F7F8FA] font-sans border-b border-[#E7EAF0]">
+    <section className="py-12 sm:py-16 bg-[#F9FAFB] font-sans border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        
+        {/* Section Header (Matching Screenshot 2) */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase">
-                {sectionData.badgeText || "EXPLORE OUR COLLECTION"}
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-[#C026D3] text-[14px] font-black tracking-widest uppercase">
+                OUR PRODUCTS
               </span>
-              <span className="h-[2px] w-8 bg-[#FF5A1F] inline-block rounded-full" />
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A1F] inline-block" />
+              <span className="h-[2px] w-8 bg-gradient-to-r from-[#D946EF] to-[#E11D48] inline-block rounded-full" />
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-bold text-[#0B1633] tracking-tight">
-              {sectionData.headingLine1 || "Shop by"} <span className="text-[#FF5A1F]">{sectionData.headingHighlight || "Category"}</span>
+
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+              Shop by <span className="text-gradient">Category</span>
             </h2>
-            <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2 max-w-xl leading-relaxed">
-              {sectionData.description || "Explore our wide range of premium printing products engineered for high precision and vibrant colors."}
-            </p>
           </div>
 
           <button
-            onClick={handleLink}
-            className="inline-flex items-center gap-2.5 text-[14px] font-bold text-[#FF5A1F] hover:text-[#e44d15] border-none bg-transparent cursor-pointer group"
+            onClick={() => handleLink()}
+            className="inline-flex items-center gap-1.5 text-[14px] font-extrabold text-[#C026D3] hover:text-[#E11D48] transition-colors border-none bg-transparent cursor-pointer group shrink-0"
           >
             <span>View All Products</span>
-            <div className="w-8 h-8 rounded-full bg-white border border-[#E7EAF0] shadow-sm flex items-center justify-center group-hover:border-[#FF5A1F] group-hover:bg-[#FF5A1F] transition-all duration-250">
-              <FiArrowRight className="w-4 h-4 text-[#FF5A1F] group-hover:text-white transition-colors duration-250 transform group-hover:translate-x-0.5" />
-            </div>
+            <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
 
-        {/* Dynamic Category Grid */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-        >
-          {(sectionData.categories || []).map((cat, idx) => (
-            <motion.button
-              key={cat.id || idx}
-              variants={cardVariants}
-              onClick={handleLink}
-              className="group relative bg-white rounded-[20px] p-3.5 border border-[#E7EAF0] hover:border-[#FF5A1F]/50 hover:shadow-[0_14px_35px_rgba(7,21,47,0.08)] transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] text-left cursor-pointer flex flex-col justify-between hover:-translate-y-1.5 border-t-[3px] border-t-[#FF5A1F]"
-            >
-              {/* Inner Image Area with Top-Left Floating Badge Icon */}
-              <div className="relative overflow-hidden h-[165px] w-full rounded-[14px] bg-[#F7F8FA]">
-                <img
-                  src={cat.img}
-                  alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                />
-                
-                {/* Floating Top-Left Circle Icon Badge */}
-                <div className="absolute top-3 left-3 w-10 h-10 rounded-full bg-white/95 backdrop-blur-md border border-[#E7EAF0] shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  {getIconByName(cat.iconName)}
-                </div>
-              </div>
+        {/* 4 Cards Grid per row (Matching Screenshot 2) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {categoriesList.map((cat, idx) => {
+            const Icon = cat.icon
+            return (
+              <motion.div
+                key={cat.title}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.04, duration: 0.3 }}
+                onClick={() => handleLink(cat.query)}
+                className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-2xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between"
+              >
+                {/* Image Container with Top-Left Floating Circle Badge */}
+                <div className="relative h-[180px] w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={cat.img}
+                    alt={cat.title}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
 
-              {/* Text Area */}
-              <div className="pt-4 px-1 pb-1 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-[18px] font-bold text-[#0B1633] group-hover:text-[#FF5A1F] transition-colors duration-200 leading-snug mb-1">
-                    {cat.name}
-                  </h3>
-                  <p className="text-[#667085] text-[14.5px] font-normal leading-relaxed">
-                    {cat.sub}
-                  </p>
-                </div>
-
-                {/* Footer Action Bar with Arrow Button */}
-                <div className="mt-4 pt-3.5 border-t border-[#F0F2F5] flex items-center justify-between">
-                  <span className="text-[13px] font-bold text-[#FF5A1F] group-hover:text-[#e44d15] transition-colors">
-                    Explore Products
-                  </span>
-                  <div className="w-7 h-7 rounded-full bg-white border border-[#E7EAF0] shadow-xs flex items-center justify-center group-hover:bg-[#FF5A1F] group-hover:border-[#FF5A1F] transition-all duration-250">
-                    <FiArrowRight className="w-3.5 h-3.5 text-[#FF5A1F] group-hover:text-white transition-colors duration-250 transform group-hover:translate-x-0.5" />
+                  {/* Top-Left Floating Circle Badge Icon (Matching Screenshot 2) */}
+                  <div className="absolute top-3.5 left-3.5 w-9 h-9 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-[#C026D3] group-hover:scale-110 transition-transform">
+                    <Icon className="w-4.5 h-4.5" />
                   </div>
                 </div>
-              </div>
-            </motion.button>
-          ))}
-        </motion.div>
+
+                {/* Card Content Area */}
+                <div className="p-5 flex flex-col justify-between flex-1 bg-white">
+                  <div>
+                    <h3 className="text-[16px] font-black text-[#0F172A] group-hover:text-[#C026D3] transition-colors mb-1.5 leading-snug">
+                      {cat.title}
+                    </h3>
+                    <p className="text-slate-500 text-[14px] font-normal leading-relaxed">
+                      {cat.sub}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-2 flex items-center gap-1.5 text-[14px] font-bold text-[#C026D3] group-hover:text-[#E11D48] transition-colors">
+                    <span>Explore Now</span>
+                    <FiArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </div>
+
+              </motion.div>
+            )
+          })}
+        </div>
 
       </div>
     </section>

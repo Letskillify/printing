@@ -33,7 +33,7 @@ export function AboutPage() {
       <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
-          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-[14px] font-semibold text-slate-400">
             <span>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">About Us</span>
@@ -53,7 +53,7 @@ export function AboutPage() {
         {/* Story Section */}
         <div className="bg-white rounded-[20px] p-8 sm:p-12 border border-[#E7EAF0] shadow-sm mb-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-7 text-left">
-            <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
+            <span className="text-[#FF5A1F] text-[14px] font-extrabold tracking-widest uppercase mb-2 block">
               OUR MISSION & CRAFT
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B1633] mb-4">
@@ -83,7 +83,7 @@ export function AboutPage() {
           {stats.map((s) => (
             <div key={s.label} className="bg-white rounded-[16px] p-6 border border-[#E7EAF0] text-center shadow-xs">
               <div className="text-3xl sm:text-4xl font-extrabold text-[#FF5A1F] mb-1">{s.number}</div>
-              <div className="text-[13px] text-[#667085] font-semibold">{s.label}</div>
+              <div className="text-[14px] text-[#667085] font-semibold">{s.label}</div>
             </div>
           ))}
         </div>

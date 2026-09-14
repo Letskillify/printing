@@ -54,7 +54,7 @@ export function ServicesPage() {
       <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
-          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-[14px] font-semibold text-slate-400">
             <span>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Our Services</span>
@@ -81,7 +81,7 @@ export function ServicesPage() {
                   <div className="w-13 h-13 rounded-[14px] bg-[#FF5A1F]/10 border border-[#FF5A1F]/20 flex items-center justify-center">
                     {s.icon}
                   </div>
-                  <span className="bg-[#07152F] text-white text-[11px] font-extrabold px-3 py-1 rounded-full">
+                  <span className="bg-[#07152F] text-white text-[14px] font-extrabold px-3 py-1 rounded-full">
                     {s.badge}
                   </span>
                 </div>
@@ -89,7 +89,7 @@ export function ServicesPage() {
                 <h3 className="text-[19px] font-bold text-[#0B1633] mb-1 leading-snug">
                   {s.title}
                 </h3>
-                <span className="text-[12px] font-extrabold text-[#FF5A1F] uppercase tracking-wider block mb-3">
+                <span className="text-[14px] font-extrabold text-[#FF5A1F] uppercase tracking-wider block mb-3">
                   {s.subtitle}
                 </span>
                 <p className="text-[#667085] text-[14px] leading-relaxed mb-6">
@@ -98,7 +98,7 @@ export function ServicesPage() {
               </div>
 
               <div className="pt-4 border-t border-[#E7EAF0]">
-                <button className="text-[#FF5A1F] font-bold text-[13px] inline-flex items-center gap-1.5 hover:gap-2.5 transition-all border-none bg-transparent cursor-pointer p-0">
+                <button className="text-[#FF5A1F] font-bold text-[14px] inline-flex items-center gap-1.5 hover:gap-2.5 transition-all border-none bg-transparent cursor-pointer p-0">
                   Request Service Details <FiArrowRight className="w-4 h-4" />
                 </button>
               </div>

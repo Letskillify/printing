@@ -44,13 +44,13 @@ export const DesignTicketDesk = () => {
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-purple-50/60 via-white to-slate-50 rounded-2xl p-6 text-slate-800 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-600 mb-1">
+          <div className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-wider text-purple-600 mb-1">
             <Sparkles className="w-4 h-4 text-purple-600" /> Dedicated Design Assistance Hub
           </div>
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
             Custom Design Request Desk (+₹299 Fee Tier)
           </h2>
-          <p className="text-xs text-slate-500 mt-1 max-w-xl font-medium">
+          <p className="text-[14px] text-slate-500 mt-1 max-w-xl font-medium">
             In-house graphic design ticketing workflow. Assign requests, upload digital proof previews to Cloudinary, and trigger automated WhatsApp customer approval links.
           </p>
         </div>
@@ -73,9 +73,9 @@ export const DesignTicketDesk = () => {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="font-extrabold text-sm text-slate-900">{ticket.id}</span>
-                <span className="text-xs text-slate-500 ml-2 font-mono">• Order: {ticket.orderId}</span>
+                <span className="text-[14px] text-slate-500 ml-2 font-mono">• Order: {ticket.orderId}</span>
               </div>
-              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+              <span className={`px-2.5 py-0.5 rounded-full text-[14px] font-bold border ${
                 ticket.status === 'Proof Generated' 
                   ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                   : 'bg-purple-50 text-purple-700 border-purple-200'
@@ -84,21 +84,21 @@ export const DesignTicketDesk = () => {
               </span>
             </div>
 
-            <div className="space-y-1 text-xs">
+            <div className="space-y-1 text-[14px]">
               <div className="font-bold text-slate-900 text-sm flex items-center justify-between">
                 <span>{ticket.customerName}</span>
-                <span className="font-mono text-slate-500 text-xs flex items-center gap-1">
+                <span className="font-mono text-slate-500 text-[14px] flex items-center gap-1">
                   <Phone className="w-3 h-3 text-slate-400" /> {ticket.phone}
                 </span>
               </div>
               <p className="font-semibold text-blue-600">{ticket.product}</p>
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 mt-2 text-xs italic">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700 mt-2 text-[14px] italic">
                 "{ticket.brief}"
               </div>
             </div>
 
             {/* Assignee Controls */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[14px]">
               <div className="flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-purple-600" />
                 <span className="font-semibold text-slate-700">Assigned Designer:</span>
@@ -118,7 +118,7 @@ export const DesignTicketDesk = () => {
             {/* Digital Proof Upload & WhatsApp Dispatch System */}
             <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               {ticket.proofUrl ? (
-                <div className="flex items-center justify-between bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-200 text-xs">
+                <div className="flex items-center justify-between bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-200 text-[14px]">
                   <div className="flex items-center gap-2 overflow-hidden">
                     <img src={ticket.proofUrl} alt="Proof" className="w-10 h-10 object-cover rounded-lg border border-emerald-300" />
                     <span className="font-semibold text-emerald-900 truncate">Digital Proof Uploaded</span>
@@ -127,13 +127,13 @@ export const DesignTicketDesk = () => {
                     href={ticket.proofUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-2 py-1 rounded bg-white text-emerald-700 font-bold text-[11px] border border-emerald-300 flex items-center gap-1"
+                    className="px-2 py-1 rounded bg-white text-emerald-700 font-bold text-[14px] border border-emerald-300 flex items-center gap-1"
                   >
                     View <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
               ) : (
-                <label className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-purple-200 hover:border-purple-400 bg-purple-50/40 hover:bg-purple-50 text-purple-700 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors">
+                <label className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-purple-200 hover:border-purple-400 bg-purple-50/40 hover:bg-purple-50 text-purple-700 font-bold text-[14px] flex items-center justify-center gap-2 cursor-pointer transition-colors">
                   <Upload className="w-4 h-4" />
                   <span>{uploading ? 'Uploading to Cloudinary...' : 'Upload Generated Proof image/pdf'}</span>
                   <input
@@ -153,7 +153,7 @@ export const DesignTicketDesk = () => {
                     const msg = `Hi ${ticket.customerName || 'Client'}, your custom design proof for ${ticket.product || 'your product'} is ready! Preview here: ${ticket.proofUrl}. Reply 'APPROVE' to start printing.`;
                     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                   }}
-                  className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs cursor-pointer border-none"
+                  className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[14px] flex items-center justify-center gap-2 transition-colors shadow-2xs cursor-pointer border-none"
                 >
                   <Send className="w-3.5 h-3.5" /> Send Approval Link via WhatsApp
                 </button>

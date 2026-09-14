@@ -61,7 +61,7 @@ export const ProductionKanban = () => {
             <button
               key={stage.name}
               onClick={() => setActiveStageTab(stage.name)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full text-[14px] font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
                 isActive 
                   ? 'bg-blue-600 text-white border-blue-600 shadow-sm' 
                   : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
@@ -92,9 +92,9 @@ export const ProductionKanban = () => {
               }`}
             >
               {/* Stage Header */}
-              <div className={`p-3 rounded-xl border font-bold text-xs flex items-center justify-between mb-3 shadow-3xs ${stage.color}`}>
+              <div className={`p-3 rounded-xl border font-bold text-[14px] flex items-center justify-between mb-3 shadow-3xs ${stage.color}`}>
                 <span className="truncate">{stage.name}</span>
-                <span className="px-2 py-0.5 rounded-full bg-white text-slate-800 font-extrabold text-[11px] border border-slate-200">
+                <span className="px-2 py-0.5 rounded-full bg-white text-slate-800 font-extrabold text-[14px] border border-slate-200">
                   {stageOrders.length}
                 </span>
               </div>
@@ -115,7 +115,7 @@ export const ProductionKanban = () => {
                       className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-3xs hover:shadow-xs transition-all cursor-grab active:cursor-grabbing hover:border-blue-300 space-y-2.5 group"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-extrabold text-xs text-slate-900">{targetId}</span>
+                        <span className="font-extrabold text-[14px] text-slate-900">{targetId}</span>
                         {order.isExpress && (
                           <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-extrabold text-[10px] flex items-center gap-0.5">
                             <Zap className="w-3 h-3 fill-red-600 animate-pulse" /> Express
@@ -123,12 +123,12 @@ export const ProductionKanban = () => {
                         )}
                       </div>
 
-                      <div className="text-xs">
+                      <div className="text-[14px]">
                         <p className="font-bold text-slate-800 truncate">{order.customer?.name || 'Customer'}</p>
-                        <p className="text-slate-500 text-[11px] truncate">{order.customer?.company || 'Retail Order'}</p>
+                        <p className="text-slate-500 text-[14px] truncate">{order.customer?.company || 'Retail Order'}</p>
                       </div>
 
-                      <div className="bg-slate-50 rounded-lg p-2 text-[11px] border border-slate-100 space-y-1">
+                      <div className="bg-slate-50 rounded-lg p-2 text-[14px] border border-slate-100 space-y-1">
                         <p className="font-semibold text-slate-700 truncate">
                           {firstItem.productName || firstItem.name || 'Custom Print Item'}
                         </p>
@@ -155,7 +155,7 @@ export const ProductionKanban = () => {
                             setSelectedOrder(order);
                             setPreflightModalOpen(true);
                           }}
-                          className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 border-none bg-transparent cursor-pointer"
+                          className="text-[14px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 border-none bg-transparent cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" /> View & Download
                         </button>
@@ -181,7 +181,7 @@ export const ProductionKanban = () => {
                 })}
 
                 {stageOrders.length === 0 && (
-                  <div className="py-12 text-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-200 rounded-xl">
+                  <div className="py-12 text-center text-[14px] text-slate-400 font-medium border-2 border-dashed border-slate-200 rounded-xl">
                     No orders in stage
                   </div>
                 )}

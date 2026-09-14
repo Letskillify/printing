@@ -34,7 +34,7 @@ export const DashboardOverview = () => {
                 Live Synced
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-medium">Real-time Backoffice telemetry, express queues & production KPIs</p>
+            <p className="text-[14px] text-slate-500 font-medium">Real-time Backoffice telemetry, express queues & production KPIs</p>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ export const DashboardOverview = () => {
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer border-none ${
+                className={`px-2.5 py-1 rounded-lg text-[14px] font-bold transition-colors cursor-pointer border-none ${
                   timeRange === range
                     ? 'bg-white text-blue-600 shadow-3xs'
                     : 'text-slate-500 hover:text-slate-800 bg-transparent'
@@ -67,7 +67,7 @@ export const DashboardOverview = () => {
 
           <button
             onClick={() => setWalkInModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition-all border-none cursor-pointer flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] shadow-md shadow-blue-500/20 transition-all border-none cursor-pointer flex items-center gap-1.5"
           >
             + Create Walk-In Order
           </button>

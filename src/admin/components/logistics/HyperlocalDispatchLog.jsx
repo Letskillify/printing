@@ -25,7 +25,7 @@ export const HyperlocalDispatchLog = () => {
             <Truck className="w-5 h-5 text-sky-600" />
             Hyperlocal Express Dispatch & Pan-India Logistics Hub
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-[14px] text-slate-500">
             Real-time Bangalore local bookings (Dunzo/Porter) & BlueDart/Delhivery AWB sync
           </p>
         </div>
@@ -42,7 +42,7 @@ export const HyperlocalDispatchLog = () => {
               </span>
             </div>
 
-            <div className="space-y-1.5 text-xs">
+            <div className="space-y-1.5 text-[14px]">
               <div className="font-bold text-slate-900 flex items-center justify-between">
                 <span>Order Ref: {log.orderId}</span>
                 <span className="text-emerald-600 font-bold">{log.status}</span>
@@ -53,20 +53,20 @@ export const HyperlocalDispatchLog = () => {
                   <Truck className="w-3.5 h-3.5 text-sky-500" /> {log.provider}
                 </div>
                 {log.driverName && (
-                  <p className="text-[11px]">Rider: {log.driverName} ({log.driverPhone})</p>
+                  <p className="text-[14px]">Rider: {log.driverName} ({log.driverPhone})</p>
                 )}
                 {log.awbNumber && (
-                  <p className="text-[11px] font-mono">AWB: {log.awbNumber}</p>
+                  <p className="text-[14px] font-mono">AWB: {log.awbNumber}</p>
                 )}
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
+              <div className="flex items-center justify-between text-[14px] text-slate-500 pt-1">
                 <span>ETA: {log.estimatedDelivery}</span>
                 <span>Pickup: {log.pickupTime}</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[14px]">
               <a
                 href={log.trackingUrl}
                 target="_blank"
@@ -78,7 +78,7 @@ export const HyperlocalDispatchLog = () => {
 
               <button
                 onClick={() => window.print()}
-                className="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-semibold text-[11px] flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-semibold text-[14px] flex items-center gap-1"
               >
                 <Printer className="w-3 h-3" /> Print Slip
               </button>

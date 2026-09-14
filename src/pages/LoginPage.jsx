@@ -206,7 +206,7 @@ export function LoginPage({ setCurrentPage }) {
           <h2 className="text-3xl font-extrabold text-[#0B1633] tracking-tight">
             Welcome Back
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-slate-500 font-medium">
+          <p className="mt-2 text-[14px] sm:text-sm text-slate-500 font-medium">
             Sign in via Email OTP, Password, or Google Account
           </p>
         </div>
@@ -215,7 +215,7 @@ export function LoginPage({ setCurrentPage }) {
         <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-xl space-y-6">
           
           {/* Mode Switcher Tabs */}
-          <div className="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+          <div className="flex bg-slate-100 p-1 rounded-2xl text-[14px] font-bold">
             <button
               type="button"
               onClick={() => { setAuthMode('otp'); setError(''); setSuccess(''); }}
@@ -239,14 +239,14 @@ export function LoginPage({ setCurrentPage }) {
 
           {/* Alert Notices */}
           {error && (
-            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-start gap-2.5">
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-[14px] font-bold flex items-start gap-2.5">
               <FiAlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2.5">
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-[14px] font-bold flex items-center gap-2.5">
               <FiCheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{success}</span>
             </div>
@@ -257,7 +257,7 @@ export function LoginPage({ setCurrentPage }) {
             type="button"
             disabled={loading}
             onClick={handleGoogleLogin}
-            className="w-full py-3.5 px-4 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs flex items-center justify-center gap-3 transition cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-[14px] flex items-center justify-center gap-3 transition cursor-pointer"
           >
             <FcGoogle className="w-5 h-5 shrink-0" />
             <span>Continue with Google</span>
@@ -276,7 +276,7 @@ export function LoginPage({ setCurrentPage }) {
               {otpStep === 'enter-email' && (
                 <form onSubmit={handleSendOTP} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Email Address for OTP
                     </label>
                     <div className="relative">
@@ -287,7 +287,7 @@ export function LoginPage({ setCurrentPage }) {
                         value={otpEmail}
                         onChange={(e) => setOtpEmail(e.target.value)}
                         placeholder="name@company.com"
-                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   </div>
@@ -295,7 +295,7 @@ export function LoginPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Sending OTP...' : <>Send 6-Digit Verification Code <FiArrowRight className="w-4 h-4" /></>}
                   </button>
@@ -307,13 +307,13 @@ export function LoginPage({ setCurrentPage }) {
                 <form onSubmit={handleVerifyOTP} className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider">
                         Enter 6-Digit Code
                       </label>
                       <button
                         type="button"
                         onClick={() => { setOtpStep('enter-email'); setOtpCode(''); }}
-                        className="text-[11px] font-bold text-[#FF5A1F] hover:underline bg-transparent border-none cursor-pointer"
+                        className="text-[14px] font-bold text-[#FF5A1F] hover:underline bg-transparent border-none cursor-pointer"
                       >
                         Change Email ({otpEmail})
                       </button>
@@ -336,7 +336,7 @@ export function LoginPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Verifying Code...' : <>Verify & Continue <FiCheckCircle className="w-4 h-4" /></>}
                   </button>
@@ -346,7 +346,7 @@ export function LoginPage({ setCurrentPage }) {
                       type="button"
                       disabled={resendTimer > 0 || loading}
                       onClick={handleSendOTP}
-                      className={`text-xs font-bold border-none bg-transparent cursor-pointer ${
+                      className={`text-[14px] font-bold border-none bg-transparent cursor-pointer ${
                         resendTimer > 0 ? 'text-slate-400 cursor-not-allowed' : 'text-[#FF5A1F] hover:underline'
                       }`}
                     >
@@ -359,14 +359,14 @@ export function LoginPage({ setCurrentPage }) {
               {/* STEP 3: SET PASSWORD FOR NEW USER / SIGN IN */}
               {otpStep === 'set-password' && (
                 <form onSubmit={handleSetPasswordAndCreateAccount} className="space-y-4 pt-1">
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center justify-between">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-[14px] font-semibold flex items-center justify-between">
                     <span>Email Verified: <strong>{otpEmail}</strong></span>
                     <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                   </div>
 
                   {isNewUser && (
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                         Full Name *
                       </label>
                       <input
@@ -375,13 +375,13 @@ export function LoginPage({ setCurrentPage }) {
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
                         placeholder="e.g. Rahul Sharma"
-                        className="w-full px-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full px-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       {isNewUser ? 'Set Password for Next Sign In *' : 'Enter Account Password *'}
                     </label>
                     <div className="relative">
@@ -392,7 +392,7 @@ export function LoginPage({ setCurrentPage }) {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="At least 6 characters"
-                        className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                       <button
                         type="button"
@@ -405,7 +405,7 @@ export function LoginPage({ setCurrentPage }) {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       Confirm Password *
                     </label>
                     <div className="relative">
@@ -416,7 +416,7 @@ export function LoginPage({ setCurrentPage }) {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-enter password"
-                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   </div>
@@ -424,7 +424,7 @@ export function LoginPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Creating Account...' : <>{isNewUser ? 'Create Account & Sign In' : 'Sign In Now'} <FiArrowRight className="w-4 h-4" /></>}
                   </button>
@@ -437,7 +437,7 @@ export function LoginPage({ setCurrentPage }) {
           {authMode === 'password' && (
             <form onSubmit={handlePasswordLogin} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-2">
                   Email Address
                 </label>
                 <div className="relative">
@@ -448,13 +448,13 @@ export function LoginPage({ setCurrentPage }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your.email@company.com"
-                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-2">
                   Password
                 </label>
                 <div className="relative">
@@ -465,7 +465,7 @@ export function LoginPage({ setCurrentPage }) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-11 pr-11 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                    className="w-full pl-11 pr-11 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                   />
                   <button
                     type="button"
@@ -480,7 +480,7 @@ export function LoginPage({ setCurrentPage }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
               >
                 {loading ? 'Signing In...' : <>Sign In to Account <FiArrowRight className="w-4 h-4" /></>}
               </button>
@@ -488,7 +488,7 @@ export function LoginPage({ setCurrentPage }) {
           )}
 
           {/* Card Footer Links */}
-          <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-500 font-medium">
+          <div className="pt-4 border-t border-slate-100 text-center text-[14px] text-slate-500 font-medium">
             Don't have an account yet?{' '}
             <button
               onClick={() => setCurrentPage && setCurrentPage('signup')}
@@ -500,7 +500,7 @@ export function LoginPage({ setCurrentPage }) {
         </div>
 
         {/* Security Assurance */}
-        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 font-semibold">
+        <div className="flex items-center justify-center gap-2 text-[14px] text-slate-400 font-semibold">
           <FiShield className="w-4 h-4 text-emerald-500" />
           <span>Encrypted SSL 256-bit Firebase Authentication</span>
         </div>

@@ -1,187 +1,110 @@
-import { useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
-import { FiArrowRight, FiMail, FiCheck } from 'react-icons/fi'
+import { motion } from 'framer-motion'
+import { FiArrowRight } from 'react-icons/fi'
 
 export function LatestBlog({ setCurrentPage }) {
-  const prefersReducedMotion = useReducedMotion()
-  const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
-
-  const handleLink = (page) => {
-    if (setCurrentPage) setCurrentPage(page)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleSubscribe = (e) => {
-    e.preventDefault()
-    if (email) {
-      setSubscribed(true)
-      setEmail('')
-      setTimeout(() => setSubscribed(false), 3000)
-    }
-  }
-
-  const posts = [
+  const blogPosts = [
     {
-      tag: 'Design Tips',
-      title: '5 Tips for Designing Perfect Business Cards',
-      desc: 'Learn key font pairings, color bleed rules, and luxury paper stocks that make your business cards stand out.',
-      date: 'Jan 15, 2024',
+      title: '5 Creative Business Card Ideas That Stand Out',
+      category: 'Design Tips',
+      date: 'Mar 12, 2024',
       img: 'https://images.unsplash.com/photo-1612831819695-7e71f5ccf16c?auto=format&fit=crop&q=80&w=600',
     },
     {
-      tag: 'Printing',
-      title: 'How Quality Printing Boosts Your Brand Image',
-      desc: 'Discover why high-tactile print collateral drives higher enterprise client conversion and builds lasting trust.',
-      date: 'Jan 10, 2024',
-      img: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&q=80&w=600',
+      title: 'How Custom Packaging Can Boost Your Brand',
+      category: 'Business Growth',
+      date: 'Mar 8, 2024',
+      img: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&q=80&w=600',
     },
     {
-      tag: 'Paper Guide',
-      title: 'Choosing the Right Paper for Your Print Projects',
-      desc: 'A complete breakdown of GSM weights, matte vs gloss coatings, and eco-friendly recycled stocks.',
-      date: 'Jan 05, 2024',
+      title: 'A Complete Guide to Choosing the Right Paper for Your Prints',
+      category: 'Print Guides',
+      date: 'Feb 28, 2024',
       img: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600',
     },
   ]
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.08,
-      },
-    },
-  }
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-    },
+  const handleLink = () => {
+    if (typeof setCurrentPage === 'function') {
+      setCurrentPage('blog')
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <section className="py-20 bg-[#F7F8FA] font-sans border-b border-[#E7EAF0]">
+    <section className="py-12 sm:py-16 bg-[#F9FAFB] font-sans border-b border-[#E2E8F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="mb-12 text-left">
-          <span className="text-[#FF5A1F] text-xs font-extrabold tracking-widest uppercase mb-2 block">
-            Print Insights & News
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#0B1633] tracking-tight">
-            Latest from Blog
-          </h2>
-          <p className="text-[#667085] text-[16px] sm:text-[17px] font-normal mt-2 max-w-xl leading-relaxed">
-            Stay updated with printing tips, paper guides, and design inspiration from industry experts.
-          </p>
-        </div>
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-[#C026D3] text-[14px] font-black tracking-widest uppercase">
+                TIPS, IDEAS & INSPIRATION
+              </span>
+              <span className="h-[2px] w-8 bg-gradient-to-r from-[#D946EF] to-[#E11D48] inline-block rounded-full" />
+            </div>
 
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-        >
-          
-          {/* Blog Post Cards (8 cols) */}
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <motion.article
-                key={post.title}
-                variants={cardVariants}
-                className="group cursor-pointer rounded-[16px] overflow-hidden border border-[#E7EAF0] hover:border-[#FF5A1F]/40 hover:shadow-[0_12px_30px_rgba(7,21,47,0.06)] transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] bg-white flex flex-col justify-between hover:-translate-y-1"
-                onClick={() => handleLink('about')}
-              >
-                <div>
-                  {/* Dominant Image Container */}
-                  <div className="relative h-[170px] overflow-hidden bg-slate-100">
-                    <img
-                      src={post.img}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    />
-                    <span className="absolute top-3 left-3 bg-[#FF5A1F] text-white text-[11px] font-extrabold px-3 py-0.5 rounded-full shadow-sm">
-                      {post.tag}
-                    </span>
-                  </div>
-
-                  {/* Body Metadata & Content */}
-                  <div className="p-5">
-                    <p className="text-[12px] text-[#667085] font-semibold mb-2">{post.date}</p>
-                    <h3 className="text-[17px] font-bold text-[#0B1633] mb-2 leading-snug group-hover:text-[#FF5A1F] transition-colors duration-200 line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-[#667085] text-[14px] font-normal leading-relaxed line-clamp-3 mb-4">
-                      {post.desc}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-5 pt-0">
-                  <button className="text-[#FF5A1F] text-[13px] font-extrabold flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-250 border-none bg-transparent cursor-pointer p-0">
-                    Read Article <FiArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </motion.article>
-            ))}
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0F172A] tracking-tight">
+              Latest from Our <span className="text-gradient">Blog</span>
+            </h2>
           </div>
 
-          {/* Newsletter Card (4 cols) — Deep Navy #07152F */}
-          <motion.div variants={cardVariants} className="lg:col-span-4">
-            <div className="bg-[#07152F] text-white rounded-[20px] p-7 border border-slate-800 shadow-xl h-full flex flex-col justify-between relative overflow-hidden">
-              
-              {/* Subtle Ambient Lighting */}
-              <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-[#FF5A1F]/15 blur-2xl pointer-events-none" />
+          <button
+            onClick={handleLink}
+            className="inline-flex items-center gap-1.5 text-[14px] font-extrabold text-[#C026D3] hover:text-[#E11D48] transition-colors border-none bg-transparent cursor-pointer group shrink-0"
+          >
+            <span>View All Posts</span>
+            <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
 
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-[12px] bg-white/10 border border-white/15 flex items-center justify-center mb-5 text-[#FF5A1F]">
-                  <FiMail className="w-6 h-6 text-[#FF5A1F]" />
-                </div>
-                <h3 className="text-2xl font-extrabold text-white mb-2 tracking-tight">
-                  Stay Updated
-                </h3>
-                <p className="text-[#909AB0] text-[14px] font-normal leading-relaxed mb-6">
-                  Subscribe to our newsletter for exclusive offers, free print sample kits, and design tips.
-                </p>
-
-                <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="w-full bg-[#0B1633] border border-slate-700/80 rounded-[10px] py-3 px-3.5 text-[14px] text-white placeholder-slate-400 focus:outline-none focus:border-[#FF5A1F] focus:ring-1 focus:ring-[#FF5A1F] transition-all duration-200 font-medium"
-                    required
+        {/* 3 Blog Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {blogPosts.map((post, i) => (
+            <motion.article
+              key={post.title}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06, duration: 0.35 }}
+              onClick={handleLink}
+              className="group cursor-pointer rounded-2xl overflow-hidden border border-slate-200 bg-white hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+            >
+              <div>
+                {/* Image Container with Overlay Category Tag */}
+                <div className="relative h-[180px] w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={post.img}
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <button
-                    type="submit"
-                    className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] py-3.5 rounded-[10px] transition-all duration-200 shadow-md shadow-[#FF5A1F]/20 hover:shadow-lg hover:shadow-[#FF5A1F]/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer border-none flex items-center justify-center gap-2"
-                  >
-                    {subscribed ? (
-                      <>
-                        <FiCheck className="w-4 h-4" /> Subscribed!
-                      </>
-                    ) : (
-                      'Subscribe'
-                    )}
-                  </button>
-                </form>
+                  <span className="absolute top-3 left-3 btn-gradient text-white text-[10.5px] font-extrabold px-3 py-1 rounded-full shadow-sm">
+                    {post.category}
+                  </span>
+                </div>
+
+                {/* Content Area */}
+                <div className="p-5">
+                  <p className="text-[14px] text-slate-400 font-semibold mb-2">{post.date}</p>
+                  <h3 className="text-[16px] font-black text-[#0F172A] group-hover:text-[#C026D3] transition-colors leading-snug line-clamp-2">
+                    {post.title}
+                  </h3>
+                </div>
               </div>
 
-              <div className="relative z-10 text-[11px] text-[#667085] text-center mt-6 font-medium">
-                🔒 No spam. Unsubscribe anytime.
+              {/* Read More Link */}
+              <div className="px-5 pb-5 pt-0">
+                <div className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#C026D3] group-hover:text-[#E11D48] transition-colors">
+                  <span>Read More</span>
+                  <FiArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.article>
+          ))}
+        </div>
 
-        </motion.div>
       </div>
     </section>
   )
 }
+

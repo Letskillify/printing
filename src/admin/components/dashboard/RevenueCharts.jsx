@@ -25,9 +25,9 @@ export const RevenueCharts = () => {
               <TrendingUp className="w-4 h-4 text-blue-600" />
               Monthly Revenue Trajectory (₹)
             </h3>
-            <p className="text-xs text-slate-500">Real-time revenue growth from online orders & walk-in clients</p>
+            <p className="text-[14px] text-slate-500">Real-time revenue growth from online orders & walk-in clients</p>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
+          <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[14px] font-bold border border-emerald-200">
             +32% YOY Growth
           </span>
         </div>
@@ -69,7 +69,7 @@ export const RevenueCharts = () => {
               <BarChart2 className="w-4 h-4 text-sky-500" />
               Weekly Order Breakdown
             </h3>
-            <p className="text-xs text-slate-500">Standard vs Express dispatch volume</p>
+            <p className="text-[14px] text-slate-500">Standard vs Express dispatch volume</p>
           </div>
         </div>
 

@@ -115,7 +115,7 @@ export function HowItWorks() {
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#E55325] inline-block" />
             <span className="h-[2px] w-8 bg-[#E55325] inline-block rounded-full" />
-            <span className="text-[#E55325] text-xs font-extrabold tracking-widest uppercase px-1">
+            <span className="text-[#E55325] text-[14px] font-extrabold tracking-widest uppercase px-1">
               SIMPLE 4-STEP JOURNEY
             </span>
             <span className="h-[2px] w-8 bg-[#E55325] inline-block rounded-full" />
@@ -149,7 +149,7 @@ export function HowItWorks() {
                 {/* Dotted Arrow Connector between cards (Desktop) */}
                 {index < 3 && (
                   <div className="hidden lg:flex absolute top-[48%] -right-4 z-30 items-center text-slate-400">
-                    <span className="text-xs font-bold tracking-[0.2em] text-slate-400">...</span>
+                    <span className="text-[14px] font-bold tracking-[0.2em] text-slate-400">...</span>
                     <span className="text-sm font-bold text-slate-500 ml-0.5">→</span>
                   </div>
                 )}
@@ -228,7 +228,7 @@ export function HowItWorks() {
               </div>
               <div>
                 <h4 className="text-[14px] font-bold text-[#07152F] leading-snug">Secure Payments</h4>
-                <p className="text-[12px] text-[#667085]">100% safe & secure</p>
+                <p className="text-[14px] text-[#667085]">100% safe & secure</p>
               </div>
             </div>
 
@@ -239,7 +239,7 @@ export function HowItWorks() {
               </div>
               <div>
                 <h4 className="text-[14px] font-bold text-[#07152F] leading-snug">Premium Quality</h4>
-                <p className="text-[12px] text-[#667085]">Top-notch printing</p>
+                <p className="text-[14px] text-[#667085]">Top-notch printing</p>
               </div>
             </div>
 
@@ -250,7 +250,7 @@ export function HowItWorks() {
               </div>
               <div>
                 <h4 className="text-[14px] font-bold text-[#07152F] leading-snug">On-time Delivery</h4>
-                <p className="text-[12px] text-[#667085]">Right to your door</p>
+                <p className="text-[14px] text-[#667085]">Right to your door</p>
               </div>
             </div>
 
@@ -261,7 +261,7 @@ export function HowItWorks() {
               </div>
               <div>
                 <h4 className="text-[14px] font-bold text-[#07152F] leading-snug">Customer Support</h4>
-                <p className="text-[12px] text-[#667085]">We're here to help</p>
+                <p className="text-[14px] text-[#667085]">We're here to help</p>
               </div>
             </div>
 

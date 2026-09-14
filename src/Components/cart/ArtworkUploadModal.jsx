@@ -192,11 +192,11 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
         {/* Header */}
         <div className="bg-[#07152F] text-white p-5 sm:p-6 flex items-center justify-between border-b border-slate-800">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#FF5A1F] uppercase tracking-wider mb-1">
+            <div className="flex items-center gap-2 text-[14px] font-bold text-[#FF5A1F] uppercase tracking-wider mb-1">
               <FiUploadCloud className="w-4 h-4" /> Prepress Artwork Uploader
             </div>
             <h3 className="text-xl sm:text-2xl font-extrabold text-white">Upload Your Artwork</h3>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="text-[14px] text-slate-300 mt-0.5">
               Upload high-resolution print files for <strong className="text-amber-400">{productTitle || 'your item'}</strong>.
             </p>
           </div>
@@ -214,12 +214,12 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
           
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center justify-between gap-3">
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-[14px] font-semibold flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <FiAlertCircle className="w-5 h-5 shrink-0 text-rose-600" />
                 <span>{errorMessage}</span>
               </div>
-              <button onClick={() => setErrorMessage('')} className="text-rose-500 hover:text-rose-800 text-xs font-bold">Dismiss</button>
+              <button onClick={() => setErrorMessage('')} className="text-rose-500 hover:text-rose-800 text-[14px] font-bold">Dismiss</button>
             </div>
           )}
 
@@ -250,7 +250,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
             <h4 className="text-sm font-extrabold text-[#0B1633] mb-1">
               Drag & Drop your artwork files here, or <span className="text-[#FF5A1F]">Browse</span>
             </h4>
-            <p className="text-xs text-slate-500 font-medium max-w-md mx-auto">
+            <p className="text-[14px] text-slate-500 font-medium max-w-md mx-auto">
               Supports: <strong>JPG, PNG, PDF, AI, PSD, CDR</strong> (Max file size: {APP_CONFIG.MAX_ARTWORK_FILE_SIZE_MB}MB)
             </p>
           </div>
@@ -258,7 +258,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
           {/* Uploaded File List */}
           {fileList.length > 0 && (
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs font-extrabold text-[#0B1633] border-b border-slate-100 pb-2">
+              <div className="flex items-center justify-between text-[14px] font-extrabold text-[#0B1633] border-b border-slate-100 pb-2">
                 <span>Selected Artwork Files ({fileList.length})</span>
                 <button
                   type="button"
@@ -280,14 +280,14 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
                       {file.localPreview ? (
                         <img src={file.localPreview} alt="Preview" className="w-11 h-11 object-cover rounded-xl border border-slate-200 shrink-0" />
                       ) : (
-                        <div className="w-11 h-11 rounded-xl bg-[#07152F] text-white flex items-center justify-center font-extrabold text-xs shrink-0 uppercase">
+                        <div className="w-11 h-11 rounded-xl bg-[#07152F] text-white flex items-center justify-center font-extrabold text-[14px] shrink-0 uppercase">
                           {file.format || 'DOC'}
                         </div>
                       )}
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-extrabold text-[#0B1633] truncate block max-w-[200px] sm:max-w-[300px]">
+                          <span className="text-[14px] font-extrabold text-[#0B1633] truncate block max-w-[200px] sm:max-w-[300px]">
                             {file.fileName}
                           </span>
                           <span className="text-[10px] font-mono text-slate-400">
@@ -306,7 +306,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
                         )}
 
                         {file.status === 'success' && (
-                          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 mt-0.5">
+                          <div className="flex items-center gap-1 text-[14px] font-bold text-emerald-600 mt-0.5">
                             <FiCheckCircle className="w-3.5 h-3.5" />
                             <span>Artwork uploaded successfully</span>
                           </div>
@@ -314,7 +314,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
 
                         {file.status === 'failed' && (
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[11px] font-bold text-rose-600 flex items-center gap-1">
+                            <span className="text-[14px] font-bold text-rose-600 flex items-center gap-1">
                               <FiAlertCircle className="w-3.5 h-3.5" /> Upload failed
                             </span>
                             <button
@@ -343,7 +343,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
 
           {/* Artwork Special Instructions Notes */}
           <div className="space-y-1.5">
-            <label className="text-xs font-extrabold text-[#0B1633] flex items-center justify-between">
+            <label className="text-[14px] font-extrabold text-[#0B1633] flex items-center justify-between">
               <span>Special Printing Instructions (Optional)</span>
               <span className="text-[10px] text-slate-400 font-normal">e.g. Front & Back layout preference</span>
             </label>
@@ -352,11 +352,11 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
               value={artworkNotes}
               onChange={(e) => setArtworkNotes(e.target.value)}
               placeholder="Provide any specific notes for prepress operators (e.g. Print front and back separately, maintain CMYK breakdown)..."
-              className="w-full bg-[#F7F8FA] border border-slate-200 rounded-2xl p-3.5 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] font-medium resize-none"
+              className="w-full bg-[#F7F8FA] border border-slate-200 rounded-2xl p-3.5 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] font-medium resize-none"
             />
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5 text-xs text-blue-900">
+          <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5 text-[14px] text-blue-900">
             <FiInfo className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
             <span className="leading-relaxed">
               Original artwork files are preserved in high-resolution format without degradation. Prepress proofing will review resolution & bleed before press production.
@@ -369,7 +369,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
         <div className="p-5 bg-[#FAFBFD] border-t border-slate-200 flex items-center justify-between gap-4">
           <button
             onClick={onClose}
-            className="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 font-extrabold text-xs hover:bg-slate-100 transition cursor-pointer"
+            className="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 font-extrabold text-[14px] hover:bg-slate-100 transition cursor-pointer"
           >
             Cancel
           </button>
@@ -377,7 +377,7 @@ export function ArtworkUploadModal({ isOpen, onClose, onConfirmUpload, productTi
           <button
             onClick={handleFinalSubmit}
             disabled={isAnyUploading}
-            className={`px-7 py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer transition border-none ${
+            className={`px-7 py-3.5 rounded-xl font-extrabold text-[14px] uppercase tracking-wider shadow-lg flex items-center gap-2 cursor-pointer transition border-none ${
               isAnyUploading 
                 ? 'bg-slate-300 text-slate-500 cursor-not-allowed' 
                 : 'bg-[#FF5A1F] hover:bg-[#e44d15] text-white shadow-[#FF5A1F]/25 hover:scale-[1.02]'

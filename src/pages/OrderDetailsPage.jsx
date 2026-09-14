@@ -54,7 +54,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
     return (
       <div className="min-h-screen bg-[#FAFBFD] flex items-center justify-center p-6 text-center">
         <div className="w-10 h-10 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-xs text-slate-500 font-bold">Fetching order details...</p>
+        <p className="text-[14px] text-slate-500 font-bold">Fetching order details...</p>
       </div>
     );
   }
@@ -63,10 +63,10 @@ export function OrderDetailsPage({ setCurrentPage }) {
     return (
       <div className="min-h-screen bg-[#FAFBFD] font-sans text-[#0B1633] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-extrabold text-[#0B1633] mb-2">Order Not Found</h2>
-        <p className="text-slate-500 text-xs mb-6">Could not locate details for Order #{orderId}.</p>
+        <p className="text-slate-500 text-[14px] mb-6">Could not locate details for Order #{orderId}.</p>
         <button
           onClick={() => setCurrentPage('account')}
-          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-xs uppercase cursor-pointer border-none"
+          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-[14px] uppercase cursor-pointer border-none"
         >
           Return to My Account
         </button>
@@ -95,7 +95,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <button
             onClick={() => setCurrentPage('account')}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer mb-4 bg-transparent border-none"
+            className="inline-flex items-center gap-1.5 text-[14px] font-bold text-slate-400 hover:text-white transition cursor-pointer mb-4 bg-transparent border-none"
           >
             <FiArrowLeft className="w-4 h-4 text-[#FF5A1F]" /> Back to My Orders
           </button>
@@ -106,7 +106,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
                 <span className="px-2.5 py-0.5 rounded-full bg-[#FF5A1F]/20 text-[#FF5A1F] text-[10px] font-black uppercase tracking-wider border border-[#FF5A1F]/30">
                   Live Press Status Tracking
                 </span>
-                <span className="text-slate-400 text-xs">• Placed {formattedDate}</span>
+                <span className="text-slate-400 text-[14px]">• Placed {formattedDate}</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 Order #{order.orderId || order.id}
@@ -115,7 +115,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
 
             <button
               onClick={() => setIsInvoiceOpen(true)}
-              className="px-5 py-3 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-[#FF5A1F]/20 flex items-center gap-2 transition cursor-pointer border-none"
+              className="px-5 py-3 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] uppercase tracking-wider shadow-lg shadow-[#FF5A1F]/20 flex items-center gap-2 transition cursor-pointer border-none"
             >
               <FiPrinter className="w-4 h-4" /> Download Tax Invoice
             </button>
@@ -132,12 +132,12 @@ export function OrderDetailsPage({ setCurrentPage }) {
               <h3 className="text-base font-extrabold text-[#0B1633] flex items-center gap-2">
                 <FiTruck className="w-5 h-5 text-[#FF5A1F]" /> Real-Time Production & Dispatch Timeline
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-[14px] text-slate-500 mt-0.5">
                 Automatically updates live as prepress operators advance your order in the studio.
               </p>
             </div>
 
-            <span className="px-3.5 py-1.5 rounded-xl bg-orange-50 text-[#FF5A1F] font-black text-xs border border-orange-200">
+            <span className="px-3.5 py-1.5 rounded-xl bg-orange-50 text-[#FF5A1F] font-black text-[14px] border border-orange-200">
               Current Stage: {currentStatus}
             </span>
           </div>
@@ -151,7 +151,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
               return (
                 <div
                   key={idx}
-                  className={`p-3.5 rounded-2xl border transition-all text-xs space-y-1.5 ${
+                  className={`p-3.5 rounded-2xl border transition-all text-[14px] space-y-1.5 ${
                     isCurrent
                       ? 'border-[#FF5A1F] bg-orange-50/60 ring-2 ring-[#FF5A1F]/20'
                       : isCompleted
@@ -175,7 +175,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
                     )}
                   </div>
 
-                  <strong className={`font-black block text-[11.5px] leading-tight ${
+                  <strong className={`font-black block text-[14px] leading-tight ${
                     isCurrent ? 'text-[#FF5A1F]' : isCompleted ? 'text-emerald-900' : 'text-slate-700'
                   }`}>
                     {stage.name}
@@ -211,15 +211,15 @@ export function OrderDetailsPage({ setCurrentPage }) {
                       />
                       <div className="space-y-1">
                         <strong className="text-sm font-extrabold text-[#0B1633] block">{item.productName || item.name}</strong>
-                        <p className="text-xs text-slate-500">{item.variant || 'Standard Specification'}</p>
-                        <span className="inline-block px-2.5 py-0.5 rounded-lg bg-slate-200/70 text-slate-800 text-[11px] font-extrabold">
+                        <p className="text-[14px] text-slate-500">{item.variant || 'Standard Specification'}</p>
+                        <span className="inline-block px-2.5 py-0.5 rounded-lg bg-slate-200/70 text-slate-800 text-[14px] font-extrabold">
                           {item.quantity || item.qty} Units
                         </span>
                       </div>
                     </div>
 
                     <div className="text-left sm:text-right shrink-0">
-                      <span className="text-xs text-slate-400 font-bold block">Item Subtotal</span>
+                      <span className="text-[14px] text-slate-400 font-bold block">Item Subtotal</span>
                       <strong className="text-base font-black text-[#FF5A1F]">
                         ₹{(item.totalPrice || (item.quantity * item.unitPrice) || 0).toLocaleString()}
                       </strong>
@@ -236,11 +236,11 @@ export function OrderDetailsPage({ setCurrentPage }) {
               </h3>
 
               {artworkList.length === 0 ? (
-                <p className="text-xs text-slate-500 font-medium">No artwork files attached to this order.</p>
+                <p className="text-[14px] text-slate-500 font-medium">No artwork files attached to this order.</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {artworkList.map((art, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs gap-3">
+                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[14px] gap-3">
                       <div className="min-w-0">
                         <strong className="font-extrabold text-slate-900 truncate block max-w-[180px]">
                           {art.fileName || art.originalFileName || `Artwork File #${idx+1}`}
@@ -253,7 +253,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
                           href={art.secureUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1.5 bg-[#07152F] text-white text-[11px] font-bold rounded-xl hover:bg-slate-800 transition flex items-center gap-1 text-decoration-none shrink-0"
+                          className="px-3 py-1.5 bg-[#07152F] text-white text-[14px] font-bold rounded-xl hover:bg-slate-800 transition flex items-center gap-1 text-decoration-none shrink-0"
                         >
                           <FiExternalLink className="w-3.5 h-3.5" /> View
                         </a>
@@ -275,7 +275,7 @@ export function OrderDetailsPage({ setCurrentPage }) {
                 Pricing Snapshot
               </h3>
 
-              <div className="space-y-2 text-xs font-semibold text-slate-600">
+              <div className="space-y-2 text-[14px] font-semibold text-slate-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-extrabold text-slate-900">₹{(order.subtotal || order.pricing?.subtotal || 0).toLocaleString()}</span>
@@ -309,19 +309,19 @@ export function OrderDetailsPage({ setCurrentPage }) {
               </div>
 
               <div className="pt-3 border-t border-slate-200 flex justify-between items-baseline">
-                <span className="text-xs font-bold text-slate-500">Grand Total</span>
+                <span className="text-[14px] font-bold text-slate-500">Grand Total</span>
                 <span className="text-2xl font-black text-[#FF5A1F]">₹{(order.totalAmount || order.pricing?.grandTotal || 0).toLocaleString()}</span>
               </div>
             </div>
 
             {/* Delivery Destination Card */}
-            <div className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-3 text-xs">
+            <div className="bg-white rounded-3xl p-6 border border-[#E7EAF0] shadow-sm space-y-3 text-[14px]">
               <h3 className="text-base font-extrabold text-[#0B1633] flex items-center gap-2 border-b border-slate-100 pb-3">
                 <FiMapPin className="w-4 h-4 text-[#FF5A1F]" /> Shipping Destination
               </h3>
 
               <div className="space-y-1 text-slate-700 font-medium leading-relaxed">
-                <strong className="font-extrabold text-slate-900 block text-xs">{order.customer?.name}</strong>
+                <strong className="font-extrabold text-slate-900 block text-[14px]">{order.customer?.name}</strong>
                 <p>{order.deliveryAddress || order.shippingAddress?.fullAddress}</p>
                 <p className="text-slate-500 font-mono pt-1">Phone: {order.customer?.phone}</p>
               </div>

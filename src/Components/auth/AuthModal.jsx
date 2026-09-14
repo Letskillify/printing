@@ -55,7 +55,7 @@ export function AuthModal() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-slate-100 bg-slate-50 text-xs font-bold">
+        <div className="flex border-b border-slate-100 bg-slate-50 text-[14px] font-bold">
           <button
             onClick={() => { setAuthModalTab('login'); setError(''); }}
             className={`flex-1 py-3 text-center transition ${authModalTab === 'login' ? 'bg-white text-[#FF5A1F] border-b-2 border-[#FF5A1F]' : 'text-slate-500 hover:text-slate-900'}`}
@@ -71,7 +71,7 @@ export function AuthModal() {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs font-sans">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-[14px] font-sans">
           
           {error && (
             <div className="p-3 rounded-xl bg-red-50 text-red-700 border border-red-200 flex items-start gap-2">
@@ -161,7 +161,7 @@ export function AuthModal() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs shadow-md transition cursor-pointer"
+            className="w-full py-3 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] shadow-md transition cursor-pointer"
           >
             {submitting 
               ? 'Connecting to Firebase...' 

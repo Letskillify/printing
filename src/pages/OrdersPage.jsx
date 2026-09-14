@@ -43,12 +43,12 @@ export function OrdersPage({ setCurrentPage }) {
           <FiPackage className="w-8 h-8" />
         </div>
         <h2 className="text-2xl font-extrabold text-[#0B1633] mb-2">Sign in to View Your Orders</h2>
-        <p className="text-slate-500 text-xs sm:text-sm max-w-md mb-6 font-medium">
+        <p className="text-slate-500 text-[14px] sm:text-sm max-w-md mb-6 font-medium">
           Access real-time print production tracking, view artwork uploads, and download tax invoices.
         </p>
         <button
           onClick={() => setCurrentPage('login')}
-          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-xs uppercase tracking-wider cursor-pointer border-none shadow-lg shadow-[#FF5A1F]/20"
+          className="px-6 py-3 rounded-2xl bg-[#FF5A1F] text-white font-extrabold text-[14px] uppercase tracking-wider cursor-pointer border-none shadow-lg shadow-[#FF5A1F]/20"
         >
           Sign In Now
         </button>
@@ -73,7 +73,7 @@ export function OrdersPage({ setCurrentPage }) {
       {/* Page Hero Header */}
       <section className="bg-[#07152F] text-white py-12 sm:py-16 relative overflow-hidden border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-2 text-[14px] font-semibold text-slate-400">
             <span className="cursor-pointer hover:text-white" onClick={() => setCurrentPage('home')}>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">My Orders</span>
@@ -95,7 +95,7 @@ export function OrdersPage({ setCurrentPage }) {
           <div className="flex items-center gap-2 bg-white p-1 rounded-2xl border border-slate-200 shadow-xs w-full sm:w-auto">
             <button
               onClick={() => setActiveFilter('all')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${
+              className={`px-4 py-2 rounded-xl text-[14px] font-extrabold transition-all cursor-pointer border-none ${
                 activeFilter === 'all' ? 'bg-[#07152F] text-white' : 'text-slate-600 hover:text-slate-900 bg-transparent'
               }`}
             >
@@ -103,7 +103,7 @@ export function OrdersPage({ setCurrentPage }) {
             </button>
             <button
               onClick={() => setActiveFilter('active')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${
+              className={`px-4 py-2 rounded-xl text-[14px] font-extrabold transition-all cursor-pointer border-none ${
                 activeFilter === 'active' ? 'bg-[#07152F] text-white' : 'text-slate-600 hover:text-slate-900 bg-transparent'
               }`}
             >
@@ -111,7 +111,7 @@ export function OrdersPage({ setCurrentPage }) {
             </button>
             <button
               onClick={() => setActiveFilter('delivered')}
-              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${
+              className={`px-4 py-2 rounded-xl text-[14px] font-extrabold transition-all cursor-pointer border-none ${
                 activeFilter === 'delivered' ? 'bg-[#07152F] text-white' : 'text-slate-600 hover:text-slate-900 bg-transparent'
               }`}
             >
@@ -126,7 +126,7 @@ export function OrdersPage({ setCurrentPage }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by Order ID or Product..."
-              className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-semibold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
+              className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-[14px] font-semibold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ export function OrdersPage({ setCurrentPage }) {
         {loading ? (
           <div className="text-center py-16">
             <div className="w-10 h-10 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs text-slate-500 font-bold">Loading your print orders...</p>
+            <p className="text-[14px] text-slate-500 font-bold">Loading your print orders...</p>
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center max-w-md mx-auto border border-[#E7EAF0] shadow-sm space-y-4">
@@ -143,12 +143,12 @@ export function OrdersPage({ setCurrentPage }) {
               <FiPackage className="w-7 h-7" />
             </div>
             <h3 className="text-xl font-extrabold text-[#0B1633]">No Orders Found</h3>
-            <p className="text-slate-500 text-xs">
+            <p className="text-slate-500 text-[14px]">
               {searchQuery ? 'No orders match your search query.' : 'You haven’t placed any orders yet.'}
             </p>
             <button
               onClick={() => setCurrentPage('products')}
-              className="bg-[#FF5A1F] text-white font-extrabold text-xs px-5 py-3 rounded-2xl inline-flex items-center gap-2 cursor-pointer border-none shadow-md"
+              className="bg-[#FF5A1F] text-white font-extrabold text-[14px] px-5 py-3 rounded-2xl inline-flex items-center gap-2 cursor-pointer border-none shadow-md"
             >
               <FiShoppingBag className="w-4 h-4" /> Explore Catalog
             </button>
@@ -177,16 +177,16 @@ export function OrdersPage({ setCurrentPage }) {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="text-lg font-black text-[#0B1633]">#{ord.orderId || ord.id}</h3>
-                          <span className="text-xs text-slate-400 font-medium">• Placed on {formattedDate}</span>
+                          <span className="text-[14px] text-slate-400 font-medium">• Placed on {formattedDate}</span>
                         </div>
-                        <p className="text-xs text-slate-500 font-medium mt-0.5">
+                        <p className="text-[14px] text-slate-500 font-medium mt-0.5">
                           {itemsList.length} Item(s) • Total: <strong className="text-[#FF5A1F] font-black">₹{(ord.totalAmount || ord.pricing?.grandTotal || 0).toLocaleString()}</strong>
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                      <span className={`px-3 py-1 rounded-xl text-xs font-extrabold border ${
+                      <span className={`px-3 py-1 rounded-xl text-[14px] font-extrabold border ${
                         ord.status === 'Delivered' 
                           ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
                           : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -196,7 +196,7 @@ export function OrdersPage({ setCurrentPage }) {
 
                       <button
                         onClick={() => setCurrentPage('order-details', { orderId: ord.orderId || ord.id })}
-                        className="px-4 py-2 rounded-xl bg-[#07152F] hover:bg-slate-800 text-white font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer border-none shadow-sm"
+                        className="px-4 py-2 rounded-xl bg-[#07152F] hover:bg-slate-800 text-white font-extrabold text-[14px] flex items-center gap-1.5 transition cursor-pointer border-none shadow-sm"
                       >
                         <FiEye className="w-3.5 h-3.5" /> View Order
                       </button>
@@ -206,7 +206,7 @@ export function OrdersPage({ setCurrentPage }) {
                   {/* Items Preview Row */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {itemsList.slice(0, 3).map((item, idx) => (
-                      <div key={idx} className="p-3 rounded-2xl bg-[#FAFBFD] border border-slate-200/80 flex items-center gap-3 text-xs">
+                      <div key={idx} className="p-3 rounded-2xl bg-[#FAFBFD] border border-slate-200/80 flex items-center gap-3 text-[14px]">
                         <img
                           src={item.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=200'}
                           alt={item.productName || item.name}
@@ -214,7 +214,7 @@ export function OrdersPage({ setCurrentPage }) {
                         />
                         <div className="min-w-0">
                           <strong className="font-extrabold text-slate-900 block truncate">{item.productName || item.name}</strong>
-                          <span className="text-[11px] text-slate-500 font-medium">{item.quantity || item.qty} Pcs • ₹{(item.totalPrice || item.unitPrice * item.quantity).toLocaleString()}</span>
+                          <span className="text-[14px] text-slate-500 font-medium">{item.quantity || item.qty} Pcs • ₹{(item.totalPrice || item.unitPrice * item.quantity).toLocaleString()}</span>
                         </div>
                       </div>
                     ))}

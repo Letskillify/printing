@@ -41,20 +41,20 @@ export const PricingEngineManager = () => {
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-blue-50/60 via-white to-slate-50 rounded-2xl p-6 text-slate-800 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+          <div className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-wider text-blue-600 mb-1">
             <Calculator className="w-4 h-4 text-blue-600" /> Taxation & Surcharge Architecture
           </div>
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
             Dynamic Pricing Engine & Bulk Discount Matrix
           </h2>
-          <p className="text-xs text-slate-500 mt-1 max-w-xl font-medium">
+          <p className="text-[14px] text-slate-500 mt-1 max-w-xl font-medium">
             Configure global GST tax defaults, express rush fees, volume threshold rules, and automated invoice calculation logic.
           </p>
         </div>
 
         <button
           onClick={handleSave}
-          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all border-none cursor-pointer"
+          className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all border-none cursor-pointer"
         >
           <Save className="w-4 h-4" /> Save Pricing Engine Rules
         </button>
@@ -68,7 +68,7 @@ export const PricingEngineManager = () => {
             <ShieldCheck className="w-4 h-4 text-emerald-600" /> Global GST Config (India Tax)
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-3 text-[14px]">
             <div>
               <label className="block font-bold text-slate-700 mb-1">Default Goods & Services Tax Rate (%)</label>
               <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export const PricingEngineManager = () => {
                 />
                 <span className="font-extrabold text-slate-500">% GST</span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-1">Applied automatically to subtotal as IGST (18%) or CGST+SGST (9%+9%).</p>
+              <p className="text-[14px] text-slate-500 mt-1">Applied automatically to subtotal as IGST (18%) or CGST+SGST (9%+9%).</p>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export const PricingEngineManager = () => {
             <Zap className="w-4 h-4 text-red-600 fill-red-500" /> Rush Fee Printing Modifiers
           </div>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-3 text-[14px]">
             <div>
               <label className="block font-bold text-slate-700 mb-1">Same-Day Express Surcharge Multiplier</label>
               <input
@@ -101,7 +101,7 @@ export const PricingEngineManager = () => {
                 onChange={(e) => setPricingRules({ ...pricingRules, expressSameDayMultiplier: parseFloat(e.target.value) || 1.0 })}
                 className="w-full p-2.5 rounded-xl border border-slate-200 font-bold text-red-600 focus:outline-none focus:border-red-500"
               />
-              <p className="text-[11px] text-slate-500 mt-1">Multiplier 1.35 adds +35% express priority printing surcharge.</p>
+              <p className="text-[14px] text-slate-500 mt-1">Multiplier 1.35 adds +35% express priority printing surcharge.</p>
             </div>
 
             <div>
@@ -125,14 +125,14 @@ export const PricingEngineManager = () => {
             </div>
             <button 
               onClick={addDiscountRule}
-              className="p-1 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs font-bold"
+              className="p-1 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-[14px] font-bold"
               title="Add Threshold Rule"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2 text-[14px]">
             {pricingRules.volumeDiscounts.map((rule, idx) => (
               <div key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2">
                 <div>

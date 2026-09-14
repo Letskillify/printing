@@ -31,7 +31,7 @@ export const QuickInvoiceModal = () => {
           </button>
         </div>
 
-        <div className="p-5 space-y-4 text-xs">
+        <div className="p-5 space-y-4 text-[14px]">
           <div>
             <label className="block font-bold text-slate-700 mb-1">Company Name</label>
             <input
@@ -63,10 +63,10 @@ export const QuickInvoiceModal = () => {
           </div>
 
           {/* Tax Breakdown Preview */}
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 font-mono text-[11px]">
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 font-mono text-[14px]">
             <div className="flex justify-between"><span>Base Taxable Amount:</span><span>₹{amount.toLocaleString()}</span></div>
             <div className="flex justify-between text-blue-600"><span>18% GST (CGST 9% + SGST 9%):</span><span>₹{gstTax.toLocaleString()}</span></div>
-            <div className="flex justify-between font-extrabold text-slate-900 text-xs pt-2 border-t">
+            <div className="flex justify-between font-extrabold text-slate-900 text-[14px] pt-2 border-t">
               <span>Gross Invoice Total:</span><span>₹{total.toLocaleString()}</span>
             </div>
           </div>

@@ -60,18 +60,18 @@ export const CloudinaryMediaBrowser = () => {
       <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+            <div className="flex items-center gap-2 text-[14px] font-bold uppercase tracking-wider text-blue-600 mb-1">
               <Sparkles className="w-4 h-4 text-blue-600" /> Embedded Cloudinary Asset Manager & CDN
             </div>
             <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
               Cloudinary Asset Library & Media Hub
             </h2>
-            <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            <p className="text-[14px] text-slate-500 mt-1 max-w-2xl">
               Upload images directly to Cloudinary CDN, manage asset tags, and copy auto-optimized transformed URLs (`/c_fill,w_800,q_auto,f_auto/`).
             </p>
           </div>
 
-          <label className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer shadow-md shadow-blue-500/20 transition-all border-none">
+          <label className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] flex items-center gap-2 cursor-pointer shadow-md shadow-blue-500/20 transition-all border-none">
             <Upload className="w-4 h-4" />
             <span>{uploading ? 'Uploading to Cloudinary...' : 'Upload New Media Asset'}</span>
             <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -85,10 +85,10 @@ export const CloudinaryMediaBrowser = () => {
               <Upload className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-extrabold text-slate-900 text-xs block">
+              <span className="font-extrabold text-slate-900 text-[14px] block">
                 {uploading ? 'Processing & Optimizing Image...' : 'Click or Drag & Drop File to Upload to Cloudinary'}
               </span>
-              <span className="text-[11px] text-slate-500 font-medium">Supports PNG, JPG, WEBP, SVG • Auto-generated WebP thumbnails</span>
+              <span className="text-[14px] text-slate-500 font-medium">Supports PNG, JPG, WEBP, SVG • Auto-generated WebP thumbnails</span>
             </div>
           </div>
           <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -103,7 +103,7 @@ export const CloudinaryMediaBrowser = () => {
           placeholder="Search Cloudinary assets by title or tags (e.g., mockup, banner, card)..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-900 focus:outline-none focus:border-sky-500 shadow-2xs"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-[14px] font-medium text-slate-900 focus:outline-none focus:border-sky-500 shadow-2xs"
         />
       </div>
 
@@ -128,7 +128,7 @@ export const CloudinaryMediaBrowser = () => {
                   <Folder className="w-3 h-3 text-sky-500" />
                   <span>{media.folder}</span>
                 </div>
-                <h4 className="font-bold text-xs text-slate-900 truncate">{media.title}</h4>
+                <h4 className="font-bold text-[14px] text-slate-900 truncate">{media.title}</h4>
                 
                 <div className="flex flex-wrap gap-1">
                   {media.tags.map((t, idx) => (
@@ -141,12 +141,12 @@ export const CloudinaryMediaBrowser = () => {
             </div>
 
             {/* Quick Action Copy URL */}
-            <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-xs">
+            <div className="p-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between text-[14px]">
               <span className="text-[10px] font-mono text-slate-400">{media.dimensions}</span>
 
               <button
                 onClick={() => copyUrl(getCloudinaryTransformedUrl(media.url, 'c_fill,w_800,q_auto,f_auto'), media.publicId)}
-                className="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-[11px] flex items-center gap-1 transition-colors shadow-2xs"
+                className="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-[14px] flex items-center gap-1 transition-colors shadow-2xs"
               >
                 {copiedId === media.publicId ? (
                   <>

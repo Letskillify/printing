@@ -1,51 +1,63 @@
-import { Hero } from '../Components/sections/Hero'
-import { ShopByCategory } from '../Components/sections/ShopByCategory'
-import { WhyChooseUs } from '../Components/sections/WhyChooseUs'
-import { HowItWorks } from '../Components/sections/HowItWorks'
-import { StatsBanner } from '../Components/sections/StatsBanner'
-import { DiscountCTA } from '../Components/sections/DiscountCTA'
-import { Testimonials } from '../Components/sections/Testimonials'
-import { LatestBlog } from '../Components/sections/LatestBlog'
+import { Hero } from '../components/sections/Hero'
+import { CategoryNav } from '../components/sections/CategoryNav'
+import { ShopByCategory } from '../components/sections/ShopByCategory'
+import { Industries } from '../components/sections/Industries'
+import { WhyChooseUs } from '../components/sections/WhyChooseUs'
+import { HowItWorks } from '../components/sections/HowItWorks'
+import { StatsBanner } from '../components/sections/StatsBanner'
+import { DiscountCTA } from '../components/sections/DiscountCTA'
+import { Testimonials } from '../components/sections/Testimonials'
+import { LatestBlog } from '../components/sections/LatestBlog'
 
 export function HomePage({ setCurrentPage }) {
   return (
     <main className="overflow-hidden bg-white">
-      {/* 1. Hero — Dark Navy with headline */}
+      {/* 1. Hero Section — Light warm split layout */}
       <section id="hero">
         <Hero setCurrentPage={setCurrentPage} />
       </section>
 
-      {/* 2. Shop by Category — 8-grid */}
+      {/* 2. Category Nav Strip — Horizontal icon strip immediately under Hero */}
+      <section id="category-nav">
+        <CategoryNav setCurrentPage={setCurrentPage} />
+      </section>
+
+      {/* 3. Shop by Category — 8 Product Cards Grid */}
       <section id="categories">
         <ShopByCategory setCurrentPage={setCurrentPage} />
       </section>
 
-      {/* 3. Why Choose Us — 4 features */}
+      {/* 4. Built for Your Business — Industry Use-cases */}
+      <section id="business-solutions">
+        <Industries setCurrentPage={setCurrentPage} />
+      </section>
+
+      {/* 5. Why Choose Us — 4 Feature Columns with vertical dividers */}
       <section id="why-choose-us">
         <WhyChooseUs />
       </section>
 
-      {/* 4. How It Works — 4 steps */}
+      {/* 6. How It Works — 4 Horizontal Steps */}
       <section id="how-it-works">
         <HowItWorks />
       </section>
 
-      {/* 5. Stats Banner — purple-orange gradient */}
+      {/* 7. Stats Banner — Full-width Dark Navy section */}
       <section id="stats">
         <StatsBanner />
       </section>
 
-      {/* 6. Discount + CTA — split panel */}
-      <section id="cta" className="py-14 bg-white">
+      {/* 8. Promotional Offer Banner — 20% OFF Promo panel */}
+      <section id="cta">
         <DiscountCTA setCurrentPage={setCurrentPage} />
       </section>
 
-      {/* 7. Testimonials — 3 review cards */}
+      {/* 9. Testimonials — What Our Customers Say */}
       <section id="testimonials">
         <Testimonials />
       </section>
 
-      {/* 8. Latest Blog + Newsletter */}
+      {/* 10. Latest from Our Blog */}
       <section id="blog">
         <LatestBlog setCurrentPage={setCurrentPage} />
       </section>

@@ -157,7 +157,7 @@ export const PrintOptionsMatrixManager = () => {
       
       {/* Toast Notification */}
       {showSuccessToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#07152F] text-white px-5 py-3 rounded-2xl shadow-2xl border border-blue-500/40 flex items-center gap-3 animate-in slide-in-from-bottom duration-200 text-xs font-bold">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#07152F] text-white px-5 py-3 rounded-2xl shadow-2xl border border-blue-500/40 flex items-center gap-3 animate-in slide-in-from-bottom duration-200 text-[14px] font-bold">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -176,7 +176,7 @@ export const PrintOptionsMatrixManager = () => {
             <Layers className="w-6 h-6 text-blue-400" />
             Manage Print Options & Finishes Matrix
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl mt-1.5 font-medium leading-relaxed">
+          <p className="text-[14px] text-slate-300 max-w-2xl mt-1.5 font-medium leading-relaxed">
             Control which print option sections appear on product pages, enable/disable matrices, add custom options with price modifiers, or wipe section items in 1 click. All synced live with Firebase.
           </p>
         </div>
@@ -184,7 +184,7 @@ export const PrintOptionsMatrixManager = () => {
         <div className="flex items-center gap-3 relative z-10 shrink-0">
           <button
             onClick={() => setShowAddSectionModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
+            className="px-4 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
           >
             <Plus className="w-4 h-4" /> Add Custom Matrix Section
           </button>
@@ -199,7 +199,7 @@ export const PrintOptionsMatrixManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{allMatrixKeys.length}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Option Matrices</div>
+            <div className="text-[14px] font-semibold text-slate-500">Option Matrices</div>
           </div>
         </div>
 
@@ -209,7 +209,7 @@ export const PrintOptionsMatrixManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{totalActiveOptionsCount}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Total Configured Options</div>
+            <div className="text-[14px] font-semibold text-slate-500">Total Configured Options</div>
           </div>
         </div>
 
@@ -219,7 +219,7 @@ export const PrintOptionsMatrixManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{allMatrixKeys.length - disabledSections.length}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Active on Storefront</div>
+            <div className="text-[14px] font-semibold text-slate-500">Active on Storefront</div>
           </div>
         </div>
 
@@ -229,7 +229,7 @@ export const PrintOptionsMatrixManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{disabledSections.length}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Disabled Matrices</div>
+            <div className="text-[14px] font-semibold text-slate-500">Disabled Matrices</div>
           </div>
         </div>
       </div>
@@ -243,11 +243,11 @@ export const PrintOptionsMatrixManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Filter matrix sections or option names..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-blue-500 text-slate-800"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold focus:outline-none focus:border-blue-500 text-slate-800"
           />
         </div>
 
-        <div className="text-xs text-slate-500 font-bold hidden sm:block">
+        <div className="text-[14px] text-slate-500 font-bold hidden sm:block">
           💡 Toggling visibility or deleting items syncs live with Firebase Firestore.
         </div>
       </div>
@@ -294,7 +294,7 @@ export const PrintOptionsMatrixManager = () => {
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3 text-[14px]">
               <div>
                 <label className="block font-bold text-slate-700 mb-1 uppercase text-[10px] tracking-wider">Matrix Title *</label>
                 <input
@@ -322,14 +322,14 @@ export const PrintOptionsMatrixManager = () => {
               <button
                 type="button"
                 onClick={() => setShowAddSectionModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-extrabold text-xs cursor-pointer border-none"
+                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-extrabold text-[14px] cursor-pointer border-none"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleCreateNewSection}
-                className="px-5 py-2 rounded-xl bg-[#FF5A1F] text-white font-extrabold text-xs cursor-pointer border-none shadow-md shadow-[#FF5A1F]/20"
+                className="px-5 py-2 rounded-xl bg-[#FF5A1F] text-white font-extrabold text-[14px] cursor-pointer border-none shadow-md shadow-[#FF5A1F]/20"
               >
                 Create Section
               </button>
@@ -383,7 +383,7 @@ const MatrixSectionCard = ({
       <div className="p-4 bg-slate-50/70 border-b border-slate-100 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isDisabled ? 'bg-amber-400' : 'bg-emerald-500'}`} />
-          <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider truncate">
+          <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider truncate">
             {title}
           </h4>
           <span className="text-[10px] font-black text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
@@ -424,12 +424,12 @@ const MatrixSectionCard = ({
       {/* Option Items Body */}
       <div className="p-4 space-y-2.5 flex-1 max-h-[300px] overflow-y-auto custom-scrollbar">
         {items.length === 0 ? (
-          <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs space-y-2">
+          <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-[14px] space-y-2">
             <p className="text-slate-500 font-medium">No active options in this section.</p>
             <button
               type="button"
               onClick={onRestoreDefaults}
-              className="text-[11px] font-extrabold text-blue-600 hover:text-blue-800 underline bg-transparent border-none cursor-pointer"
+              className="text-[14px] font-extrabold text-blue-600 hover:text-blue-800 underline bg-transparent border-none cursor-pointer"
             >
               Restore Standard Options
             </button>
@@ -441,7 +441,7 @@ const MatrixSectionCard = ({
                 type="text"
                 value={opt.name}
                 onChange={(e) => onUpdateOptionItem(idx, { ...opt, name: e.target.value })}
-                className="flex-1 min-w-0 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
+                className="flex-1 min-w-0 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-[14px] focus:outline-none focus:border-blue-500"
                 placeholder="Option name"
               />
               {isAreaSection && (
@@ -452,7 +452,7 @@ const MatrixSectionCard = ({
                     value={opt.maxArea || ''}
                     onChange={(e) => onUpdateOptionItem(idx, { ...opt, maxArea: parseFloat(e.target.value) || 0 })}
                     placeholder="Max cm²"
-                    className="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-xs focus:outline-none focus:border-blue-500"
+                    className="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-[14px] focus:outline-none focus:border-blue-500"
                     title="Max Area in sq cm (cm²)"
                   />
                 </div>
@@ -464,7 +464,7 @@ const MatrixSectionCard = ({
                   step="1"
                   value={opt.priceModifier !== undefined ? opt.priceModifier : (opt.price || 0)}
                   onChange={(e) => onUpdateOptionItem(idx, { ...opt, priceModifier: parseFloat(e.target.value) || 0, price: parseFloat(e.target.value) || 0 })}
-                  className="w-full pl-5 pr-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-xs focus:outline-none focus:border-blue-500"
+                  className="w-full pl-5 pr-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold text-[14px] focus:outline-none focus:border-blue-500"
                 />
               </div>
               <button
@@ -487,7 +487,7 @@ const MatrixSectionCard = ({
           value={newOptName}
           onChange={(e) => setNewOptName(e.target.value)}
           placeholder={isAreaSection ? "e.g. Up to 50 sq cm" : "+ New Custom Option"}
-          className="flex-1 min-w-0 p-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
+          className="flex-1 min-w-0 p-2 rounded-lg border border-blue-200 font-bold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
         />
         {isAreaSection && (
           <input
@@ -495,7 +495,7 @@ const MatrixSectionCard = ({
             value={newMaxArea}
             onChange={(e) => setNewMaxArea(e.target.value)}
             placeholder="Max cm²"
-            className="w-20 p-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
+            className="w-20 p-2 rounded-lg border border-blue-200 font-bold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
             title="Max Area limit in cm²"
           />
         )}
@@ -507,13 +507,13 @@ const MatrixSectionCard = ({
             value={newOptPrice}
             onChange={(e) => setNewOptPrice(e.target.value)}
             placeholder="Price"
-            className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-200 font-bold text-xs focus:outline-none focus:border-blue-500 bg-white"
+            className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-200 font-bold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
           />
         </div>
         <button
           type="button"
           onClick={handleAdd}
-          className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs cursor-pointer border-none shrink-0 shadow-3xs"
+          className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] cursor-pointer border-none shrink-0 shadow-3xs"
         >
           Add
         </button>

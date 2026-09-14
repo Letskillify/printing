@@ -78,7 +78,7 @@ export const LiveStatCards = () => {
             className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-slate-500 tracking-tight">
+              <span className="text-[14px] font-semibold text-slate-500 tracking-tight">
                 {stat.title}
               </span>
               <div className={`p-2 rounded-xl ${stat.accentBg} transition-transform group-hover:scale-110`}>
@@ -92,7 +92,7 @@ export const LiveStatCards = () => {
               </div>
             </div>
 
-            <div className="mt-2 flex items-center gap-1 text-[11px] font-medium text-slate-500">
+            <div className="mt-2 flex items-center gap-1 text-[14px] font-medium text-slate-500">
               <TrendingUp className="w-3 h-3 text-emerald-500 shrink-0" />
               <span className="truncate">{stat.change}</span>
             </div>

@@ -93,7 +93,7 @@ export function CustomQuotePage() {
       <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
-          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-[14px] font-semibold text-slate-400">
             <span>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Custom Quote</span>
@@ -117,49 +117,49 @@ export function CustomQuotePage() {
             {/* Contact Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Full Name *</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="John Doe"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Company Name</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Company Name</label>
                 <input
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                   placeholder="Acme Corp"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Email Address *</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="john@example.com"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Phone Number *</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Phone Number *</label>
                 <input
                   type="tel"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+91 00000 00000"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
             </div>
@@ -167,11 +167,11 @@ export function CustomQuotePage() {
             {/* Specifications */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-4 border-t border-[#E7EAF0]">
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Product Type</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Product Type</label>
                 <select
                   value={formData.productType}
                   onChange={(e) => setFormData({ ...formData, productType: e.target.value })}
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 >
                   <option>Custom Packaging Box</option>
                   <option>Business Cards</option>
@@ -182,37 +182,37 @@ export function CustomQuotePage() {
               </div>
 
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Required Quantity</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Required Quantity</label>
                 <input
                   type="text"
                   value={formData.quantity}
                   onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                   placeholder="e.g. 1000"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
 
               <div>
-                <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Custom Dimensions</label>
+                <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Custom Dimensions</label>
                 <input
                   type="text"
                   value={formData.dimensions}
                   onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
                   placeholder="e.g. 10 x 8 x 4 inches"
-                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                  className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
                 />
               </div>
             </div>
 
             {/* Additional Details */}
             <div>
-              <label className="block text-[13px] font-bold text-[#0B1633] mb-1.5">Additional Print Notes & Finishing Requests</label>
+              <label className="block text-[14px] font-bold text-[#0B1633] mb-1.5">Additional Print Notes & Finishing Requests</label>
               <textarea
                 rows="4"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Mention specific Pantone colors, spot UV placement, embossing, or delivery deadlines..."
-                className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+                className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-[10px] py-3 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
               />
             </div>
 

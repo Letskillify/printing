@@ -52,7 +52,7 @@ export function BlogPage() {
       <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
-          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-[14px] font-semibold text-slate-400">
             <span>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Blog & Insights</span>
@@ -77,7 +77,7 @@ export function BlogPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search articles..."
-            className="w-full pl-12 pr-4 py-3 bg-white border border-[#E7EAF0] rounded-[12px] text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
+            className="w-full pl-12 pr-4 py-3 bg-white border border-[#E7EAF0] rounded-[12px] text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F]"
           />
         </div>
 
@@ -93,14 +93,14 @@ export function BlogPage() {
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute top-4 left-4 bg-[#FF5A1F] text-white text-[11px] font-extrabold px-3 py-1 rounded-full">
+                <span className="absolute top-4 left-4 bg-[#FF5A1F] text-white text-[14px] font-extrabold px-3 py-1 rounded-full">
                   {post.tag}
                 </span>
               </div>
 
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 text-[12px] text-[#667085] font-semibold mb-2">
+                  <div className="flex items-center gap-3 text-[14px] text-[#667085] font-semibold mb-2">
                     <span>{post.date}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1"><FiClock className="w-3.5 h-3.5" /> {post.readTime}</span>
@@ -114,7 +114,7 @@ export function BlogPage() {
                 </div>
 
                 <div className="pt-4 border-t border-[#E7EAF0]">
-                  <button className="text-[#FF5A1F] font-bold text-[13px] inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all border-none bg-transparent cursor-pointer p-0">
+                  <button className="text-[#FF5A1F] font-bold text-[14px] inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all border-none bg-transparent cursor-pointer p-0">
                     Read Full Article <FiArrowRight className="w-4 h-4" />
                   </button>
                 </div>

@@ -32,13 +32,13 @@ export const ExpressQueueStream = () => {
             <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
               Express Same-Day Priority Stream
             </h3>
-            <p className="text-xs text-slate-500">Orders requiring local dispatch before 12:00 PM cutoff</p>
+            <p className="text-[14px] text-slate-500">Orders requiring local dispatch before 12:00 PM cutoff</p>
           </div>
         </div>
 
         <button 
           onClick={() => setActiveTab('orders')}
-          className="text-xs text-red-600 hover:text-red-700 font-bold flex items-center gap-1 border-none bg-transparent cursor-pointer"
+          className="text-[14px] text-red-600 hover:text-red-700 font-bold flex items-center gap-1 border-none bg-transparent cursor-pointer"
         >
           View Pipeline <ArrowRight className="w-3.5 h-3.5" />
         </button>
@@ -58,20 +58,20 @@ export const ExpressQueueStream = () => {
               </span>
             </div>
 
-            <div className="text-xs space-y-1 mb-3">
+            <div className="text-[14px] space-y-1 mb-3">
               <p className="font-bold text-slate-900">
                 {order.customer?.name || 'Express Customer'} {order.customer?.company ? `(${order.customer.company})` : ''}
               </p>
-              <p className="text-slate-500 text-[11px] truncate">
+              <p className="text-slate-500 text-[14px] truncate">
                 {(order.items || []).map(i => i.productName || i.name || 'Print Item').join(', ') || 'Custom Print Item'}
               </p>
-              <div className="flex items-center gap-1 text-blue-600 text-[11px] font-semibold pt-1">
+              <div className="flex items-center gap-1 text-blue-600 text-[14px] font-semibold pt-1">
                 <Truck className="w-3 h-3 shrink-0" />
                 <span>{order.deliveryMethod || 'Hyperlocal Express Courier'}</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[14px]">
               <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-50 text-slate-700 border border-slate-200">
                 {order.status}
               </span>

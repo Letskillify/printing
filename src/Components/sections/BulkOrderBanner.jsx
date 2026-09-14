@@ -34,7 +34,7 @@ export function BulkOrderBanner({ setCurrentPage }) {
               <h3 className="text-xl sm:text-[23px] font-black text-slate-800 tracking-tight leading-tight">
                 Bulk Order?
               </h3>
-              <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1 leading-relaxed">
+              <p className="text-[14px] sm:text-sm text-gray-500 font-medium mt-1 leading-relaxed">
                 Get special discounts on bulk printing orders.
               </p>
             </div>

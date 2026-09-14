@@ -59,7 +59,7 @@ export const WalkInOrderModal = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 text-[14px]">
           <div>
             <label className="block font-bold text-slate-700 mb-1">Customer Full Name</label>
             <input
@@ -141,10 +141,10 @@ export const WalkInOrderModal = () => {
             <span>Mark as Same-Day Express Rush Dispatch</span>
           </label>
 
-          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 font-mono text-[11px]">
+          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1 font-mono text-[14px]">
             <div className="flex justify-between"><span>Subtotal:</span><span>₹{subtotal.toLocaleString()}</span></div>
             <div className="flex justify-between"><span>18% GST:</span><span>₹{gstAmount.toLocaleString()}</span></div>
-            <div className="flex justify-between font-extrabold text-slate-900 text-xs pt-1 border-t">
+            <div className="flex justify-between font-extrabold text-slate-900 text-[14px] pt-1 border-t">
               <span>Total Payable:</span><span>₹{totalAmount.toLocaleString()}</span>
             </div>
           </div>

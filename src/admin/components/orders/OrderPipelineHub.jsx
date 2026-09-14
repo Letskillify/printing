@@ -17,14 +17,14 @@ export const OrderPipelineHub = () => {
           <h2 className="text-base font-extrabold text-slate-900 tracking-tight">
             Orders Management & Production Hub
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-[14px] text-slate-500">
             Real-time table view of all customer orders, client artwork downloads, and stage updates
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* View Mode Switcher */}
-          <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200 text-xs">
+          <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200 text-[14px]">
             <button
               onClick={() => setViewMode('table')}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer border-none ${
@@ -49,7 +49,7 @@ export const OrderPipelineHub = () => {
 
           <button
             onClick={() => setWalkInModalOpen(true)}
-            className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs transition-colors"
+            className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[14px] flex items-center gap-1.5 shadow-xs transition-colors"
           >
             <Plus className="w-4 h-4" /> + Walk-in Order
           </button>

@@ -64,7 +64,7 @@ export function TrackOrderPage() {
       <section className="bg-[#07152F] text-white py-14 sm:py-18 relative overflow-hidden border-b border-slate-800">
         <div className="absolute top-0 right-1/3 w-[500px] h-[300px] bg-[#FF5A1F]/10 blur-[120px] pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
-          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-xs font-semibold text-slate-400">
+          <div className="flex items-center gap-2 mb-3 justify-center sm:justify-start text-[14px] font-semibold text-slate-400">
             <span>Home</span>
             <span>/</span>
             <span className="text-[#FF5A1F] font-bold">Track Order</span>
@@ -93,14 +93,14 @@ export function TrackOrderPage() {
                 value={orderIdInput}
                 onChange={(e) => setOrderIdInput(e.target.value)}
                 placeholder="Enter Order ID (e.g. PRT-10293)"
-                className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-xl py-3.5 px-4 text-xs text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] font-bold uppercase"
+                className="w-full bg-[#F7F8FA] border border-[#E7EAF0] rounded-xl py-3.5 px-4 text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] font-bold uppercase"
               />
             </div>
 
             <div className="sm:col-span-3">
               <button
                 type="submit"
-                className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs py-3.5 rounded-xl transition border-none cursor-pointer shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-1.5 uppercase tracking-wider"
+                className="w-full bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] py-3.5 rounded-xl transition border-none cursor-pointer shadow-md shadow-[#FF5A1F]/20 flex items-center justify-center gap-1.5 uppercase tracking-wider"
               >
                 <FiSearch className="w-4 h-4" /> Track Order
               </button>
@@ -112,7 +112,7 @@ export function TrackOrderPage() {
         {loading && (
           <div className="text-center py-12">
             <div className="w-10 h-10 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs text-slate-500 font-bold">Querying live press pipeline...</p>
+            <p className="text-[14px] text-slate-500 font-bold">Querying live press pipeline...</p>
           </div>
         )}
 
@@ -120,7 +120,7 @@ export function TrackOrderPage() {
           <div className="bg-white rounded-3xl p-8 border border-rose-200 shadow-sm text-center space-y-3">
             <FiAlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
             <h3 className="text-lg font-extrabold text-slate-900">Order #{activeOrderId} Not Found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="text-[14px] text-slate-500 max-w-sm mx-auto">
               Please double-check the Order ID from your confirmation email or order invoice.
             </p>
           </div>
@@ -131,14 +131,14 @@ export function TrackOrderPage() {
             
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-[#E7EAF0]">
               <div>
-                <span className="text-xs text-slate-400 font-bold uppercase">Order Reference</span>
+                <span className="text-[14px] text-slate-400 font-bold uppercase">Order Reference</span>
                 <h3 className="text-2xl font-black text-[#0B1633]">{liveOrder.orderId || liveOrder.id}</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-[14px] text-slate-500 mt-0.5">
                   Customer: <strong>{liveOrder.customer?.name}</strong> • Items: {liveOrder.items?.length || 1}
                 </p>
               </div>
 
-              <div className="bg-orange-50 border border-orange-200 text-[#FF5A1F] font-black text-xs px-4 py-2 rounded-xl">
+              <div className="bg-orange-50 border border-orange-200 text-[#FF5A1F] font-black text-[14px] px-4 py-2 rounded-xl">
                 Status: {currentStatus}
               </div>
             </div>
@@ -155,7 +155,7 @@ export function TrackOrderPage() {
                   return (
                     <div
                       key={idx}
-                      className={`p-4 rounded-2xl border flex items-center justify-between transition-all text-xs ${
+                      className={`p-4 rounded-2xl border flex items-center justify-between transition-all text-[14px] ${
                         isCurrent
                           ? 'border-[#FF5A1F] bg-orange-50/60 ring-2 ring-[#FF5A1F]/20'
                           : isCompleted
@@ -164,7 +164,7 @@ export function TrackOrderPage() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-xs shrink-0 ${
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-[14px] shrink-0 ${
                           isCurrent
                             ? 'bg-[#FF5A1F] text-white'
                             : isCompleted
@@ -175,10 +175,10 @@ export function TrackOrderPage() {
                         </div>
 
                         <div>
-                          <strong className={`font-extrabold text-xs block ${isCurrent ? 'text-[#FF5A1F]' : isCompleted ? 'text-emerald-950' : 'text-slate-700'}`}>
+                          <strong className={`font-extrabold text-[14px] block ${isCurrent ? 'text-[#FF5A1F]' : isCompleted ? 'text-emerald-950' : 'text-slate-700'}`}>
                             {stageName}
                           </strong>
-                          <span className="text-[11px] text-slate-500 font-medium">
+                          <span className="text-[14px] text-slate-500 font-medium">
                             {isCompleted ? 'Completed' : isCurrent ? 'Active Stage in Progress' : 'Pending Stage'}
                           </span>
                         </div>

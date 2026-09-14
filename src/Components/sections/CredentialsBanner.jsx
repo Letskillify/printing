@@ -61,7 +61,7 @@ export function CredentialsBanner() {
                 <h3 className="text-sm sm:text-base font-black text-white tracking-wide">
                   {cred.title}
                 </h3>
-                <p className="text-[11px] sm:text-xs text-gray-400 font-medium leading-relaxed mt-1">
+                <p className="text-[14px] sm:text-[14px] text-gray-400 font-medium leading-relaxed mt-1">
                   {cred.description}
                 </p>
               </div>

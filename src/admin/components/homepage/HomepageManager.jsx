@@ -124,7 +124,7 @@ export const HomepageManager = () => {
             <Sparkles className="w-6 h-6 text-amber-400" />
             Homepage Banner & Category Manager
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl mt-1 font-medium">
+          <p className="text-[14px] text-slate-300 max-w-2xl mt-1 font-medium">
             Customize hero headline banners, Cloudinary showcase images, and Category section cards synced directly with Firebase real-time database.
           </p>
         </div>
@@ -133,7 +133,7 @@ export const HomepageManager = () => {
           <button
             type="button"
             onClick={handleSave}
-            className="px-6 py-3 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
+            className="px-6 py-3 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
           >
             {saveSuccess ? (
               <>
@@ -153,7 +153,7 @@ export const HomepageManager = () => {
         <button
           type="button"
           onClick={() => setActiveTab('hero')}
-          className={`px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+          className={`px-5 py-2.5 rounded-xl text-[14px] font-bold transition flex items-center gap-2 cursor-pointer border ${
             activeTab === 'hero'
               ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
               : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
@@ -165,7 +165,7 @@ export const HomepageManager = () => {
         <button
           type="button"
           onClick={() => setActiveTab('categories')}
-          className={`px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+          className={`px-5 py-2.5 rounded-xl text-[14px] font-bold transition flex items-center gap-2 cursor-pointer border ${
             activeTab === 'categories'
               ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
               : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
@@ -177,7 +177,7 @@ export const HomepageManager = () => {
         <button
           type="button"
           onClick={() => setActiveTab('preview')}
-          className={`px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border ${
+          className={`px-5 py-2.5 rounded-xl text-[14px] font-bold transition flex items-center gap-2 cursor-pointer border ${
             activeTab === 'preview'
               ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
               : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
@@ -195,7 +195,7 @@ export const HomepageManager = () => {
               <Type className="w-4 h-4" /> Main Hero Banner Copy & Headline Configuration
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[14px]">
               <div>
                 <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Eyebrow Badge Text</label>
                 <input
@@ -312,7 +312,7 @@ export const HomepageManager = () => {
                 </div>
               </div>
 
-              <div className="md:col-span-7 space-y-4 text-xs">
+              <div className="md:col-span-7 space-y-4 text-[14px]">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Image Cloudinary URL</label>
                   <input
@@ -323,12 +323,12 @@ export const HomepageManager = () => {
                       hero: { ...formData.hero, bannerImage: e.target.value }
                     })}
                     placeholder="https://res.cloudinary.com/..."
-                    className="w-full p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-800 focus:outline-none focus:border-blue-500"
+                    className="w-full p-3 rounded-xl border border-slate-200 font-mono text-[14px] text-slate-800 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <label className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer transition shadow-md shadow-blue-500/20">
+                  <label className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] flex items-center gap-2 cursor-pointer transition shadow-md shadow-blue-500/20">
                     <Upload className="w-4 h-4" />
                     {uploadingField === 'heroBanner' ? 'Uploading to Cloudinary...' : 'Upload New Hero Banner Image'}
                     <input
@@ -382,7 +382,7 @@ export const HomepageManager = () => {
               <Grid className="w-4 h-4" /> Category Section Titles & Description
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[14px]">
               <div>
                 <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Section Eyebrow Badge</label>
                 <input
@@ -446,7 +446,7 @@ export const HomepageManager = () => {
               <button
                 type="button"
                 onClick={addCategoryCard}
-                className="px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-xs flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
+                className="px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-[14px] flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
               >
                 <Plus className="w-4 h-4" /> Add New Category Card
               </button>
@@ -484,7 +484,7 @@ export const HomepageManager = () => {
                       </label>
                     </div>
 
-                    <div className="flex-1 space-y-2 text-xs">
+                    <div className="flex-1 space-y-2 text-[14px]">
                       <div>
                         <label className="block font-bold text-slate-600 text-[10px] uppercase">Category Name</label>
                         <input
@@ -551,11 +551,11 @@ export const HomepageManager = () => {
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="font-extrabold text-xs text-slate-300 uppercase tracking-widest">
+                <span className="font-extrabold text-[14px] text-slate-300 uppercase tracking-widest">
                   Live Customer View Mockup
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">Real-time preview mode</span>
+              <span className="text-[14px] text-slate-400 font-mono">Real-time preview mode</span>
             </div>
 
             {/* Mock Hero Section */}
@@ -569,15 +569,15 @@ export const HomepageManager = () => {
                 <span className="text-[#FF5A1F]">{formData.hero?.headlineLine2}</span>
               </h1>
 
-              <p className="text-xs text-slate-400 max-w-xl">
+              <p className="text-[14px] text-slate-400 max-w-xl">
                 {formData.hero?.description}
               </p>
 
               <div className="flex items-center gap-3">
-                <button type="button" className="px-5 py-2.5 rounded-xl bg-[#FF5A1F] text-white font-bold text-xs border-none">
+                <button type="button" className="px-5 py-2.5 rounded-xl bg-[#FF5A1F] text-white font-bold text-[14px] border-none">
                   {formData.hero?.primaryCtaText}
                 </button>
-                <button type="button" className="px-5 py-2.5 rounded-xl bg-white/10 text-white font-bold text-xs border border-white/20">
+                <button type="button" className="px-5 py-2.5 rounded-xl bg-white/10 text-white font-bold text-[14px] border border-white/20">
                   {formData.hero?.secondaryCtaText}
                 </button>
               </div>
@@ -609,7 +609,7 @@ export const HomepageManager = () => {
                     <div className="h-24 rounded-lg overflow-hidden bg-slate-900">
                       <img src={cat.img} alt={cat.name} className="w-full h-full object-cover" />
                     </div>
-                    <p className="font-bold text-xs text-white truncate">{cat.name}</p>
+                    <p className="font-bold text-[14px] text-white truncate">{cat.name}</p>
                     <p className="text-[10px] text-slate-400 line-clamp-1">{cat.sub}</p>
                   </div>
                 ))}

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { CommandPalette } from './Components/layout/CommandPalette'
-import { CursorGlow } from './Components/layout/CursorGlow'
-import { FloatingActions } from './Components/layout/FloatingActions'
-import { Footer } from './Components/layout/Footer'
-import { Navbar } from './Components/layout/Navbar'
+import { CommandPalette } from './components/layout/CommandPalette'
+import { CursorGlow } from './components/layout/CursorGlow'
+import { FloatingActions } from './components/layout/FloatingActions'
+import { Footer } from './components/layout/Footer'
+import { Navbar } from './components/layout/Navbar'
 import { useLenis } from './hooks/useLenis'
 import { useScrollProgress } from './hooks/useScrollProgress'
 import { HomePage } from './pages/HomePage'
@@ -30,7 +30,7 @@ import { AccountPage } from './pages/AccountPage'
 import { AdminApp } from './admin/AdminApp'
 
 import { AuthProvider } from './context/AuthContext'
-import { AuthModal } from './Components/auth/AuthModal'
+import { AuthModal } from './components/auth/AuthModal'
 
 function AppContent() {
   const [darkMode, setDarkMode] = useState(false)
@@ -201,7 +201,7 @@ function AppContent() {
       {/* Scroll progress indicator */}
       <div className="fixed inset-x-0 top-0 z-[100] h-[3px] bg-slate-200/50">
         <motion.div
-          className="h-full origin-left bg-[#FF5A1F]"
+          className="h-full origin-left bg-gradient-to-r from-[#D946EF] via-[#C026D3] to-[#E11D48]"
           animate={{ scaleX: progress / 100 }}
           transition={{ type: 'spring', stiffness: 120, damping: 25 }}
         />

@@ -204,7 +204,7 @@ export function SignupPage({ setCurrentPage }) {
           <h2 className="text-3xl font-extrabold text-[#0B1633] tracking-tight">
             Create Your Account
           </h2>
-          <p className="mt-2 text-xs sm:text-sm text-slate-500 font-medium">
+          <p className="mt-2 text-[14px] sm:text-sm text-slate-500 font-medium">
             Register via Instant Email OTP, Google, or Password
           </p>
         </div>
@@ -213,7 +213,7 @@ export function SignupPage({ setCurrentPage }) {
         <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-xl space-y-5">
           
           {/* Mode Switcher Tabs */}
-          <div className="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+          <div className="flex bg-slate-100 p-1 rounded-2xl text-[14px] font-bold">
             <button
               type="button"
               onClick={() => { setAuthMode('otp'); setError(''); setSuccess(''); }}
@@ -237,14 +237,14 @@ export function SignupPage({ setCurrentPage }) {
 
           {/* Alert Notices */}
           {error && (
-            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-start gap-2.5">
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-[14px] font-bold flex items-start gap-2.5">
               <FiAlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2.5">
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-[14px] font-bold flex items-center gap-2.5">
               <FiCheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{success}</span>
             </div>
@@ -255,7 +255,7 @@ export function SignupPage({ setCurrentPage }) {
             type="button"
             disabled={loading}
             onClick={handleGoogleSignup}
-            className="w-full py-3.5 px-4 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-xs flex items-center justify-center gap-3 transition cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-[14px] flex items-center justify-center gap-3 transition cursor-pointer"
           >
             <FcGoogle className="w-5 h-5 shrink-0" />
             <span>Sign Up with Google</span>
@@ -274,7 +274,7 @@ export function SignupPage({ setCurrentPage }) {
               {otpStep === 'enter-email' && (
                 <form onSubmit={handleSendOTP} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-2">
                       Your Email Address
                     </label>
                     <div className="relative">
@@ -285,7 +285,7 @@ export function SignupPage({ setCurrentPage }) {
                         value={otpEmail}
                         onChange={(e) => setOtpEmail(e.target.value)}
                         placeholder="name@company.com"
-                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   </div>
@@ -293,7 +293,7 @@ export function SignupPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Sending OTP...' : <>Send Instant OTP <FiArrowRight className="w-4 h-4" /></>}
                   </button>
@@ -305,13 +305,13 @@ export function SignupPage({ setCurrentPage }) {
                 <form onSubmit={handleVerifyOTP} className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider">
                         Enter 6-Digit Code
                       </label>
                       <button
                         type="button"
                         onClick={() => { setOtpStep('enter-email'); setOtpCode(''); }}
-                        className="text-[11px] font-bold text-[#FF5A1F] hover:underline bg-transparent border-none cursor-pointer"
+                        className="text-[14px] font-bold text-[#FF5A1F] hover:underline bg-transparent border-none cursor-pointer"
                       >
                         Change ({otpEmail})
                       </button>
@@ -334,7 +334,7 @@ export function SignupPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Verifying...' : <>Verify Code & Continue <FiCheckCircle className="w-4 h-4" /></>}
                   </button>
@@ -344,7 +344,7 @@ export function SignupPage({ setCurrentPage }) {
                       type="button"
                       disabled={resendTimer > 0 || loading}
                       onClick={handleSendOTP}
-                      className={`text-xs font-bold border-none bg-transparent cursor-pointer ${
+                      className={`text-[14px] font-bold border-none bg-transparent cursor-pointer ${
                         resendTimer > 0 ? 'text-slate-400 cursor-not-allowed' : 'text-[#FF5A1F] hover:underline'
                       }`}
                     >
@@ -357,13 +357,13 @@ export function SignupPage({ setCurrentPage }) {
               {/* STEP 3: SET PASSWORD & CREATE ACCOUNT */}
               {otpStep === 'set-password' && (
                 <form onSubmit={handleSetPasswordAndCreateAccount} className="space-y-4 pt-1">
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs font-semibold flex items-center justify-between">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-[14px] font-semibold flex items-center justify-between">
                     <span>Email Verified: <strong>{otpEmail}</strong></span>
                     <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       Full Name *
                     </label>
                     <div className="relative">
@@ -374,13 +374,13 @@ export function SignupPage({ setCurrentPage }) {
                         value={displayName}
                         onChange={(e) => setDisplayName(e.target.value)}
                         placeholder="e.g. Vikram Sharma"
-                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       Set Password for Next Sign In *
                     </label>
                     <div className="relative">
@@ -391,7 +391,7 @@ export function SignupPage({ setCurrentPage }) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="At least 6 characters"
-                        className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-10 pr-10 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                       <button
                         type="button"
@@ -404,7 +404,7 @@ export function SignupPage({ setCurrentPage }) {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                       Confirm Password *
                     </label>
                     <div className="relative">
@@ -415,7 +415,7 @@ export function SignupPage({ setCurrentPage }) {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Re-enter password"
-                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                        className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                       />
                     </div>
                   </div>
@@ -423,7 +423,7 @@ export function SignupPage({ setCurrentPage }) {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {loading ? 'Creating Account...' : <>Complete Account Setup & Sign In <FiArrowRight className="w-4 h-4" /></>}
                   </button>
@@ -436,7 +436,7 @@ export function SignupPage({ setCurrentPage }) {
           {authMode === 'register' && (
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Full Name *
                 </label>
                 <div className="relative">
@@ -447,13 +447,13 @@ export function SignupPage({ setCurrentPage }) {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="e.g. Vikram Sharma"
-                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Email Address *
                 </label>
                 <div className="relative">
@@ -464,14 +464,14 @@ export function SignupPage({ setCurrentPage }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="vikram@designstudio.in"
-                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                    className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Phone Number
                   </label>
                   <div className="relative">
@@ -481,13 +481,13 @@ export function SignupPage({ setCurrentPage }) {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full pl-10 pr-3 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                      className="w-full pl-10 pr-3 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Company Name
                   </label>
                   <div className="relative">
@@ -497,7 +497,7 @@ export function SignupPage({ setCurrentPage }) {
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="Studio Designs"
-                      className="w-full pl-10 pr-3 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                      className="w-full pl-10 pr-3 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                     />
                   </div>
                 </div>
@@ -505,7 +505,7 @@ export function SignupPage({ setCurrentPage }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Password *
                   </label>
                   <div className="relative">
@@ -516,13 +516,13 @@ export function SignupPage({ setCurrentPage }) {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-8 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                      className="w-full pl-9 pr-8 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[14px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Confirm Password *
                   </label>
                   <div className="relative">
@@ -533,7 +533,7 @@ export function SignupPage({ setCurrentPage }) {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-8 py-3 rounded-2xl border border-slate-200 font-medium text-xs text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
+                      className="w-full pl-9 pr-8 py-3 rounded-2xl border border-slate-200 font-medium text-[14px] text-slate-900 focus:outline-none focus:border-[#FF5A1F] bg-slate-50/50"
                     />
                   </div>
                 </div>
@@ -542,7 +542,7 @@ export function SignupPage({ setCurrentPage }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] tracking-wider uppercase shadow-lg shadow-[#FF5A1F]/25 transition cursor-pointer border-none flex items-center justify-center gap-2"
               >
                 {loading ? 'Creating Account...' : <>Complete Registration <FiArrowRight className="w-4 h-4" /></>}
               </button>
@@ -550,7 +550,7 @@ export function SignupPage({ setCurrentPage }) {
           )}
 
           {/* Card Footer Links */}
-          <div className="pt-4 border-t border-slate-100 text-center text-xs text-slate-500 font-medium">
+          <div className="pt-4 border-t border-slate-100 text-center text-[14px] text-slate-500 font-medium">
             Already have an account?{' '}
             <button
               onClick={() => setCurrentPage && setCurrentPage('login')}
@@ -562,7 +562,7 @@ export function SignupPage({ setCurrentPage }) {
         </div>
 
         {/* Security Assurance */}
-        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 font-semibold">
+        <div className="flex items-center justify-center gap-2 text-[14px] text-slate-400 font-semibold">
           <FiShield className="w-4 h-4 text-emerald-500" />
           <span>Encrypted SSL 256-bit Firebase Authentication</span>
         </div>

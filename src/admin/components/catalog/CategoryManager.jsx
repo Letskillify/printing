@@ -141,7 +141,7 @@ export const CategoryManager = () => {
       
       {/* Toast Notification */}
       {showSuccessToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#07152F] text-white px-5 py-3 rounded-2xl shadow-2xl border border-blue-500/40 flex items-center gap-3 animate-in slide-in-from-bottom duration-200 text-xs font-bold">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#07152F] text-white px-5 py-3 rounded-2xl shadow-2xl border border-blue-500/40 flex items-center gap-3 animate-in slide-in-from-bottom duration-200 text-[14px] font-bold">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMsg}</span>
         </div>
@@ -160,7 +160,7 @@ export const CategoryManager = () => {
             <Grid className="w-6 h-6 text-[#FF5A1F]" />
             Category & Subcategory Master Control
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl mt-1.5 font-medium leading-relaxed">
+          <p className="text-[14px] text-slate-300 max-w-2xl mt-1.5 font-medium leading-relaxed">
             Manage header megamenu categories, subcategories, search keywords, and storefront filters. Changes immediately sync with Firebase Firestore and reflect live in the header dropdown.
           </p>
         </div>
@@ -168,7 +168,7 @@ export const CategoryManager = () => {
         <div className="flex items-center gap-3 relative z-10 shrink-0">
           <button
             onClick={() => setShowAddCatModal(true)}
-            className="px-5 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
+            className="px-5 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] flex items-center gap-2 shadow-lg shadow-[#FF5A1F]/30 transition cursor-pointer border-none"
           >
             <Plus className="w-4 h-4" /> Add New Main Category
           </button>
@@ -184,11 +184,11 @@ export const CategoryManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search categories or subcategories..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-[#FF5A1F] text-slate-800"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold focus:outline-none focus:border-[#FF5A1F] text-slate-800"
           />
         </div>
 
-        <div className="text-xs text-slate-500 font-bold hidden sm:block">
+        <div className="text-[14px] text-slate-500 font-bold hidden sm:block">
           Total Categories: <strong className="text-[#0B1633] font-black">{categories.length}</strong> | Total Subcategories: <strong className="text-[#FF5A1F] font-black">{categories.reduce((acc, c) => acc + (c.items?.length || 0), 0)}</strong>
         </div>
       </div>
@@ -232,11 +232,11 @@ export const CategoryManager = () => {
               {/* Subcategories List */}
               <div className="p-4 space-y-2 flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Subcategories ({subitems.length})</span>
+                  <span className="text-[14px] font-extrabold text-slate-500 uppercase tracking-wider">Subcategories ({subitems.length})</span>
                   <button
                     type="button"
                     onClick={() => setActiveSubcatInput(activeSubcatInput === category.id ? null : category.id)}
-                    className="text-[11px] font-extrabold text-[#FF5A1F] hover:text-[#d44512] flex items-center gap-1 cursor-pointer border-none bg-transparent"
+                    className="text-[14px] font-extrabold text-[#FF5A1F] hover:text-[#d44512] flex items-center gap-1 cursor-pointer border-none bg-transparent"
                   >
                     <Plus className="w-3.5 h-3.5" /> Quick Add Subcategory
                   </button>
@@ -250,7 +250,7 @@ export const CategoryManager = () => {
                       value={newSubcatName}
                       onChange={(e) => setNewSubcatName(e.target.value)}
                       placeholder="Subcategory Name (e.g. Spot UV Cards)"
-                      className="w-full p-2 rounded-lg border border-orange-300 bg-white text-xs font-bold focus:outline-none"
+                      className="w-full p-2 rounded-lg border border-orange-300 bg-white text-[14px] font-bold focus:outline-none"
                     />
                     <div className="flex gap-2">
                       <input
@@ -258,28 +258,28 @@ export const CategoryManager = () => {
                         value={newSubcatSearch}
                         onChange={(e) => setNewSubcatSearch(e.target.value)}
                         placeholder="Search keyword (optional)"
-                        className="flex-1 p-2 rounded-lg border border-orange-200 bg-white text-xs font-medium focus:outline-none"
+                        className="flex-1 p-2 rounded-lg border border-orange-200 bg-white text-[14px] font-medium focus:outline-none"
                       />
                       <input
                         type="text"
                         value={newSubcatTag}
                         onChange={(e) => setNewSubcatTag(e.target.value)}
                         placeholder="Short Tag (e.g. 3D Accent)"
-                        className="flex-1 p-2 rounded-lg border border-orange-200 bg-white text-xs font-medium focus:outline-none"
+                        className="flex-1 p-2 rounded-lg border border-orange-200 bg-white text-[14px] font-medium focus:outline-none"
                       />
                     </div>
                     <div className="flex justify-end gap-2 pt-1">
                       <button
                         type="button"
                         onClick={() => setActiveSubcatInput(null)}
-                        className="px-3 py-1 text-xs font-semibold text-slate-500 bg-white border border-slate-200 rounded-lg cursor-pointer"
+                        className="px-3 py-1 text-[14px] font-semibold text-slate-500 bg-white border border-slate-200 rounded-lg cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         type="button"
                         onClick={() => handleAddSubcategory(category.id)}
-                        className="px-3 py-1 text-xs font-extrabold text-white bg-[#FF5A1F] hover:bg-[#e44d15] rounded-lg cursor-pointer border-none shadow-xs"
+                        className="px-3 py-1 text-[14px] font-extrabold text-white bg-[#FF5A1F] hover:bg-[#e44d15] rounded-lg cursor-pointer border-none shadow-xs"
                       >
                         Save Subcategory
                       </button>
@@ -289,14 +289,14 @@ export const CategoryManager = () => {
 
                 <div className="space-y-1.5 max-h-[240px] overflow-y-auto custom-scrollbar">
                   {subitems.length === 0 ? (
-                    <div className="p-3 text-center text-xs text-slate-400 font-medium italic bg-slate-50 rounded-xl">
+                    <div className="p-3 text-center text-[14px] text-slate-400 font-medium italic bg-slate-50 rounded-xl">
                       No subcategories added yet.
                     </div>
                   ) : (
                     subitems.map((sub, idx) => (
                       <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/60 transition group/sub">
                         <div>
-                          <span className="text-xs font-bold text-slate-800 block">{sub.name}</span>
+                          <span className="text-[14px] font-bold text-slate-800 block">{sub.name}</span>
                           <span className="text-[10px] text-slate-400 font-medium">{sub.tag || 'Standard'}</span>
                         </div>
                         <button
@@ -335,7 +335,7 @@ export const CategoryManager = () => {
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3 text-[14px]">
               <div>
                 <label className="block font-bold text-slate-700 mb-1 uppercase text-[10px] tracking-wider">Category Title *</label>
                 <input
@@ -374,14 +374,14 @@ export const CategoryManager = () => {
               <button
                 type="button"
                 onClick={() => setShowAddCatModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-extrabold text-xs cursor-pointer border-none"
+                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 font-extrabold text-[14px] cursor-pointer border-none"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleAddMainCategory}
-                className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs cursor-pointer border-none shadow-md shadow-[#FF5A1F]/20"
+                className="px-5 py-2 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] cursor-pointer border-none shadow-md shadow-[#FF5A1F]/20"
               >
                 Save & Upload Category
               </button>

@@ -252,7 +252,7 @@ export const ProductCatalogManager = () => {
         {/* Section Title Header with 1-Click Delete All Button */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
           <div className="flex items-center gap-2">
-            <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">{title}</h4>
+            <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600">{title}</h4>
             <span className="text-[10px] font-extrabold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
               ({activeItems.length} active)
             </span>
@@ -274,7 +274,7 @@ export const ProductCatalogManager = () => {
 
         <div className="space-y-2">
           {activeItems.length === 0 ? (
-            <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-amber-800 text-[11px] font-medium flex items-center justify-between">
+            <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-amber-800 text-[14px] font-medium flex items-center justify-between">
               <span>⚠️ All options cleared. Storefront customers will see no selection box for this section.</span>
               <button
                 type="button"
@@ -299,7 +299,7 @@ export const ProductCatalogManager = () => {
                     handleUpdateVariantItems(groupKey, updated);
                   }}
                   placeholder="Option Name"
-                  className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                  className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
                 />
                 {isAreaSection && (
                   <div className="relative w-20 shrink-0">
@@ -313,7 +313,7 @@ export const ProductCatalogManager = () => {
                         handleUpdateVariantItems(groupKey, updated);
                       }}
                       placeholder="Max cm²"
-                      className="w-full px-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                      className="w-full px-2 py-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
                       title="Max Area in sq cm (cm²)"
                     />
                   </div>
@@ -330,7 +330,7 @@ export const ProductCatalogManager = () => {
                       updated[idx].price = parseFloat(e.target.value) || 0;
                       handleUpdateVariantItems(groupKey, updated);
                     }}
-                    className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                    className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
                   />
                 </div>
                 <button
@@ -366,7 +366,7 @@ export const ProductCatalogManager = () => {
                 value={newOptName}
                 onChange={(e) => setNewOptName(e.target.value)}
                 placeholder={isAreaSection ? "e.g. Up to 50 sq cm" : "Custom Option Name"}
-                className="flex-1 min-w-0 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                className="flex-1 min-w-0 p-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
               />
               {isAreaSection && (
                 <input
@@ -374,7 +374,7 @@ export const ProductCatalogManager = () => {
                   value={newMaxArea}
                   onChange={(e) => setNewMaxArea(e.target.value)}
                   placeholder="Max cm²"
-                  className="w-20 p-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                  className="w-20 p-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
                   title="Max Area limit in cm²"
                 />
               )}
@@ -386,13 +386,13 @@ export const ProductCatalogManager = () => {
                   value={newOptPrice}
                   onChange={(e) => setNewOptPrice(e.target.value)}
                   placeholder="Price"
-                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-xs focus:outline-none focus:border-blue-600 bg-white"
+                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
                 />
               </div>
               <button
                 type="button"
                 onClick={handleAddCustom}
-                className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs cursor-pointer border-none shrink-0 shadow-3xs"
+                className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] cursor-pointer border-none shrink-0 shadow-3xs"
               >
                 Add Option
               </button>
@@ -417,7 +417,7 @@ export const ProductCatalogManager = () => {
             <Package className="w-6 h-6 text-blue-600" />
             Print Product Matrix & Pricing Engine
           </h2>
-          <p className="text-xs text-slate-500 max-w-2xl mt-1 font-medium">
+          <p className="text-[14px] text-slate-500 max-w-2xl mt-1 font-medium">
             Manage live print SKUs, volume tier pricing matrices, Cloudinary galleries, and multi-variant pricing rules synced with Firebase.
           </p>
         </div>
@@ -425,19 +425,19 @@ export const ProductCatalogManager = () => {
         <div className="flex items-center gap-3 relative z-10">
           <button
             onClick={() => setActiveTab && setActiveTab('print_matrix')}
-            className="px-4 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-xs flex items-center gap-2 border border-purple-200 shadow-3xs transition-all cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-[14px] flex items-center gap-2 border border-purple-200 shadow-3xs transition-all cursor-pointer"
           >
             <Layers className="w-4 h-4 text-purple-600" /> Manage Options Matrix Center
           </button>
           <button
             onClick={() => setIsCategorySidebarOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-xs flex items-center gap-2 border border-slate-200 shadow-3xs transition-all cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-[14px] flex items-center gap-2 border border-slate-200 shadow-3xs transition-all cursor-pointer"
           >
             <FolderPlus className="w-4 h-4 text-blue-600" /> Manage Categories
           </button>
           <button
             onClick={openCreateForm}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer border-none"
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer border-none"
           >
             <Plus className="w-4 h-4" /> Add New Print Product
           </button>
@@ -452,7 +452,7 @@ export const ProductCatalogManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{products.length}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Active Product SKUs</div>
+            <div className="text-[14px] font-semibold text-slate-500">Active Product SKUs</div>
           </div>
         </div>
 
@@ -462,7 +462,7 @@ export const ProductCatalogManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{new Set(products.map(p => p.category)).size}</div>
-            <div className="text-[11px] font-semibold text-slate-500">Print Categories</div>
+            <div className="text-[14px] font-semibold text-slate-500">Print Categories</div>
           </div>
         </div>
 
@@ -474,7 +474,7 @@ export const ProductCatalogManager = () => {
             <div className="text-lg font-black text-slate-900">
               {products.reduce((acc, p) => acc + (p.tieredPricing?.length || 0), 0)}
             </div>
-            <div className="text-[11px] font-semibold text-slate-500">Volume Tier Rules</div>
+            <div className="text-[14px] font-semibold text-slate-500">Volume Tier Rules</div>
           </div>
         </div>
 
@@ -484,7 +484,7 @@ export const ProductCatalogManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{Object.keys(catalogOptions || {}).length} Matrices</div>
-            <div className="text-[11px] font-semibold text-slate-500">Firebase Options Active</div>
+            <div className="text-[14px] font-semibold text-slate-500">Firebase Options Active</div>
           </div>
         </div>
       </div>
@@ -499,7 +499,7 @@ export const ProductCatalogManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search SKUs or categories..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-blue-500 text-slate-800"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold focus:outline-none focus:border-blue-500 text-slate-800"
           />
         </div>
 
@@ -509,7 +509,7 @@ export const ProductCatalogManager = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 cursor-pointer transition border ${selectedCategory === cat
+              className={`px-3 py-1.5 rounded-xl font-bold text-[14px] shrink-0 cursor-pointer transition border ${selectedCategory === cat
                   ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                   : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                 }`}
@@ -538,7 +538,7 @@ export const ProductCatalogManager = () => {
                     <span className="text-[10px] font-bold">No Image Uploaded</span>
                   </div>
                 )}
-                <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-xs text-white font-black text-xs border border-white/20">
+                <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-slate-900/85 backdrop-blur-xs text-white font-black text-[14px] border border-white/20">
                   Base ₹{prod.basePrice}
                 </div>
                 <div className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white font-extrabold text-[10px]">
@@ -551,11 +551,11 @@ export const ProductCatalogManager = () => {
                   <span className="text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
                     {prod.category}
                   </span>
-                  <span className="text-[11px] font-mono text-slate-400">{prod.id}</span>
+                  <span className="text-[14px] font-mono text-slate-400">{prod.id}</span>
                 </div>
 
                 <h3 className="font-extrabold text-sm text-slate-900 line-clamp-1">{prod.title}</h3>
-                <p className="text-xs text-slate-500 line-clamp-2">{prod.summary}</p>
+                <p className="text-[14px] text-slate-500 line-clamp-2">{prod.summary}</p>
 
                 {/* Variants Preview Pills */}
                 <div className="pt-2 border-t border-slate-100 flex flex-wrap gap-1 text-[10px] text-slate-600">
@@ -582,14 +582,14 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => openEditForm(prod)}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-blue-600 font-bold text-xs flex items-center justify-center gap-1 text-slate-700 transition-colors border-none cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-blue-600 font-bold text-[14px] flex items-center justify-center gap-1 text-slate-700 transition-colors border-none cursor-pointer"
               >
                 <Edit3 className="w-3.5 h-3.5" /> Edit SKU & Options
               </button>
               <button
                 type="button"
                 onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                className="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs flex items-center justify-center gap-1 transition-colors border-none cursor-pointer"
+                className="py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-[14px] flex items-center justify-center gap-1 transition-colors border-none cursor-pointer"
                 title="Delete Product"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Delete
@@ -616,7 +616,7 @@ export const ProductCatalogManager = () => {
                   <h3 className="font-black text-base sm:text-lg tracking-tight text-slate-900">
                     {editingProduct ? `Edit SKU: ${formData.title}` : 'Create New Custom Print Product'}
                   </h3>
-                  <p className="text-xs text-slate-500 font-medium">
+                  <p className="text-[14px] text-slate-500 font-medium">
                     Configure core product details, gallery images, tiered quantity pricing, and multi-variant rules
                   </p>
                 </div>
@@ -636,7 +636,7 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('general')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'general'
+                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'general'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
@@ -647,7 +647,7 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('tiered')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'tiered'
+                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'tiered'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
@@ -658,7 +658,7 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setFormActiveTab('variants')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'variants'
+                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'variants'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
@@ -668,13 +668,13 @@ export const ProductCatalogManager = () => {
             </div>
 
             {/* Tabbed Form Body */}
-            <div className="p-6 space-y-6 overflow-y-auto flex-1 text-xs custom-scrollbar bg-slate-50/30">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1 text-[14px] custom-scrollbar bg-slate-50/30">
 
               {/* TAB 1: GENERAL INFO & CLOUDINARY GALLERY */}
               {formActiveTab === 'general' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
-                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                    <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center gap-2">
                       <Package className="w-4 h-4" /> Basic Details & Classification
                     </h4>
 
@@ -686,7 +686,7 @@ export const ProductCatalogManager = () => {
                           value={formData.title}
                           onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
                           required
-                          className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-[14px]"
                           placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
                         />
                       </div>
@@ -698,7 +698,7 @@ export const ProductCatalogManager = () => {
                           step="0.01"
                           value={formData.basePrice}
                           onChange={(e) => setFormData({ ...formData, basePrice: parseFloat(e.target.value) || 0 })}
-                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-[14px]"
                         />
                       </div>
 
@@ -709,7 +709,7 @@ export const ProductCatalogManager = () => {
                           min="1"
                           value={formData.minOrderQty || 100}
                           onChange={(e) => setFormData({ ...formData, minOrderQty: parseInt(e.target.value) || 1 })}
-                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          className="w-full p-3 rounded-xl border border-slate-200 font-extrabold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-[14px]"
                         />
                       </div>
 
@@ -733,7 +733,7 @@ export const ProductCatalogManager = () => {
                               value={inlineCatInput}
                               onChange={(e) => setInlineCatInput(e.target.value)}
                               placeholder="e.g. Stickers & Decals"
-                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
+                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-[14px] focus:outline-none focus:border-blue-600 bg-blue-50/50"
                             />
                             <button
                               type="button"
@@ -754,7 +754,7 @@ export const ProductCatalogManager = () => {
                                   setShowInlineCatInput(false);
                                 }
                               }}
-                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
+                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
                             >
                               Save Category
                             </button>
@@ -775,7 +775,7 @@ export const ProductCatalogManager = () => {
                               const firstSub = matched?.items?.[0]?.name || '';
                               setFormData({ ...formData, category: newCat, subcategory: firstSub });
                             }}
-                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-xs"
+                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-[14px]"
                           >
                             {(megamenuCategories && megamenuCategories.length > 0
                               ? megamenuCategories.map(c => c.categoryQuery || c.title)
@@ -807,7 +807,7 @@ export const ProductCatalogManager = () => {
                               value={inlineSubcatInput}
                               onChange={(e) => setInlineSubcatInput(e.target.value)}
                               placeholder="e.g. Spot UV Cards"
-                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-xs focus:outline-none focus:border-blue-600 bg-blue-50/50"
+                              className="flex-1 p-2.5 rounded-xl border border-blue-400 font-semibold text-[14px] focus:outline-none focus:border-blue-600 bg-blue-50/50"
                             />
                             <button
                               type="button"
@@ -829,7 +829,7 @@ export const ProductCatalogManager = () => {
                                   setShowInlineSubcatInput(false);
                                 }
                               }}
-                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
+                              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
                             >
                               Save Subcategory
                             </button>
@@ -845,7 +845,7 @@ export const ProductCatalogManager = () => {
                           <select
                             value={formData.subcategory || ''}
                             onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-xs"
+                            className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-[14px]"
                           >
                             <option value="">-- Select Subcategory --</option>
                             {(() => {
@@ -867,7 +867,7 @@ export const ProductCatalogManager = () => {
                           rows={2}
                           value={formData.summary}
                           onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                          className="w-full p-3 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-xs"
+                          className="w-full p-3 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-[14px]"
                           placeholder="Brief description visible on product cards..."
                         />
                       </div>
@@ -876,14 +876,14 @@ export const ProductCatalogManager = () => {
 
                   {/* Technical Specifications Custom Key-Values Card */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
-                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center justify-between">
+                    <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center justify-between">
                       <span>Technical Specifications & Custom Attributes</span>
                     </h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {Object.entries(formData.specs || {}).map(([key, val]) => (
                         <div key={key} className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
-                          <span className="font-bold text-slate-700 text-[11px] w-28 truncate shrink-0">{key}:</span>
+                          <span className="font-bold text-slate-700 text-[14px] w-28 truncate shrink-0">{key}:</span>
                           <input
                             type="text"
                             value={val}
@@ -893,7 +893,7 @@ export const ProductCatalogManager = () => {
                                 specs: { ...formData.specs, [key]: e.target.value }
                               });
                             }}
-                            className="flex-1 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-xs focus:outline-none focus:border-blue-500"
+                            className="flex-1 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-[14px] focus:outline-none focus:border-blue-500"
                           />
                           <button
                             type="button"
@@ -917,14 +917,14 @@ export const ProductCatalogManager = () => {
                         placeholder="Spec Name (e.g. Grammage, Inks)"
                         value={newSpecKey}
                         onChange={(e) => setNewSpecKey(e.target.value)}
-                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500"
                       />
                       <input
                         type="text"
                         placeholder="Spec Value (e.g. 350 GSM, CMYK Soy)"
                         value={newSpecVal}
                         onChange={(e) => setNewSpecVal(e.target.value)}
-                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500"
+                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500"
                       />
                       <button
                         type="button"
@@ -938,7 +938,7 @@ export const ProductCatalogManager = () => {
                             setNewSpecVal('');
                           }
                         }}
-                        className="px-4 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 cursor-pointer border-none shrink-0"
+                        className="px-4 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0"
                       >
                         + Add Spec
                       </button>
@@ -948,7 +948,7 @@ export const ProductCatalogManager = () => {
                   {/* Cloudinary Image Gallery Dropzone */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                      <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center gap-2">
                         <Upload className="w-4 h-4" /> Cloudinary Product Gallery ({formData.images.length} uploaded)
                       </h4>
                       <span className="text-[10px] text-slate-400 font-medium">PNG, JPG, WEBP up to 10MB</span>
@@ -977,7 +977,7 @@ export const ProductCatalogManager = () => {
                       {/* Dropzone Upload Button */}
                       <label className="aspect-square rounded-2xl border-2 border-dashed border-blue-200 hover:border-blue-500 bg-blue-50/30 hover:bg-blue-50 flex flex-col items-center justify-center text-blue-600 cursor-pointer transition-colors p-3 text-center">
                         <Upload className="w-6 h-6 mb-1 text-blue-500" />
-                        <span className="text-[11px] font-bold text-slate-800">
+                        <span className="text-[14px] font-bold text-slate-800">
                           {uploadingImage ? 'Uploading...' : 'Upload Image'}
                         </span>
                         <span className="text-[9px] text-slate-400 font-medium mt-0.5">Click to browse</span>
@@ -988,7 +988,7 @@ export const ProductCatalogManager = () => {
 
                   {/* SEO Section */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-                    <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600">
+                    <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600">
                       SEO Optimization Controls
                     </h4>
                     <div>
@@ -998,7 +998,7 @@ export const ProductCatalogManager = () => {
                         value={formData.seo?.metaTitle || ''}
                         onChange={(e) => setFormData({ ...formData, seo: { ...formData.seo, metaTitle: e.target.value } })}
                         placeholder="e.g. Buy Luxury Business Cards Online | Printigly"
-                        className="w-full p-2.5 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 text-xs"
+                        className="w-full p-2.5 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:border-blue-500 text-[14px]"
                       />
                     </div>
                   </div>
@@ -1011,10 +1011,10 @@ export const ProductCatalogManager = () => {
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div>
-                        <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider text-blue-600 flex items-center gap-2">
+                        <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center gap-2">
                           <DollarSign className="w-4 h-4" /> Volume Quantity Discount Matrix
                         </h4>
-                        <p className="text-[11px] text-slate-500 mt-0.5">Automatically calculates tiered discounts based on order quantity threshold</p>
+                        <p className="text-[14px] text-slate-500 mt-0.5">Automatically calculates tiered discounts based on order quantity threshold</p>
                       </div>
                       <button
                         type="button"
@@ -1027,7 +1027,7 @@ export const ProductCatalogManager = () => {
                             tieredPricing: [...currentTiers, { tierMin: lastMin, pricePerUnit: lastPrice }]
                           });
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-xs flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
+                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-[14px] flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
                       >
                         <Plus className="w-3.5 h-3.5" /> Add Tier Rule
                       </button>
@@ -1052,7 +1052,7 @@ export const ProductCatalogManager = () => {
                                 newTiers[idx].tierMin = parseInt(e.target.value) || 1;
                                 setFormData({ ...formData, tieredPricing: newTiers });
                               }}
-                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-xs focus:outline-none focus:border-blue-500"
+                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-[14px] focus:outline-none focus:border-blue-500"
                             />
                           </div>
                           <div className="col-span-5">
@@ -1065,7 +1065,7 @@ export const ProductCatalogManager = () => {
                                 newTiers[idx].pricePerUnit = parseFloat(e.target.value) || 0;
                                 setFormData({ ...formData, tieredPricing: newTiers });
                               }}
-                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-xs focus:outline-none focus:border-blue-500"
+                              className="w-full p-2 rounded-lg border border-slate-200 bg-white font-bold text-slate-900 text-[14px] focus:outline-none focus:border-blue-500"
                             />
                           </div>
                           <div className="col-span-2 text-right">
@@ -1091,7 +1091,7 @@ export const ProductCatalogManager = () => {
               {/* TAB 3: PRINT OPTIONS & FINISHES MATRIX WITH "+ ADD CUSTOM OPTION AT LAST" */}
               {formActiveTab === 'variants' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-xs flex flex-wrap items-center justify-between gap-3">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-[14px] flex flex-wrap items-center justify-between gap-3">
                     <span className="font-bold flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
                       All changes, custom options, and 1-click deletions automatically upload to Firebase and update live storefront products.
@@ -1120,7 +1120,7 @@ export const ProductCatalogManager = () => {
                           }
                         }
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[11px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
+                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[14px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
                       title="Clear options across all 12 sections in 1 click"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> Clear All 12 Option Sections (1-Click)
@@ -1207,20 +1207,20 @@ export const ProductCatalogManager = () => {
 
             {/* Sticky Bottom Action Bar */}
             <div className="bg-white px-6 py-3.5 border-t border-slate-200/80 flex items-center justify-between rounded-b-3xl shrink-0 shadow-md">
-              <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-block">
+              <span className="text-[14px] font-semibold text-slate-500 hidden sm:inline-block">
                 💡 Live matrix updates instantly calculate accurate pricing for storefront customers.
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer border-none"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[14px] transition cursor-pointer border-none"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2 border-none"
+                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2 border-none"
                 >
                   <CheckCircle2 className="w-4 h-4 text-white" /> Save Product & Live Matrix
                 </button>
@@ -1242,7 +1242,7 @@ export const ProductCatalogManager = () => {
                   </div>
                   <div>
                     <h3 className="font-extrabold text-base text-slate-900">Manage Categories</h3>
-                    <p className="text-[11px] text-slate-500">Create & control product categories across shop & admin</p>
+                    <p className="text-[14px] text-slate-500">Create & control product categories across shop & admin</p>
                   </div>
                 </div>
                 <button
@@ -1255,14 +1255,14 @@ export const ProductCatalogManager = () => {
 
               {/* Add Category Input Box */}
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <label className="block font-extrabold text-xs text-slate-800 uppercase tracking-wider">Add New Print Category</label>
+                <label className="block font-extrabold text-[14px] text-slate-800 uppercase tracking-wider">Add New Print Category</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={newCatSidebarInput}
                     onChange={(e) => setNewCatSidebarInput(e.target.value)}
                     placeholder="e.g. Stickers & Decals, Corporate Gifts"
-                    className="flex-1 p-2.5 rounded-xl border border-slate-200 font-semibold text-xs focus:outline-none focus:border-blue-500 bg-white"
+                    className="flex-1 p-2.5 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
                   />
                   <button
                     type="button"
@@ -1272,7 +1272,7 @@ export const ProductCatalogManager = () => {
                         setNewCatSidebarInput('');
                       }
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-xs shadow-md shadow-[#FF5A1F]/20 cursor-pointer border-none flex items-center gap-1 shrink-0"
+                    className="px-4 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] shadow-md shadow-[#FF5A1F]/20 cursor-pointer border-none flex items-center gap-1 shrink-0"
                   >
                     <Plus className="w-4 h-4" /> Add
                   </button>
@@ -1281,7 +1281,7 @@ export const ProductCatalogManager = () => {
 
               {/* Active Categories List */}
               <div className="space-y-3">
-                <h4 className="font-extrabold text-xs text-slate-700 uppercase tracking-wider flex items-center justify-between">
+                <h4 className="font-extrabold text-[14px] text-slate-700 uppercase tracking-wider flex items-center justify-between">
                   <span>Active Print Categories ({categories.length})</span>
                 </h4>
                 <div className="space-y-2">
@@ -1291,7 +1291,7 @@ export const ProductCatalogManager = () => {
                       <div key={idx} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white shadow-xs hover:border-slate-300 transition">
                         <div className="flex items-center gap-2.5">
                           <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                          <span className="font-extrabold text-xs text-slate-800">{cat}</span>
+                          <span className="font-extrabold text-[14px] text-slate-800">{cat}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-extrabold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
@@ -1321,7 +1321,7 @@ export const ProductCatalogManager = () => {
               <button
                 type="button"
                 onClick={() => setIsCategorySidebarOpen(false)}
-                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs cursor-pointer border-none"
+                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[14px] cursor-pointer border-none"
               >
                 Done / Close Sidebar
               </button>
