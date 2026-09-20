@@ -16,7 +16,14 @@ import {
   FiClock,
   FiTag,
   FiRotateCcw,
-  FiGrid
+  FiGrid,
+  FiMaximize2,
+  FiFileText,
+  FiCheckCircle,
+  FiChevronDown,
+  FiChevronUp,
+  FiDollarSign,
+  FiLayers
 } from 'react-icons/fi'
 import { useAuth } from '../context/AuthContext'
 import { subscribeToProducts } from '../services/firebase'
@@ -32,6 +39,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Standard Cards',
     finish: 'Matte/Gloss',
     turnaround: 'Express (24-48h)',
+    orientation: 'horizontal',
+    paperSizes: ['A4', 'Custom'],
     basePrice: 299,
     summary: 'Classic 350 GSM premium art card with crisp offset color printing.',
     description: 'High quality executive business cards printed on thick 350 GSM paper stock with smooth matte or gloss lamination.',
@@ -46,6 +55,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Spot UV Cards',
     finish: 'Spot UV',
     turnaround: 'Express (24-48h)',
+    orientation: 'horizontal',
+    paperSizes: ['A4', 'Custom'],
     basePrice: 599,
     summary: 'Tactile 3D raised gloss UV varnish accents on logo and titles.',
     description: 'Make your logo pop with elevated 3D high-gloss UV coating over a velvet soft-touch matte finish.',
@@ -60,6 +71,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Die Cut Cards',
     finish: 'Die Cut',
     turnaround: 'Standard (3-5 Days)',
+    orientation: 'vertical',
+    paperSizes: ['Custom'],
     basePrice: 699,
     summary: 'Unique custom shape die-cutting with rounded corners or custom contours.',
     description: 'Break away from rectangle standards with precision laser and punch die cutting.',
@@ -74,6 +87,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Metallic Foil Cards',
     finish: 'Metallic Foil',
     turnaround: 'Standard (3-5 Days)',
+    orientation: 'horizontal',
+    paperSizes: ['A4', 'Custom'],
     basePrice: 899,
     summary: 'Hot stamped Gold, Silver, or Rose Gold foil accents.',
     description: 'Luxury hot-stamping foil press on premium matte textured cotton cards.',
@@ -88,6 +103,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Soft-Touch Velvet Cards',
     finish: 'Soft-Touch Velvet',
     turnaround: 'Express (24-48h)',
+    orientation: 'horizontal',
+    paperSizes: ['A4', 'Custom'],
     basePrice: 799,
     summary: 'Ultra-soft suede touch velvet lamination on 400 GSM cardstock.',
     description: 'Experience pure luxury under your fingertips with silk velvet soft-touch coating.',
@@ -102,6 +119,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Luxury Thick Cards',
     finish: 'Textured Paper',
     turnaround: 'Standard (3-5 Days)',
+    orientation: 'horizontal',
+    paperSizes: ['Custom'],
     basePrice: 999,
     summary: 'Heavyweight 600 GSM triple-layer card with colored seam edge.',
     description: 'Command respect in C-suite meetings with ultra-thick cotton duplex cards.',
@@ -118,6 +137,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Wedding Cards',
     finish: 'Metallic Foil',
     turnaround: 'Standard (3-5 Days)',
+    orientation: 'vertical',
+    paperSizes: ['A5', 'Custom'],
     basePrice: 1299,
     summary: 'Royal textured paper invitations with gold foil stamping and vellum wrap.',
     description: 'Bespoke wedding card collection crafted with metallic foil embossing and wax seals.',
@@ -132,6 +153,8 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Birthday Cards',
     finish: 'Matte/Gloss',
     turnaround: 'Express (24-48h)',
+    orientation: 'vertical',
+    paperSizes: ['A5', 'A4'],
     basePrice: 499,
     summary: 'Vibrant theme birthday invites on 300 GSM silk art paper.',
     description: 'Personalized birthday party invitations with matching custom envelopes.',
@@ -146,311 +169,147 @@ export const FALLBACK_PRODUCTS = [
     subcategory: 'Thank You Cards',
     finish: 'Textured Paper',
     turnaround: 'Express (24-48h)',
+    orientation: 'horizontal',
+    paperSizes: ['A5', 'A6'],
     basePrice: 399,
     summary: 'Folded thank you note cards on cotton textured paper.',
-    description: 'Express heartfelt gratitude with elegant custom printed thank you notes.',
-    image: 'https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=800',
-    tags: ['Thank You Cards', 'Invitations', 'Cards']
-  },
-  {
-    id: 'prod-inv-4',
-    title: 'Save the Date Cards & Envelopes',
-    slug: 'save-the-date-cards',
-    category: 'Invitations',
-    subcategory: 'Save the Date Cards',
-    finish: 'Metallic Foil',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 599,
-    summary: 'Elegant metallic foil press announcements.',
-    description: 'Share your milestone date in unforgettable luxury styling.',
-    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=800',
-    tags: ['Save the Date Cards', 'Save the Date', 'Invitations']
-  },
-  {
-    id: 'prod-inv-5',
-    title: 'Luxury Foil Invitations',
-    slug: 'luxury-foil-invitations',
-    category: 'Invitations',
-    subcategory: 'Luxury Foil Invitations',
-    finish: 'Metallic Foil',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 999,
-    summary: 'Deep embossed foil detailing on imported Italian paper.',
-    description: 'Gleaming gold and silver foil accents on heavy linen textured stock.',
-    image: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=800',
-    tags: ['Luxury Foil Invitations', 'Foil Invitations', 'Invitations']
-  },
-  {
-    id: 'prod-inv-6',
-    title: 'Custom Envelope & Wax Seal Sets',
-    slug: 'envelope-seal-sets',
-    category: 'Invitations',
-    subcategory: 'Envelope & Seal Sets',
-    finish: 'Textured Paper',
-    turnaround: 'Express (24-48h)',
-    basePrice: 349,
-    summary: 'Handcrafted wax seals with custom foil-lined envelopes.',
-    description: 'Pair your invitations with custom monogrammed envelopes and self-adhesive wax seals.',
-    image: 'https://images.unsplash.com/photo-1557053910-d9eadeed1c58?q=80&w=800',
-    tags: ['Envelope & Seal Sets', 'Envelopes', 'Invitations']
+    description: 'Express heartfelt gratitude with premium folded thank you cards.',
+    image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=800',
+    tags: ['Thank You Cards', 'Invitations', 'Notes']
   },
 
   // ── Printing & Marketing ──
   {
-    id: 'prod-prt-1',
-    title: 'Brochures & Promotional Flyers',
+    id: 'prod-pr-1',
+    title: 'A4 & A5 Glossy Promotional Flyers',
     slug: 'brochures-flyers',
     category: 'Printing',
     subcategory: 'Brochures & Flyers',
     finish: 'Matte/Gloss',
     turnaround: 'Express (24-48h)',
-    basePrice: 349,
-    summary: 'A4 / A5 Tri-fold & Bi-fold marketing flyers on 170 GSM gloss paper.',
-    description: 'High impact sales flyers and folded corporate brochures with ultra-sharp color accuracy.',
-    image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800',
-    tags: ['Brochures & Flyers', 'Flyers', 'Brochures', 'Printing']
+    orientation: 'vertical',
+    paperSizes: ['A4', 'A5', 'A3'],
+    basePrice: 399,
+    summary: 'High-speed offset printed marketing flyers on 170 GSM gloss paper.',
+    description: 'Vibrant promotional leaflets perfect for retail offers, events, and trade shows.',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800',
+    tags: ['Brochures & Flyers', 'Flyers', 'Printing']
   },
   {
-    id: 'prod-prt-2',
-    title: 'Roll-Up Banners & Standees',
+    id: 'prod-pr-2',
+    title: 'Outdoor Roll-Up Standees & Banners',
     slug: 'banners-standees',
     category: 'Printing',
     subcategory: 'Banners & Standees',
     finish: 'Vinyl Waterproof',
     turnaround: 'Express (24-48h)',
-    basePrice: 1750,
-    summary: 'Non-tear PET flex roll up standee with anodized aluminum base.',
-    description: 'Portable retractable flex standee for trade shows, expos, and showroom displays.',
-    image: 'https://images.unsplash.com/photo-1542744094-3a3121699563?q=80&w=800',
-    tags: ['Banners & Standees', 'Banners', 'Standees', 'Printing']
+    orientation: 'vertical',
+    paperSizes: ['Custom'],
+    basePrice: 1499,
+    summary: 'Heavy-duty aluminum retractable standee with Star Flex banner print.',
+    description: 'Portable pop-up banner displays designed for exhibition booths and store entrances.',
+    image: 'https://images.unsplash.com/photo-1542744094-3a3172720177?q=80&w=800',
+    tags: ['Banners & Standees', 'Banners', 'Printing']
   },
   {
-    id: 'prod-prt-3',
-    title: 'Waterproof Stickers & Roll Labels',
+    id: 'prod-pr-3',
+    title: 'Die-Cut Product Stickers & Decals',
     slug: 'stickers-labels',
     category: 'Printing',
     subcategory: 'Stickers & Labels',
     finish: 'Vinyl Waterproof',
     turnaround: 'Express (24-48h)',
-    basePrice: 249,
-    summary: 'Custom die-cut vinyl stickers & jar product roll labels.',
-    description: 'Weatherproof UV-resistant vinyl stickers for product packaging and branding.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
-    tags: ['Stickers & Labels', 'Stickers', 'Labels', 'Printing']
-  },
-  {
-    id: 'prod-prt-4',
-    title: 'Executive Letterheads & Stationery',
-    slug: 'letterheads-stationery',
-    category: 'Printing',
-    subcategory: 'Letterheads & Stationery',
-    finish: 'Textured Paper',
-    turnaround: 'Express (24-48h)',
-    basePrice: 499,
-    summary: '100 GSM premium sunshine bond paper letterheads.',
-    description: 'Printer-safe corporate letterheads and matching branded envelopes.',
-    image: 'https://images.unsplash.com/photo-1568658176307-bfbd2873ab57?q=80&w=800',
-    tags: ['Letterheads & Stationery', 'Letterheads', 'Stationery', 'Printing']
-  },
-  {
-    id: 'prod-prt-5',
-    title: 'Gallery Posters & Wall Art Prints',
-    slug: 'posters-wall-art',
-    category: 'Printing',
-    subcategory: 'Posters & Wall Art',
-    finish: 'Matte/Gloss',
-    turnaround: 'Express (24-48h)',
-    basePrice: 599,
-    summary: 'High-definition 12-color pigment ink art prints on 260 GSM photo paper.',
-    description: 'Vivid gallery grade wall posters for decor, exhibitions, and marketing events.',
-    image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800',
-    tags: ['Posters & Wall Art', 'Posters', 'Printing']
-  },
-  {
-    id: 'prod-prt-6',
-    title: 'Multi-Page Catalogs & Booklets',
-    slug: 'booklets-catalogs',
-    category: 'Printing',
-    subcategory: 'Booklets & Catalogs',
-    finish: 'Matte/Gloss',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 899,
-    summary: 'Saddle-stitched product catalogs and annual report booklets.',
-    description: 'High gloss cover booklets with 8 to 48 internal pages printed in full CMYK.',
-    image: 'https://images.unsplash.com/photo-1568658176307-bfbd2873ab57?q=80&w=800',
-    tags: ['Booklets & Catalogs', 'Booklets', 'Printing']
+    orientation: 'horizontal',
+    paperSizes: ['Custom', 'A4'],
+    basePrice: 349,
+    summary: 'Waterproof vinyl die-cut stickers on easy-peel backing rolls or sheets.',
+    description: 'Scratch-proof, UV resistant custom shape adhesive labels for jars, boxes, and branding.',
+    image: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?q=80&w=800',
+    tags: ['Stickers & Labels', 'Stickers', 'Printing']
   },
 
-  // ── Packaging ──
+  // ── Packaging & Boxes ──
   {
-    id: 'prod-pkg-1',
-    title: 'Custom Product Packaging Boxes',
-    slug: 'custom-product-boxes',
+    id: 'prod-pk-1',
+    title: 'Custom Printed Product Folding Carton',
+    slug: 'product-boxes',
     category: 'Packaging',
     subcategory: 'Custom Product Boxes',
-    finish: 'Spot UV',
+    finish: 'Soft-Touch Velvet',
     turnaround: 'Standard (3-5 Days)',
-    basePrice: 129,
-    summary: 'Custom printed folding carton product boxes with spot UV.',
-    description: 'Tailored retail folding boxes engineered for cosmetic, food, and tech products.',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800',
-    tags: ['Custom Product Boxes', 'Product Boxes', 'Packaging']
+    orientation: 'horizontal',
+    paperSizes: ['Custom'],
+    basePrice: 899,
+    summary: '350 GSM custom die-cut product box with gloss foil branding.',
+    description: 'Custom sized folding cartons ideal for cosmetics, pharma, electronics, and retail packaging.',
+    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
+    tags: ['Custom Product Boxes', 'Boxes', 'Packaging']
   },
   {
-    id: 'prod-pkg-2',
-    title: 'Rigid Gift Packaging Boxes',
+    id: 'prod-pk-2',
+    title: 'Rigid Magnetic Closure Gift Boxes',
     slug: 'rigid-gift-boxes',
     category: 'Packaging',
     subcategory: 'Rigid Gift Boxes',
-    finish: 'Soft-Touch Velvet',
+    finish: 'Spot UV',
     turnaround: 'Standard (3-5 Days)',
-    basePrice: 399,
-    summary: '1200 GSM Kappa board rigid gift boxes with magnetic lid.',
-    description: 'Ultra luxury rigid box with satin pull ribbon and gold foil branding.',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
+    orientation: 'horizontal',
+    paperSizes: ['Custom'],
+    basePrice: 1899,
+    summary: 'Heavyweight rigid cardboard box with concealed magnetic catch.',
+    description: 'Unboxing perfection with thick 1200 GSM Kappa board wrapped in custom printed art paper.',
+    image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?q=80&w=800',
     tags: ['Rigid Gift Boxes', 'Gift Boxes', 'Packaging']
   },
   {
-    id: 'prod-pkg-3',
-    title: 'Mailer Boxes & Heavy Shipping Mailers',
-    slug: 'mailer-boxes-shipping',
+    id: 'prod-pk-3',
+    title: 'Custom Corrugated E-Commerce Mailer Boxes',
+    slug: 'mailer-boxes',
     category: 'Packaging',
     subcategory: 'Mailer Boxes & Shipping',
     finish: 'Matte/Gloss',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 189,
-    summary: '3-ply E-flute corrugated custom printed ecommerce mailers.',
-    description: 'Durable eco-friendly shipping mailer boxes printed inside and outside.',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800',
+    turnaround: 'Express (24-48h)',
+    orientation: 'horizontal',
+    paperSizes: ['Custom'],
+    basePrice: 1199,
+    summary: 'Sturdy 3-ply E-flute corrugated shipping boxes with full inside & outside print.',
+    description: 'Crush-resistant subscription and e-commerce shipping boxes custom printed with your brand colors.',
+    image: 'https://images.unsplash.com/photo-1586075010923-2dd4570fb338?q=80&w=800',
     tags: ['Mailer Boxes & Shipping', 'Mailer Boxes', 'Packaging']
   },
-  {
-    id: 'prod-pkg-4',
-    title: 'Custom Printed Kraft Paper Bags',
-    slug: 'paper-bags-pouches',
-    category: 'Packaging',
-    subcategory: 'Paper Bags & Pouches',
-    finish: 'Textured Paper',
-    turnaround: 'Express (24-48h)',
-    basePrice: 149,
-    summary: 'Eco kraft paper shopping bags with twisted or satin handles.',
-    description: 'Bespoke retail paper carrier bags with custom screen or offset logo print.',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=800',
-    tags: ['Paper Bags & Pouches', 'Paper Bags', 'Packaging']
-  },
-  {
-    id: 'prod-pkg-5',
-    title: 'Branded Shipping & Packing Tape',
-    slug: 'custom-printed-tapes',
-    category: 'Packaging',
-    subcategory: 'Custom Printed Tapes',
-    finish: 'Vinyl Waterproof',
-    turnaround: 'Express (24-48h)',
-    basePrice: 299,
-    summary: 'Reinforced custom logo gummed paper or BOPP shipping tape.',
-    description: 'Secure package tamper-evident packing tape with continuous logo repeat.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
-    tags: ['Custom Printed Tapes', 'Printed Tape', 'Packaging']
-  },
-  {
-    id: 'prod-pkg-6',
-    title: 'Custom Garment & Retail Hang Tags',
-    slug: 'product-hang-tags',
-    category: 'Packaging',
-    subcategory: 'Product Hang Tags',
-    finish: 'Die Cut',
-    turnaround: 'Express (24-48h)',
-    basePrice: 199,
-    summary: '350 GSM string hole-punched apparel price hang tags.',
-    description: 'Elevate your clothing brand with custom spot UV or foil stamped product tags.',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800',
-    tags: ['Product Hang Tags', 'Hang Tags', 'Packaging']
-  },
 
-  // ── Corporate & Merch ──
+  // ── Corporate Merch ──
   {
-    id: 'prod-corp-1',
-    title: 'Custom Embroidered Polo T-Shirts',
-    slug: 'custom-t-shirts-polos',
+    id: 'prod-cm-1',
+    title: 'Custom Embroidered Corporate Polo T-Shirts',
+    slug: 'custom-tshirts-polos',
     category: 'Corporate & Merch',
     subcategory: 'Custom T-Shirts & Polos',
     finish: 'Textured Paper',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 450,
-    summary: '240 GSM Matty cotton polo shirts with custom chest logo embroidery.',
-    description: 'Premium corporate uniform t-shirts available in 12 colors with long-lasting embroidery.',
+    turnaround: 'Express (24-48h)',
+    orientation: 'vertical',
+    paperSizes: ['Custom'],
+    basePrice: 599,
+    summary: '220 GSM 100% combed cotton pique polo t-shirts with chest logo embroidery.',
+    description: 'Premium staff uniforms and promotional event apparel with high-density thread embroidery.',
     image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800',
-    tags: ['Custom T-Shirts & Polos', 'T-Shirts', 'Corporate & Merch']
+    tags: ['Custom T-Shirts & Polos', 'Apparel', 'Corporate & Merch']
   },
   {
-    id: 'prod-corp-2',
-    title: 'Custom Ceramic Mugs & Drinkware',
-    slug: 'custom-mugs-drinkware',
+    id: 'prod-cm-2',
+    title: 'Branded Ceramic Coffee Mugs',
+    slug: 'mugs-drinkware',
     category: 'Corporate & Merch',
     subcategory: 'Mugs & Drinkware',
     finish: 'Matte/Gloss',
     turnaround: 'Express (24-48h)',
+    orientation: 'vertical',
+    paperSizes: ['Custom'],
     basePrice: 249,
-    summary: '325ml glossy ceramic mugs with full wrap sublimation printing.',
-    description: 'Microwave safe branded coffee mugs and stainless steel insulated tumblers.',
+    summary: '325ml dishwasher-safe ceramic mugs with vibrant sublimation photo printing.',
+    description: 'Classic white and inner-color ceramic mugs personalized with company logos, quotes, or photos.',
     image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800',
     tags: ['Mugs & Drinkware', 'Mugs', 'Corporate & Merch']
-  },
-  {
-    id: 'prod-corp-3',
-    title: 'Corporate ID Cards & Lanyards',
-    slug: 'id-cards-lanyards',
-    category: 'Corporate & Merch',
-    subcategory: 'ID Cards & Lanyards',
-    finish: 'Matte/Gloss',
-    turnaround: 'Express (24-48h)',
-    basePrice: 149,
-    summary: 'Smart PVC employee ID cards with satin lanyard print.',
-    description: 'High durability RFID compatible employee badges with breakaway safety clip lanyards.',
-    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800',
-    tags: ['ID Cards & Lanyards', 'ID Cards', 'Corporate & Merch']
-  },
-  {
-    id: 'prod-corp-4',
-    title: 'Executive Corporate Swag Gift Kits',
-    slug: 'corporate-gift-kits',
-    category: 'Corporate & Merch',
-    subcategory: 'Corporate Gift Kits',
-    finish: 'Soft-Touch Velvet',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 1250,
-    summary: 'Custom boxed welcome set with diary, metal pen, mug & USB.',
-    description: 'Onboard new hires or impress VIP clients with premium custom branded gift hampers.',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800',
-    tags: ['Corporate Gift Kits', 'Gift Kits', 'Corporate & Merch']
-  },
-  {
-    id: 'prod-corp-5',
-    title: 'Executive Desk Calendars & Planners',
-    slug: 'calendars-diaries',
-    category: 'Corporate & Merch',
-    subcategory: 'Calendars & Diaries',
-    finish: 'Matte/Gloss',
-    turnaround: 'Standard (3-5 Days)',
-    basePrice: 399,
-    summary: 'Spiral bound 12-month table calendars with hard stand.',
-    description: 'Keep your company brand visible on clients desk 365 days a year.',
-    image: 'https://images.unsplash.com/photo-1568658176307-bfbd2873ab57?q=80&w=800',
-    tags: ['Calendars & Diaries', 'Calendars', 'Corporate & Merch']
-  },
-  {
-    id: 'prod-corp-6',
-    title: 'Self-Inking Rubber Stamps & Seals',
-    slug: 'rubber-stamps-seals',
-    category: 'Corporate & Merch',
-    subcategory: 'Rubber Stamps & Seals',
-    finish: 'Matte/Gloss',
-    turnaround: 'Express (24-48h)',
-    basePrice: 299,
-    summary: 'Laser-engraved self-inking company seal & address stamps.',
-    description: 'Clean impression self-inking stamps available in blue, black, and red ink.',
-    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800',
-    tags: ['Rubber Stamps & Seals', 'Stamps', 'Corporate & Merch']
   }
 ];
 
@@ -471,7 +330,12 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
   const [selectedSubcategory, setSelectedSubcategory] = useState('All');
   const [selectedFinish, setSelectedFinish] = useState('All');
   const [selectedTurnaround, setSelectedTurnaround] = useState('All');
+  const [selectedOrientation, setSelectedOrientation] = useState('All');
+  const [selectedPaperSize, setSelectedPaperSize] = useState('All');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(3000);
   const [sortBy, setSortBy] = useState('featured');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const [selectedProduct, setSelectedProductState] = useState(null);
 
@@ -531,6 +395,10 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
     setSelectedSubcategory('All');
     setSelectedFinish('All');
     setSelectedTurnaround('All');
+    setSelectedOrientation('All');
+    setSelectedPaperSize('All');
+    setMinPrice(0);
+    setMaxPrice(3000);
     setSortBy('featured');
     if (setCurrentPage) {
       setCurrentPage('products', {}, '#catalog');
@@ -572,6 +440,7 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
 
   const finishes = ['All', 'Spot UV', 'Metallic Foil', 'Soft-Touch Velvet', 'Die Cut', 'Textured Paper', 'Matte/Gloss', 'Vinyl Waterproof'];
   const turnarounds = ['All', 'Express (24-48h)', 'Standard (3-5 Days)'];
+  const paperSizeOptions = ['All', 'A3', 'A4', 'A5', 'Letter', 'Legal', 'Custom'];
 
   const pool = liveProducts.length > 0 ? liveProducts : FALLBACK_PRODUCTS;
 
@@ -589,10 +458,21 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
       (p.tags && Array.isArray(p.tags) && p.tags.some(t => t.toLowerCase() === selectedSubcategory.toLowerCase()));
 
     const matchesFinish = selectedFinish === 'All' ||
-      (p.finish || '').toLowerCase().includes(selectedFinish.toLowerCase());
+      (p.finish || '').toLowerCase().includes(selectedFinish.toLowerCase()) ||
+      (p.variants?.finishes && Array.isArray(p.variants.finishes) && p.variants.finishes.some(f => (f.name || f).toLowerCase().includes(selectedFinish.toLowerCase())));
 
     const matchesTurnaround = selectedTurnaround === 'All' ||
-      (p.turnaround || '').toLowerCase().includes(selectedTurnaround.toLowerCase());
+      (p.turnaround || '').toLowerCase().includes(selectedTurnaround.toLowerCase()) ||
+      (p.specs?.turnaround || '').toLowerCase().includes(selectedTurnaround.toLowerCase());
+
+    const matchesOrientation = selectedOrientation === 'All' ||
+      (p.orientation || '').toLowerCase() === selectedOrientation.toLowerCase();
+
+    const matchesPaperSize = selectedPaperSize === 'All' ||
+      (p.paperSizes && Array.isArray(p.paperSizes) && p.paperSizes.includes(selectedPaperSize));
+
+    const pPrice = Number(p.basePrice || p.price || 0);
+    const matchesPrice = pPrice >= minPrice && pPrice <= maxPrice;
 
     const searchLower = searchTerm.trim().toLowerCase();
     const matchesSearch = !searchLower || 
@@ -601,7 +481,7 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
       (p.summary || p.description || '').toLowerCase().includes(searchLower) ||
       (p.tags && Array.isArray(p.tags) && p.tags.some(t => t.toLowerCase().includes(searchLower)));
 
-    return matchesCategory && matchesSubcategory && matchesFinish && matchesTurnaround && matchesSearch;
+    return matchesCategory && matchesSubcategory && matchesFinish && matchesTurnaround && matchesOrientation && matchesPaperSize && matchesPrice && matchesSearch;
   }).sort((a, b) => {
     if (sortBy === 'price-low') return a.basePrice - b.basePrice;
     if (sortBy === 'price-high') return b.basePrice - a.basePrice;
@@ -619,7 +499,257 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
     );
   }
 
-  const isAnyFilterActive = activeCategory !== 'All' || selectedSubcategory !== 'All' || selectedFinish !== 'All' || selectedTurnaround !== 'All' || searchTerm !== '' || sortBy !== 'featured';
+  const isAnyFilterActive = activeCategory !== 'All' || 
+    selectedSubcategory !== 'All' || 
+    selectedFinish !== 'All' || 
+    selectedTurnaround !== 'All' || 
+    selectedOrientation !== 'All' || 
+    selectedPaperSize !== 'All' || 
+    minPrice > 0 || 
+    maxPrice < 3000 || 
+    searchTerm !== '' || 
+    sortBy !== 'featured';
+
+  // Helper filter sidebar component to reuse in desktop sidebar & mobile drawer
+  const FilterSidebarContent = () => (
+    <div className="space-y-6 text-[#0B1633]">
+      
+      {/* 1. Category Filter Section */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <span className="flex items-center gap-2">
+            <FiLayers className="w-4 h-4 text-[#FF5A1F]" /> Categories
+          </span>
+          <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded-full text-slate-600 font-black">
+            {categories.length - 1}
+          </span>
+        </h3>
+
+        <div className="space-y-1">
+          {categories.map((cat) => {
+            const count = cat === 'All' 
+              ? pool.length 
+              : pool.filter(p => (p.category || '').toLowerCase().includes(cat.toLowerCase())).length;
+            const isSelected = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`w-full text-left px-3 py-2.5 rounded-xl text-[13.5px] font-extrabold transition-all flex items-center justify-between cursor-pointer border-none ${
+                  isSelected
+                    ? 'bg-[#FF5A1F] text-white shadow-md shadow-[#FF5A1F]/20'
+                    : 'bg-slate-50/70 text-slate-700 hover:bg-slate-100 hover:text-[#FF5A1F]'
+                }`}
+              >
+                <span>{cat}</span>
+                <span className={`text-[10.5px] px-2 py-0.5 rounded-full font-black ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 2. Price Range Filter Section */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <span className="flex items-center gap-2">
+            <FiDollarSign className="w-4 h-4 text-[#FF5A1F]" /> Price Range (₹)
+          </span>
+          <span className="text-[11px] font-black text-[#FF5A1F]">
+            ₹{minPrice} - ₹{maxPrice}+
+          </span>
+        </h3>
+
+        <div className="space-y-3 pt-1">
+          <input
+            type="range"
+            min="0"
+            max="3000"
+            step="50"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            className="w-full accent-[#FF5A1F] cursor-pointer"
+          />
+          <div className="flex items-center justify-between text-[12px] font-extrabold text-slate-500">
+            <span>₹0</span>
+            <span>₹1,500</span>
+            <span>₹3,000+</span>
+          </div>
+
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => { setMinPrice(0); setMaxPrice(500); }}
+              className="flex-1 py-1 rounded-lg bg-slate-100 hover:bg-[#FF5A1F] hover:text-white text-[11px] font-bold transition border-none cursor-pointer"
+            >
+              Under ₹500
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMinPrice(500); setMaxPrice(1000); }}
+              className="flex-1 py-1 rounded-lg bg-slate-100 hover:bg-[#FF5A1F] hover:text-white text-[11px] font-bold transition border-none cursor-pointer"
+            >
+              ₹500 - ₹1K
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMinPrice(1000); setMaxPrice(3000); }}
+              className="flex-1 py-1 rounded-lg bg-slate-100 hover:bg-[#FF5A1F] hover:text-white text-[11px] font-bold transition border-none cursor-pointer"
+            >
+              ₹1K+
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Subcategories Filter Section */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <FiTag className="w-4 h-4 text-[#FF5A1F]" /> Subcategory / Type
+        </h3>
+        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 custom-scrollbar text-[13px]">
+          <button
+            type="button"
+            onClick={() => setSelectedSubcategory('All')}
+            className={`w-full text-left px-2.5 py-1.5 rounded-lg font-extrabold transition border-none cursor-pointer ${
+              selectedSubcategory === 'All'
+                ? 'bg-[#07152F] text-white'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-[#FF5A1F]'
+            }`}
+          >
+            All Subcategories
+          </button>
+          {availableSubcategories.map((subcat) => (
+            <button
+              key={subcat}
+              type="button"
+              onClick={() => setSelectedSubcategory(subcat)}
+              className={`w-full text-left px-2.5 py-1.5 rounded-lg font-bold transition border-none cursor-pointer ${
+                selectedSubcategory === subcat
+                  ? 'bg-[#FF5A1F] text-white font-extrabold'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-[#FF5A1F]'
+              }`}
+            >
+              {subcat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. Print Orientation Filter */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <FiMaximize2 className="w-4 h-4 text-[#FF5A1F]" /> Print Orientation
+        </h3>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { id: 'All', label: 'All' },
+            { id: 'horizontal', label: 'Landscape' },
+            { id: 'vertical', label: 'Portrait' }
+          ].map(o => (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => setSelectedOrientation(o.id)}
+              className={`py-2 rounded-xl text-[12px] font-extrabold transition cursor-pointer border flex flex-col items-center justify-center gap-1 ${
+                selectedOrientation === o.id
+                  ? 'bg-[#07152F] text-white border-[#07152F] shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-[#FF5A1F]'
+              }`}
+            >
+              <span>{o.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 5. Paper Sizes Supported Filter */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <FiFileText className="w-4 h-4 text-[#FF5A1F]" /> Paper Sizes
+        </h3>
+        <div className="flex flex-wrap gap-1.5">
+          {paperSizeOptions.map(size => (
+            <button
+              key={size}
+              type="button"
+              onClick={() => setSelectedPaperSize(size)}
+              className={`px-3 py-1.5 rounded-xl text-[12px] font-extrabold transition cursor-pointer border ${
+                selectedPaperSize === size
+                  ? 'bg-[#FF5A1F] text-white border-[#FF5A1F] shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
+              }`}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 6. Special Finishes Filter */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <FiStar className="w-4 h-4 text-[#FF5A1F]" /> Premium Finishes
+        </h3>
+        <div className="flex flex-wrap gap-1.5">
+          {finishes.map(f => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setSelectedFinish(f)}
+              className={`px-2.5 py-1 rounded-lg text-[12px] font-bold transition cursor-pointer border ${
+                selectedFinish === f
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-[#FF5A1F]'
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 7. Dispatch Speed / Turnaround Filter */}
+      <div className="bg-white p-5 rounded-2xl border border-[#E7EAF0] shadow-3xs space-y-3">
+        <h3 className="font-extrabold text-sm text-[#07152F] uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2.5">
+          <FiClock className="w-4 h-4 text-[#FF5A1F]" /> Dispatch Speed
+        </h3>
+        <div className="space-y-1.5">
+          {turnarounds.map(t => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setSelectedTurnaround(t)}
+              className={`w-full text-left px-3 py-2 rounded-xl text-[12.5px] font-extrabold transition cursor-pointer border ${
+                selectedTurnaround === t
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                  : 'bg-emerald-50/50 text-emerald-900 border-emerald-200/60 hover:bg-emerald-100'
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset All Filters Button */}
+      {isAnyFilterActive && (
+        <button
+          type="button"
+          onClick={clearAllFilters}
+          className="w-full py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-[13.5px] border border-rose-200 transition cursor-pointer flex items-center justify-center gap-2 shadow-3xs"
+        >
+          <FiRotateCcw className="w-4 h-4" /> Reset All Filters
+        </button>
+      )}
+
+    </div>
+  );
 
   return (
     <div className="bg-[#FAFBFD] font-sans min-h-screen text-[#0B1633]">
@@ -655,6 +785,7 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
               />
               {searchTerm && (
                 <button
+                  type="button"
                   onClick={() => setSearchTermState('')}
                   className="absolute right-3 top-3 text-slate-400 hover:text-white border-none bg-transparent cursor-pointer"
                 >
@@ -667,295 +798,229 @@ export function ProductsPage({ onNavigateCart, setCurrentPage }) {
       </section>
 
       {/* Main Catalog & Filter Area */}
-      <div id="catalog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        
-        {/* ── Multi-Faceted Master Filter Panel ── */}
-        <div className="bg-white border border-[#E7EAF0] rounded-3xl p-5 sm:p-6 shadow-sm mb-8 space-y-5">
-          
-          {/* Row 1: Category Tabs + Sort Selector */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-slate-100">
-            {/* Main Categories Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-              <span className="text-[14px] font-extrabold uppercase tracking-wider text-[#07152F] mr-1 flex items-center gap-1.5 flex-shrink-0">
-                <FiFilter className="text-[#FF5A1F]" /> Category:
-              </span>
-              {categories.map((cat) => {
-                const count = cat === 'All' 
-                  ? pool.length 
-                  : pool.filter(p => (p.category || '').toLowerCase().includes(cat.toLowerCase())).length;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-[14px] font-extrabold transition-all duration-200 cursor-pointer border-none flex-shrink-0 flex items-center gap-1.5 ${
-                      activeCategory === cat
-                        ? 'bg-[#FF5A1F] text-white shadow-md shadow-[#FF5A1F]/20'
-                        : 'bg-slate-50 text-[#0B1633] border border-[#E7EAF0] hover:bg-slate-100 hover:text-[#FF5A1F]'
-                    }`}
-                  >
-                    <span>{cat}</span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
-                      activeCategory === cat ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-                    }`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+      <div id="catalog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-            {/* Sort Selector */}
-            <div className="flex items-center gap-2 shrink-0 self-end lg:self-center text-[14px] font-bold text-slate-700">
-              <span className="flex items-center gap-1 text-slate-400">
-                <FiSliders className="text-[#FF5A1F]" /> Sort:
-              </span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-[14px] font-extrabold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] cursor-pointer"
-              >
-                <option value="featured">Featured SKUs</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="title-az">Alphabetical (A-Z)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Row 2: Subcategory / Item Type Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <span className="text-[14px] font-extrabold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1 shrink-0">
-              <FiTag className="text-[#FF5A1F]" /> Subcategory:
-            </span>
+        {/* Top Control Bar: SKU Count, Active Filter Pills, Sort & Mobile Filter Toggle */}
+        <div className="bg-white border border-[#E7EAF0] rounded-2xl p-4 shadow-xs mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-3 flex-wrap text-[14px]">
             <button
-              onClick={() => setSelectedSubcategory('All')}
-              className={`px-3 py-1 rounded-lg text-[14px] font-extrabold transition-all cursor-pointer border-none shrink-0 ${
-                selectedSubcategory === 'All'
-                  ? 'bg-[#07152F] text-white'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:border-[#FF5A1F] hover:text-[#FF5A1F]'
-              }`}
+              type="button"
+              onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+              className="lg:hidden px-3.5 py-2 rounded-xl bg-[#07152F] text-white font-extrabold text-[13px] flex items-center gap-2 cursor-pointer border-none shadow-xs"
             >
-              All Types
+              <FiSliders className="w-4 h-4 text-[#FF5A1F]" /> Filters
             </button>
-            {availableSubcategories.map((subcat) => (
-              <button
-                key={subcat}
-                onClick={() => setSelectedSubcategory(subcat)}
-                className={`px-3 py-1 rounded-lg text-[14px] font-extrabold transition-all cursor-pointer border-none shrink-0 ${
-                  selectedSubcategory === subcat
-                    ? 'bg-[#FF5A1F] text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:border-[#FF5A1F] hover:text-[#FF5A1F]'
-                }`}
-              >
-                {subcat}
-              </button>
-            ))}
+
+            <span className="font-extrabold text-slate-800">
+              Showing <strong className="text-[#FF5A1F]">{filteredProducts.length}</strong> of {pool.length} SKUs
+            </span>
+
+            {isAnyFilterActive && (
+              <div className="flex flex-wrap items-center gap-1.5 text-[12px]">
+                {activeCategory !== 'All' && (
+                  <span className="bg-[#07152F] text-white px-2.5 py-0.5 rounded-md font-bold flex items-center gap-1">
+                    Category: {activeCategory}
+                    <button type="button" onClick={() => setActiveCategory('All')} className="hover:text-rose-400 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedSubcategory !== 'All' && (
+                  <span className="bg-[#FF5A1F] text-white px-2.5 py-0.5 rounded-md font-bold flex items-center gap-1">
+                    Sub: {selectedSubcategory}
+                    <button type="button" onClick={() => setSelectedSubcategory('All')} className="hover:text-slate-200 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedFinish !== 'All' && (
+                  <span className="bg-slate-800 text-white px-2.5 py-0.5 rounded-md font-bold flex items-center gap-1">
+                    Finish: {selectedFinish}
+                    <button type="button" onClick={() => setSelectedFinish('All')} className="hover:text-rose-400 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {selectedTurnaround !== 'All' && (
+                  <span className="bg-emerald-600 text-white px-2.5 py-0.5 rounded-md font-bold flex items-center gap-1">
+                    Speed: {selectedTurnaround}
+                    <button type="button" onClick={() => setSelectedTurnaround('All')} className="hover:text-slate-200 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="text-[12px] font-extrabold text-[#FF5A1F] hover:underline border-none bg-transparent cursor-pointer ml-1"
+                >
+                  Reset All
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Row 3: Finishes & Speed Filters */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100 text-[14px]">
-            
-            {/* Finishes Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <span className="font-extrabold text-slate-400 uppercase tracking-wider text-[10.5px] shrink-0">
-                Finish:
-              </span>
-              {finishes.map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setSelectedFinish(f)}
-                  className={`px-2.5 py-1 rounded-md text-[14px] font-bold transition-all cursor-pointer border-none shrink-0 ${
-                    selectedFinish === f
-                      ? 'bg-slate-900 text-white font-extrabold'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
+          {/* Sort Selector */}
+          <div className="flex items-center gap-2 shrink-0 text-[13.5px] font-bold text-slate-700">
+            <span className="flex items-center gap-1 text-slate-400">
+              <FiSliders className="text-[#FF5A1F]" /> Sort By:
+            </span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-[13.5px] font-extrabold text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] cursor-pointer"
+            >
+              <option value="featured">Featured SKUs</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="title-az">Alphabetical (A-Z)</option>
+            </select>
+          </div>
+        </div>
 
-            {/* Turnaround Speed */}
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-slate-400 uppercase tracking-wider text-[10.5px] shrink-0 flex items-center gap-1">
-                <FiClock className="text-[#FF5A1F]" /> Dispatch:
-              </span>
-              {turnarounds.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setSelectedTurnaround(t)}
-                  className={`px-2.5 py-1 rounded-md text-[14px] font-bold transition-all cursor-pointer border-none ${
-                    selectedTurnaround === t
-                      ? 'bg-emerald-600 text-white font-extrabold'
-                      : 'bg-emerald-50 text-emerald-800 border border-emerald-200/60 hover:bg-emerald-100'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
+        {/* Main Content Layout: Left Filter Sidebar (3 cols) + Right Product Grid (9 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT FILTER SIDEBAR (Desktop Only: sticky top-24) */}
+          <div className="hidden lg:block lg:col-span-3 sticky top-24 self-start">
+            <FilterSidebarContent />
+          </div>
 
+          {/* MOBILE FILTER DRAWER MODAL */}
+          {isMobileFilterOpen && (
+            <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex justify-start p-4 lg:hidden animate-in fade-in">
+              <div className="bg-white rounded-3xl w-full max-w-sm h-full overflow-y-auto p-6 space-y-4 shadow-2xl relative">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <h3 className="font-extrabold text-base text-[#07152F] flex items-center gap-2">
+                    <FiSliders className="text-[#FF5A1F]" /> Filter Catalog
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileFilterOpen(false)}
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
+                </div>
+                <FilterSidebarContent />
+                <div className="pt-3 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileFilterOpen(false)}
+                    className="w-full py-3 rounded-xl bg-[#07152F] text-white font-extrabold text-[14px] cursor-pointer border-none"
+                  >
+                    Show {filteredProducts.length} Results
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* RIGHT COLUMN: PRODUCT CARDS GRID */}
+          <div className="lg:col-span-9 space-y-6">
+            {loadingProducts ? (
+              <div className="py-20 text-center text-slate-500 font-bold text-sm bg-white rounded-3xl border border-[#E7EAF0]">
+                Loading Live Products Catalog...
+              </div>
+            ) : filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((prod) => {
+                  const isSaved = isInWishlist(prod.id);
+                  const imgSrc = (prod.images && prod.images[0]) || prod.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600';
+                  return (
+                    <div
+                      key={prod.id}
+                      onClick={() => setSelectedProduct(prod)}
+                      className="group bg-white rounded-2xl overflow-hidden border border-[#E7EAF0] hover:border-[#FF5A1F]/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between cursor-pointer"
+                    >
+                      {/* Product Image Stage */}
+                      <div className="relative h-[200px] w-full overflow-hidden bg-[#F7F8FA]">
+                        <img
+                          src={imgSrc}
+                          alt={prod.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <span className="absolute top-3 right-3 bg-[#07152F]/90 backdrop-blur-xs text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-xs">
+                          {prod.category}
+                        </span>
+                        {prod.turnaround && (
+                          <span className="absolute bottom-3 left-3 bg-emerald-600/90 backdrop-blur-xs text-white text-[9.5px] font-black px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
+                            <FiClock className="w-3 h-3" /> {prod.turnaround}
+                          </span>
+                        )}
+                        {prod.orientation && (
+                          <span className="absolute bottom-3 right-3 bg-slate-900/80 backdrop-blur-xs text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow-xs uppercase tracking-wider">
+                            {prod.orientation === 'vertical' ? 'Portrait' : 'Landscape'}
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleWishlist(prod);
+                          }}
+                          className={`absolute top-3 left-3 w-8.5 h-8.5 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center transition border-none cursor-pointer hover:scale-110 ${
+                            isSaved ? 'text-rose-600' : 'text-slate-400 hover:text-rose-600'
+                          }`}
+                          title="Save to Wishlist"
+                        >
+                          <FiHeart className={`w-4 h-4 ${isSaved ? 'fill-rose-600 text-rose-600' : ''}`} />
+                        </button>
+                      </div>
+
+                      {/* Product Content Details */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-1.5 mb-1.5 text-[13px] font-extrabold text-[#FF5A1F]">
+                            <span>{prod.subcategory || prod.category}</span>
+                            {prod.finish && (
+                              <span className="text-slate-400 font-medium">• {prod.finish}</span>
+                            )}
+                          </div>
+                          <h3 className="text-[15.5px] font-extrabold text-[#0B1633] group-hover:text-[#FF5A1F] transition-colors mb-1.5 leading-snug line-clamp-1">
+                            {prod.title}
+                          </h3>
+                          <p className="text-[#667085] text-[13px] leading-relaxed mb-4 line-clamp-2">
+                            {prod.summary || prod.description}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-[#E7EAF0] flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-[#667085] block font-semibold uppercase tracking-wider">Starting from</span>
+                            <span className="text-[18px] font-black text-[#0B1633]">₹{prod.basePrice}</span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedProduct(prod);
+                            }}
+                            className="inline-flex items-center gap-1.5 bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[13px] px-3.5 py-2 rounded-xl transition-all cursor-pointer border-none shadow-xs shadow-[#FF5A1F]/20 active:scale-95"
+                          >
+                            Configure & Order <FiArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="bg-white rounded-3xl p-12 text-center max-w-md mx-auto border border-[#E7EAF0] shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-orange-50 text-[#FF5A1F] flex items-center justify-center mx-auto mb-3 shadow-3xs">
+                  <FiShoppingBag className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-[#0B1633] mb-1">No SKUs Match Your Active Filters</h3>
+                <p className="text-slate-500 text-[13.5px] mb-6 leading-relaxed">Try broadening your search criteria or resetting your active price range, orientation, or finish filters.</p>
+                <button
+                  type="button"
+                  onClick={clearAllFilters}
+                  className="bg-[#07152F] hover:bg-slate-800 text-white font-extrabold text-[14px] px-6 py-3 rounded-xl inline-flex items-center gap-2 cursor-pointer border-none transition shadow-sm"
+                >
+                  <FiRotateCcw className="w-4 h-4 text-[#FF5A1F]" /> Reset All Filters & View Full Catalog
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
 
-        {/* Active Filters Bar & Result Counter */}
-        {isAnyFilterActive && (
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white border border-[#FF5A1F]/30 p-3.5 px-5 rounded-2xl shadow-xs">
-            <div className="flex flex-wrap items-center gap-2 text-[14px] font-bold text-slate-800">
-              <span className="text-slate-500 font-extrabold">Active Filters:</span>
-              
-              {activeCategory !== 'All' && (
-                <span className="bg-[#07152F] text-white px-2.5 py-1 rounded-lg text-[14px] font-extrabold flex items-center gap-1">
-                  Category: {activeCategory}
-                  <button onClick={() => setActiveCategory('All')} className="hover:text-rose-400 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
-                </span>
-              )}
-
-              {selectedSubcategory !== 'All' && (
-                <span className="bg-[#FF5A1F] text-white px-2.5 py-1 rounded-lg text-[14px] font-extrabold flex items-center gap-1">
-                  Sub: {selectedSubcategory}
-                  <button onClick={() => setSelectedSubcategory('All')} className="hover:text-slate-200 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
-                </span>
-              )}
-
-              {selectedFinish !== 'All' && (
-                <span className="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-[14px] font-extrabold flex items-center gap-1">
-                  Finish: {selectedFinish}
-                  <button onClick={() => setSelectedFinish('All')} className="hover:text-rose-400 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
-                </span>
-              )}
-
-              {selectedTurnaround !== 'All' && (
-                <span className="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-[14px] font-extrabold flex items-center gap-1">
-                  Speed: {selectedTurnaround}
-                  <button onClick={() => setSelectedTurnaround('All')} className="hover:text-slate-200 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
-                </span>
-              )}
-
-              {searchTerm && (
-                <span className="bg-[#FF5A1F] text-white px-2.5 py-1 rounded-lg text-[14px] font-extrabold flex items-center gap-1">
-                  Search: "{searchTerm}"
-                  <button onClick={() => setSearchTermState('')} className="hover:text-slate-200 border-none bg-transparent cursor-pointer"><FiX className="w-3 h-3" /></button>
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-4">
-              <span className="text-[14px] font-bold text-slate-500">
-                Showing <strong className="text-[#0B1633]">{filteredProducts.length}</strong> of {pool.length} SKUs
-              </span>
-              <button
-                onClick={clearAllFilters}
-                className="text-[14px] font-extrabold text-[#FF5A1F] hover:text-[#d44512] transition border-none bg-transparent cursor-pointer flex items-center gap-1"
-              >
-                <FiRotateCcw className="w-3.5 h-3.5" /> Reset All
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Product Cards Grid */}
-        {loadingProducts ? (
-          <div className="py-20 text-center text-slate-500 font-bold text-sm">
-            Loading Live Products Catalog...
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((prod) => {
-              const isSaved = isInWishlist(prod.id);
-              const imgSrc = (prod.images && prod.images[0]) || prod.image || 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=600';
-              return (
-                <div
-                  key={prod.id}
-                  onClick={() => setSelectedProduct(prod)}
-                  className="group bg-white rounded-[16px] overflow-hidden border border-[#E7EAF0] hover:border-[#FF5A1F]/40 hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between cursor-pointer"
-                >
-                  {/* Product Image */}
-                  <div className="relative h-[185px] w-full overflow-hidden bg-[#F7F8FA]">
-                    <img
-                      src={imgSrc}
-                      alt={prod.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span className="absolute top-3 right-3 bg-[#07152F] text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-xs">
-                      {prod.category}
-                    </span>
-                    {prod.turnaround && (
-                      <span className="absolute bottom-3 left-3 bg-emerald-600/90 backdrop-blur-xs text-white text-[9.5px] font-black px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
-                        <FiClock className="w-3 h-3" /> {prod.turnaround}
-                      </span>
-                    )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleWishlist(prod);
-                      }}
-                      className={`absolute top-3 left-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center transition border-none cursor-pointer ${
-                        isSaved ? 'text-rose-600' : 'text-slate-400 hover:text-rose-600'
-                      }`}
-                      title="Save to Wishlist"
-                    >
-                      <FiHeart className={`w-4 h-4 ${isSaved ? 'fill-rose-600' : ''}`} />
-                    </button>
-                  </div>
-
-                  {/* Product Content */}
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-1 text-[14px] font-extrabold text-[#FF5A1F]">
-                        <span>{prod.subcategory || prod.category}</span>
-                        {prod.finish && (
-                          <span className="text-slate-400 font-normal">• {prod.finish}</span>
-                        )}
-                      </div>
-                      <h3 className="text-[16px] font-extrabold text-[#0B1633] group-hover:text-[#FF5A1F] transition-colors mb-1.5 leading-snug">
-                        {prod.title}
-                      </h3>
-                      <p className="text-[#667085] text-[14px] leading-relaxed mb-4 line-clamp-2">
-                        {prod.summary || prod.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-[#E7EAF0] flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-[#667085] block font-semibold">Starting from</span>
-                        <span className="text-[18px] font-extrabold text-[#0B1633]">₹{prod.basePrice}</span>
-                      </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProduct(prod);
-                        }}
-                        className="inline-flex items-center gap-1.5 bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] px-3.5 py-2 rounded-[10px] transition-all cursor-pointer border-none shadow-sm shadow-[#FF5A1F]/20"
-                      >
-                        View Detail <FiArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="bg-white rounded-[24px] p-12 text-center max-w-md mx-auto border border-[#E7EAF0] shadow-xs">
-            <div className="w-14 h-14 rounded-full bg-orange-50 text-[#FF5A1F] flex items-center justify-center mx-auto mb-3">
-              <FiShoppingBag className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-extrabold text-[#0B1633] mb-1">No SKUs Match Your Active Filters</h3>
-            <p className="text-slate-500 text-[14px] mb-6">Try broadening your search criteria or resetting your active finish/subcategory filters.</p>
-            <button
-              onClick={clearAllFilters}
-              className="bg-[#07152F] text-white font-extrabold text-[14px] px-5 py-3 rounded-xl inline-flex items-center gap-2 cursor-pointer border-none hover:bg-slate-800 transition"
-            >
-              <FiRotateCcw className="w-4 h-4 text-[#FF5A1F]" /> Reset All Filters & View Catalog
-            </button>
-          </div>
-        )}
       </div>
 
     </div>
   )
 }
-

@@ -35,7 +35,7 @@ const formatKeyToTitle = (key) => {
     packagingStyle: 'Packaging & Presentation Box',
     baseType: 'Base & Frame Specification',
     boxStyle: 'Box Construction & Style',
-    customAreaPricing: 'Custom Area Pricing & Dimensions (Height × Width)',
+    customAreaPricing: 'Custom Area Pricing & Dimensions (Height × Width in sq. feet)',
   };
   if (titles[key]) return titles[key];
   return key
@@ -138,8 +138,8 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
   // Active pricing tier lookup
   const getActiveTier = () => {
     if (!product.tieredPricing || product.tieredPricing.length === 0) return null;
-    const sortedTiers = [...product.tieredPricing].sort((a, b) => a.tierMin - b.tierMin);
-    const matched = sortedTiers.find(t => quantity <= t.tierMin);
+    const sortedTiers = [...product.tieredPricing].sort((a, b) => b.tierMin - a.tierMin);
+    const matched = sortedTiers.find(t => quantity >= t.tierMin);
     return matched || sortedTiers[sortedTiers.length - 1];
   };
 
@@ -238,7 +238,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
       customHeight: parsedH > 0 ? parsedH : null,
       customWidth: parsedW > 0 ? parsedW : null,
       calculatedArea: calculatedAreaSqCm > 0 ? calculatedAreaSqCm : null,
-      areaTier: matchedAreaTier ? (matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} cm²`) : null,
+      areaTier: matchedAreaTier ? (matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} sq.ft`) : null,
       areaPrice: matchedAreaTier ? (matchedAreaTier.priceModifier || matchedAreaTier.price || 0) : 0,
       unitPrice: unitPrice,
       totalPrice: totalPrice,
@@ -370,6 +370,20 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                       <strong className="text-slate-900 font-extrabold text-[14px]">{product.specs.turnaround}</strong>
                     </div>
                   )}
+                  {/* Orientation spec */}
+                  {product.orientation && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Orientation</span>
+                      <strong className="text-slate-900 font-extrabold text-[14px] capitalize">{product.orientation === 'vertical' ? 'Portrait' : 'Landscape'}</strong>
+                    </div>
+                  )}
+                  {/* Paper Sizes spec */}
+                  {product.paperSizes && product.paperSizes.length > 0 && (
+                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase block">Paper Sizes</span>
+                      <strong className="text-slate-900 font-extrabold text-[14px]">{product.paperSizes.join(', ')}</strong>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -400,10 +414,35 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
             
             {/* Header: Title, Rating, Summary */}
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span className="px-3.5 py-1 rounded-full bg-[#FF5A1F]/10 text-[#FF5A1F] text-[14px] font-black uppercase tracking-wider border border-[#FF5A1F]/20">
                   {product.category}
                 </span>
+                {/* Orientation Badge */}
+                {product.orientation && (
+                  <span className={`px-3 py-1 rounded-full text-[12px] font-extrabold uppercase tracking-wider border flex items-center gap-1.5 ${
+                    product.orientation === 'vertical'
+                      ? 'bg-purple-50 text-purple-700 border-purple-200'
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
+                  }`}>
+                    {product.orientation === 'vertical' ? (
+                      <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="10" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+                      </svg>
+                    ) : (
+                      <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="12" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+                      </svg>
+                    )}
+                    {product.orientation === 'vertical' ? 'Portrait' : 'Landscape'}
+                  </span>
+                )}
+                {/* Paper Sizes Badge */}
+                {product.paperSizes && product.paperSizes.length > 0 && product.paperSizes.map(size => (
+                  <span key={size} className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-extrabold uppercase tracking-wider">
+                    {size}
+                  </span>
+                ))}
                 <div className="flex items-center gap-1 text-amber-500 text-[14px] font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                   <FiStar className="w-3.5 h-3.5 fill-amber-400" />
                   <span>4.9</span>
@@ -553,7 +592,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                       </div>
                       {activeTier && (
                         <span className="text-[14px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
-                          Tier Rate (Up to {activeTier.tierMin} units): ₹{activeTier.pricePerUnit}/unit
+                          Tier Rate ({activeTier.tierMin}+ units): ₹{activeTier.pricePerUnit}/unit
                         </span>
                       )}
                     </div>
@@ -590,33 +629,33 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                         {calculatedAreaSqCm > 0 && matchedAreaTier && (
                           <span className="text-[14px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span>Matched Tier: {matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} cm²`} (+₹{activePrice})</span>
+                            <span>Matched Tier: {matchedAreaTier.name || `Up to ${matchedAreaTier.maxArea} sq.ft`} (+₹{activePrice})</span>
                           </span>
                         )}
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Height (cm):</label>
+                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Height (ft):</label>
                           <input
                             type="number"
                             min="0.1"
                             step="0.1"
                             value={customHeight}
                             onChange={(e) => setCustomHeight(e.target.value)}
-                            placeholder="e.g. 5"
+                            placeholder="e.g. 1.5"
                             className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Width (cm):</label>
+                          <label className="block text-[14px] font-extrabold text-slate-700">Enter Width (ft):</label>
                           <input
                             type="number"
                             min="0.1"
                             step="0.1"
                             value={customWidth}
                             onChange={(e) => setCustomWidth(e.target.value)}
-                            placeholder="e.g. 10"
+                            placeholder="e.g. 2"
                             className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2 font-black text-[14px] text-[#0B1633] focus:outline-none focus:border-[#FF5A1F] shadow-xs"
                           />
                         </div>
@@ -625,7 +664,7 @@ export function ProductDetailPage({ product, onBack, onNavigateCart }) {
                       <div className="p-3 bg-white rounded-xl border border-blue-100 flex items-center justify-between text-[14px] font-bold text-slate-700 shadow-3xs">
                         <span>📐 Automatically Calculated Area:</span>
                         <span className="text-sm font-black text-[#FF5A1F] font-mono">
-                          {calculatedAreaSqCm > 0 ? `${customHeight}cm × ${customWidth}cm = ${calculatedAreaSqCm} sq cm (cm²)` : 'Enter Height & Width'}
+                          {calculatedAreaSqCm > 0 ? `${customHeight}ft × ${customWidth}ft = ${calculatedAreaSqCm} sq.ft` : 'Enter Height & Width'}
                         </span>
                       </div>
                     </div>

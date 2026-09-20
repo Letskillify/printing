@@ -11,23 +11,259 @@ import {
   Layers,
   Sparkles,
   DollarSign,
-  FolderPlus
+  FolderPlus,
+  AlignJustify,
+  AlignCenter,
+  Maximize2,
+  FileText,
+  Tag,
+  Info,
+  Zap,
+  Sliders,
+  ChevronRight
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import { uploadToCloudinary } from '../../../services/cloudinary';
 import { DEFAULT_CATALOG_OPTIONS } from '../../../services/firebase';
 
+// ============================================================================
+// Top-Level Component: VariantSectionCard
+// Defined OUTSIDE ProductCatalogManager to prevent DOM unmounting & scroll resets
+// ============================================================================
+const VariantSectionCard = React.memo(({
+  title,
+  groupKey,
+  items,
+  onUpdateItems,
+  onRestoreDefaults,
+  defaultItems
+}) => {
+  const [newOptName, setNewOptName] = useState('');
+  const [newOptPrice, setNewOptPrice] = useState('');
+  const [newMaxArea, setNewMaxArea] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const isAreaSection = groupKey === 'customAreaPricing';
+  const activeItems = items || [];
+
+  const handleAddCustom = (e) => {
+    if (e) e.preventDefault();
+    if (!newOptName.trim()) return;
+    const priceVal = parseFloat(newOptPrice) || 0;
+    const areaVal = parseFloat(newMaxArea) || 0;
+    const newObj = {
+      name: newOptName.trim(),
+      priceModifier: priceVal,
+      price: priceVal,
+      ...(isAreaSection || areaVal > 0 ? { maxArea: areaVal } : {})
+    };
+
+    const updatedList = [...activeItems, newObj];
+    onUpdateItems(groupKey, updatedList);
+
+    setNewOptName('');
+    setNewOptPrice('');
+    setNewMaxArea('');
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 2000);
+  };
+
+  const handleRemoveAllOptions = () => {
+    if (window.confirm(`Are you sure you want to remove ALL options from "${title}"?`)) {
+      onUpdateItems(groupKey, []);
+    }
+  };
+
+  const handleRemoveSingleOption = (idx) => {
+    const updated = activeItems.filter((_, i) => i !== idx);
+    onUpdateItems(groupKey, updated);
+  };
+
+  const handleItemChange = (idx, field, value) => {
+    const updated = activeItems.map((item, i) => {
+      if (i === idx) {
+        const newItem = { ...item, [field]: value };
+        if (field === 'priceModifier') newItem.price = value;
+        return newItem;
+      }
+      return item;
+    });
+    onUpdateItems(groupKey, updated);
+  };
+
+  return (
+    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-3xs space-y-3 hover:border-blue-300 transition-all">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
+        <div className="flex items-center gap-2">
+          <h4 className="font-extrabold text-slate-900 text-[13.5px] uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+            {title}
+          </h4>
+          <span className="text-[10px] font-extrabold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+            {activeItems.length} active
+          </span>
+        </div>
+
+        {activeItems.length > 0 ? (
+          <button
+            type="button"
+            onClick={handleRemoveAllOptions}
+            className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[10.5px] font-black flex items-center gap-1 transition-colors cursor-pointer border border-red-200/80"
+            title="Remove all options in this category"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-red-600" /> Clear All
+          </button>
+        ) : (
+          <span className="text-[10px] font-bold text-slate-400 italic">No options</span>
+        )}
+      </div>
+
+      {/* Active Items List */}
+      <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+        {activeItems.length === 0 ? (
+          <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-amber-800 text-[13px] font-medium flex items-center justify-between">
+            <span>⚠️ Section cleared. Storefront customers will see no dropdown for this option.</span>
+            {defaultItems && defaultItems.length > 0 && (
+              <button
+                type="button"
+                onClick={() => onRestoreDefaults(groupKey)}
+                className="text-[10.5px] font-bold text-amber-900 underline hover:text-amber-950 border-none bg-transparent cursor-pointer ml-2 shrink-0"
+              >
+                Restore Defaults
+              </button>
+            )}
+          </div>
+        ) : (
+          activeItems.map((opt, idx) => (
+            <div key={idx} className="flex items-center gap-2 bg-slate-50/60 p-1.5 rounded-xl border border-slate-100 hover:border-slate-200 transition">
+              <input
+                type="text"
+                value={opt.name || ''}
+                onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
+                placeholder="Option Name"
+                className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 font-bold text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 bg-white"
+              />
+              {isAreaSection && (
+                <div className="relative w-24 shrink-0">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={opt.maxArea !== undefined ? opt.maxArea : ''}
+                    onChange={(e) => handleItemChange(idx, 'maxArea', parseFloat(e.target.value) || 0)}
+                    placeholder="Max sq.ft"
+                    className="w-full px-2 py-2 rounded-lg border border-slate-200 font-bold text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 bg-white"
+                    title="Max Area limit in square feet (sq.ft)"
+                  />
+                </div>
+              )}
+              <div className="relative w-22 shrink-0">
+                <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={opt.priceModifier !== undefined ? opt.priceModifier : (opt.price || 0)}
+                  onChange={(e) => handleItemChange(idx, 'priceModifier', parseFloat(e.target.value) || 0)}
+                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-bold text-slate-800 text-[13px] focus:outline-none focus:border-blue-500 bg-white"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveSingleOption(idx)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors shrink-0"
+                title="Delete Option"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))
+        )}
+
+        {/* Add New Custom Option Form */}
+        <div className="pt-2 border-t border-dashed border-blue-200 bg-blue-50/40 p-2.5 rounded-xl space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase text-blue-700 tracking-wider flex items-center gap-1">
+              <Plus className="w-3.5 h-3.5 text-blue-600" /> Add Custom Option
+            </span>
+            {showSuccess && (
+              <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 animate-in fade-in">
+                ✓ Added to product!
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={newOptName}
+              onChange={(e) => setNewOptName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddCustom(e);
+                }
+              }}
+              placeholder={isAreaSection ? "e.g. Up to 5 sq.ft" : "Option Name"}
+              className="flex-1 min-w-0 p-2 rounded-lg border border-blue-300 font-bold text-[13px] focus:outline-none focus:border-blue-600 bg-white"
+            />
+            {isAreaSection && (
+              <input
+                type="number"
+                step="0.01"
+                value={newMaxArea}
+                onChange={(e) => setNewMaxArea(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddCustom(e);
+                  }
+                }}
+                placeholder="Max sq.ft"
+                className="w-22 p-2 rounded-lg border border-blue-300 font-bold text-[13px] focus:outline-none focus:border-blue-600 bg-white"
+                title="Max Area limit in sq. feet"
+              />
+            )}
+            <div className="relative w-20 shrink-0">
+              <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
+              <input
+                type="number"
+                step="0.5"
+                value={newOptPrice}
+                onChange={(e) => setNewOptPrice(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddCustom(e);
+                  }
+                }}
+                placeholder="0"
+                className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-[13px] focus:outline-none focus:border-blue-600 bg-white"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleAddCustom}
+              className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[12.5px] cursor-pointer border-none shrink-0 shadow-3xs transition-transform active:scale-95"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// ============================================================================
+// Main Component: ProductCatalogManager
+// ============================================================================
 export const ProductCatalogManager = () => {
   const { 
     products, 
     saveProduct, 
     removeProduct, 
     categories, 
-    addCategory, 
     deleteCategory,
     catalogOptions,
     updateCatalogOptions,
-    addCustomCatalogOption,
     megamenuCategories,
     updateMegamenuCategories,
     setActiveTab
@@ -41,12 +277,12 @@ export const ProductCatalogManager = () => {
 
   // Category & Subcategory Quick-Add States
   const [isCategorySidebarOpen, setIsCategorySidebarOpen] = useState(false);
-  const [newCatSidebarInput, setNewCatSidebarInput] = useState('');
   const [showInlineCatInput, setShowInlineCatInput] = useState(false);
   const [inlineCatInput, setInlineCatInput] = useState('');
   const [showInlineSubcatInput, setShowInlineSubcatInput] = useState(false);
   const [inlineSubcatInput, setInlineSubcatInput] = useState('');
   const [formActiveTab, setFormActiveTab] = useState('general'); // 'general', 'tiered', 'variants'
+  const [variantFilterCategory, setVariantFilterCategory] = useState('all'); // 'all', 'paper', 'sizing', 'enhancements', 'binding'
 
   // Dynamic Custom Tech Spec Row state
   const [newSpecKey, setNewSpecKey] = useState('');
@@ -75,6 +311,8 @@ export const ProductCatalogManager = () => {
     minOrderQty: 100,
     summary: '',
     description: '',
+    orientation: 'horizontal',
+    paperSizes: [],
     specs: {
       paperGsm: '350 GSM',
       dimensions: '91mm x 53mm',
@@ -106,6 +344,8 @@ export const ProductCatalogManager = () => {
       minOrderQty: 100,
       summary: '',
       description: '',
+      orientation: 'horizontal',
+      paperSizes: ['A4'],
       specs: {
         paperGsm: '350 GSM',
         dimensions: '91mm x 53mm',
@@ -143,6 +383,8 @@ export const ProductCatalogManager = () => {
     setFormData({
       ...prod,
       minOrderQty: prod.minOrderQty || 100,
+      orientation: prod.orientation || 'horizontal',
+      paperSizes: prod.paperSizes || [],
       specs: prod.specs || { paperGsm: '350 GSM', dimensions: '91mm x 53mm', printTech: 'Offset Litho', turnaround: '24 Hours' },
       variants: {
         paperStock: prod.variants?.paperStock ?? catalogOptions?.paperStock ?? DEFAULT_CATALOG_OPTIONS.paperStock,
@@ -163,6 +405,73 @@ export const ProductCatalogManager = () => {
     setIsCreating(true);
   };
 
+  const applyPresetTemplate = (type) => {
+    if (type === 'businessCard') {
+      setFormData(prev => ({
+        ...prev,
+        title: 'Premium Velvet Business Cards',
+        category: categories[0] || 'Business Stationery',
+        basePrice: 3.5,
+        minOrderQty: 100,
+        summary: '350 GSM luxury cardstock with velvet soft-touch coating.',
+        orientation: 'horizontal',
+        paperSizes: ['A4', 'Custom'],
+        specs: { paperGsm: '350 GSM', dimensions: '91mm x 53mm', printTech: 'Offset Litho', turnaround: '24-48 Hours' },
+        tieredPricing: [
+          { tierMin: 100, pricePerUnit: 4.5 },
+          { tierMin: 500, pricePerUnit: 3.5 },
+          { tierMin: 1000, pricePerUnit: 2.8 }
+        ]
+      }));
+    } else if (type === 'flyers') {
+      setFormData(prev => ({
+        ...prev,
+        title: 'A4 Glossy Promotional Flyers',
+        category: categories.find(c => c.toLowerCase().includes('flyer') || c.toLowerCase().includes('print')) || categories[0] || 'Flyers',
+        basePrice: 4.0,
+        minOrderQty: 250,
+        summary: 'Vibrant full-color printed leaflets for sales and promotion.',
+        orientation: 'vertical',
+        paperSizes: ['A4', 'A5', 'A3'],
+        specs: { paperGsm: '170 GSM Gloss', dimensions: '210mm x 297mm (A4)', printTech: 'Digital Litho', turnaround: '24 Hours' },
+        tieredPricing: [
+          { tierMin: 250, pricePerUnit: 5.0 },
+          { tierMin: 500, pricePerUnit: 4.0 },
+          { tierMin: 1000, pricePerUnit: 3.0 }
+        ]
+      }));
+    } else if (type === 'flexBanner') {
+      setFormData(prev => ({
+        ...prev,
+        title: 'Outdoor Vinyl Flex Banner (Sq.Ft)',
+        category: categories.find(c => c.toLowerCase().includes('banner') || c.toLowerCase().includes('sign')) || categories[0] || 'Banners',
+        basePrice: 18.0,
+        minOrderQty: 1,
+        summary: 'Weatherproof high-resolution flex banner calculated per sq. feet.',
+        orientation: 'horizontal',
+        paperSizes: ['Custom'],
+        specs: { paperGsm: '440 GSM Star Flex', dimensions: 'Custom (Height x Width in ft)', printTech: 'Eco-Solvent', turnaround: '24 Hours' },
+        tieredPricing: [
+          { tierMin: 1, pricePerUnit: 22.0 },
+          { tierMin: 10, pricePerUnit: 18.0 },
+          { tierMin: 50, pricePerUnit: 15.0 }
+        ]
+      }));
+    } else if (type === 'boxPackaging') {
+      setFormData(prev => ({
+        ...prev,
+        title: 'Custom Product Packaging Box',
+        category: categories.find(c => c.toLowerCase().includes('pack') || c.toLowerCase().includes('box')) || categories[0] || 'Packaging',
+        basePrice: 35.0,
+        minOrderQty: 50,
+        summary: 'Custom size die-cut corrugated carton product box.',
+        orientation: 'horizontal',
+        paperSizes: ['Custom'],
+        specs: { paperGsm: '350 GSM + Flute', dimensions: 'Custom Die-Cut', printTech: 'UV Offset', turnaround: '3-5 Days' }
+      }));
+    }
+  };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -178,7 +487,7 @@ export const ProductCatalogManager = () => {
     e.preventDefault();
     await saveProduct(formData);
     // Sync all options back to Firebase catalogOptions so all future products load them
-    if (formData.variants) {
+    if (formData.variants && updateCatalogOptions) {
       await updateCatalogOptions({
         ...catalogOptions,
         ...formData.variants
@@ -188,219 +497,20 @@ export const ProductCatalogManager = () => {
     setEditingProduct(null);
   };
 
-  const handleUpdateVariantItems = async (groupKey, newItemsList) => {
-    const updatedVariants = {
-      ...(formData.variants || {}),
-      [groupKey]: newItemsList
-    };
+  // Updates option items locally in formData WITHOUT forcing immediate global Firebase context invalidation on every single keypress
+  const handleUpdateVariantItems = (groupKey, newItemsList) => {
     setFormData(prev => ({
       ...prev,
-      variants: updatedVariants
-    }));
-    if (updateCatalogOptions) {
-      await updateCatalogOptions({
-        ...catalogOptions,
+      variants: {
+        ...(prev.variants || {}),
         [groupKey]: newItemsList
-      });
-    }
-  };
-
-  const handlePersistCustomOption = async (groupKey, newOptionObj) => {
-    await addCustomCatalogOption(groupKey, newOptionObj);
-  };
-
-  // Reusable Component for Option Categories with "+ Add Custom Option at Last" and 1-Click Delete All
-  const VariantSectionCard = ({ title, groupKey, items }) => {
-    const [newOptName, setNewOptName] = useState('');
-    const [newOptPrice, setNewOptPrice] = useState('');
-    const [newMaxArea, setNewMaxArea] = useState('');
-    const [showSuccess, setShowSuccess] = useState(false);
-
-    const isAreaSection = groupKey === 'customAreaPricing';
-
-    const handleAddCustom = async () => {
-      if (!newOptName.trim()) return;
-      const priceVal = parseFloat(newOptPrice) || 0;
-      const areaVal = parseFloat(newMaxArea) || 0;
-      const newObj = {
-        name: newOptName.trim(),
-        priceModifier: priceVal,
-        ...(isAreaSection || areaVal > 0 ? { maxArea: areaVal } : {})
-      };
-
-      const updatedList = [...(items || []), newObj];
-      await handleUpdateVariantItems(groupKey, updatedList);
-      await handlePersistCustomOption(groupKey, newObj);
-
-      setNewOptName('');
-      setNewOptPrice('');
-      setNewMaxArea('');
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2500);
-    };
-
-    const handleRemoveAllOptions = async () => {
-      if (window.confirm(`Are you sure you want to remove ALL options from "${title}" in 1 click?`)) {
-        await handleUpdateVariantItems(groupKey, []);
       }
-    };
+    }));
+  };
 
-    const activeItems = items || [];
-
-    return (
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
-        {/* Section Title Header with 1-Click Delete All Button */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
-          <div className="flex items-center gap-2">
-            <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600">{title}</h4>
-            <span className="text-[10px] font-extrabold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-              ({activeItems.length} active)
-            </span>
-          </div>
-
-          {activeItems.length > 0 ? (
-            <button
-              type="button"
-              onClick={handleRemoveAllOptions}
-              className="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 text-[10.5px] font-black flex items-center gap-1 transition-colors cursor-pointer border border-red-200/80 shadow-3xs"
-              title="Delete all options in this section in 1 click and sync to Firebase"
-            >
-              <Trash2 className="w-3.5 h-3.5 text-red-600" /> Remove All (1-Click)
-            </button>
-          ) : (
-            <span className="text-[10px] font-bold text-slate-400 italic">No options selected</span>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          {activeItems.length === 0 ? (
-            <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-amber-800 text-[14px] font-medium flex items-center justify-between">
-              <span>⚠️ All options cleared. Storefront customers will see no selection box for this section.</span>
-              <button
-                type="button"
-                onClick={() => {
-                  const defaultList = DEFAULT_CATALOG_OPTIONS[groupKey] || [];
-                  handleUpdateVariantItems(groupKey, defaultList);
-                }}
-                className="text-[10px] font-bold text-amber-900 underline hover:text-amber-950 border-none bg-transparent cursor-pointer ml-2 shrink-0"
-              >
-                Restore Defaults
-              </button>
-            </div>
-          ) : (
-            activeItems.map((opt, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={opt.name}
-                  onChange={(e) => {
-                    const updated = [...activeItems];
-                    updated[idx].name = e.target.value;
-                    handleUpdateVariantItems(groupKey, updated);
-                  }}
-                  placeholder="Option Name"
-                  className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
-                />
-                {isAreaSection && (
-                  <div className="relative w-20 shrink-0">
-                    <input
-                      type="number"
-                      step="1"
-                      value={opt.maxArea || ''}
-                      onChange={(e) => {
-                        const updated = [...activeItems];
-                        updated[idx].maxArea = parseFloat(e.target.value) || 0;
-                        handleUpdateVariantItems(groupKey, updated);
-                      }}
-                      placeholder="Max cm²"
-                      className="w-full px-2 py-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
-                      title="Max Area in sq cm (cm²)"
-                    />
-                  </div>
-                )}
-                <div className="relative w-22 shrink-0">
-                  <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
-                  <input
-                    type="number"
-                    step="1"
-                    value={opt.priceModifier !== undefined ? opt.priceModifier : (opt.price || 0)}
-                    onChange={(e) => {
-                      const updated = [...activeItems];
-                      updated[idx].priceModifier = parseFloat(e.target.value) || 0;
-                      updated[idx].price = parseFloat(e.target.value) || 0;
-                      handleUpdateVariantItems(groupKey, updated);
-                    }}
-                    className="w-full pl-5 pr-2 py-2 rounded-lg border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = activeItems.filter((_, i) => i !== idx);
-                    handleUpdateVariantItems(groupKey, updated);
-                  }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 border-none bg-transparent cursor-pointer transition-colors"
-                  title="Delete Option"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))
-          )}
-
-          {/* DEDICATED AT-LAST POSITION: "+ Add Custom Option at Last" Form */}
-          <div className="pt-2.5 border-t border-dashed border-blue-200 bg-blue-50/40 p-3 rounded-xl space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-blue-700 tracking-wider flex items-center gap-1">
-                <Plus className="w-3.5 h-3.5 text-blue-600" /> + Add Custom Option 
-              </span>
-              {showSuccess && (
-                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200">
-                  ✓ Saved to Firebase!
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={newOptName}
-                onChange={(e) => setNewOptName(e.target.value)}
-                placeholder={isAreaSection ? "e.g. Up to 50 sq cm" : "Custom Option Name"}
-                className="flex-1 min-w-0 p-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
-              />
-              {isAreaSection && (
-                <input
-                  type="number"
-                  value={newMaxArea}
-                  onChange={(e) => setNewMaxArea(e.target.value)}
-                  placeholder="Max cm²"
-                  className="w-20 p-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
-                  title="Max Area limit in cm²"
-                />
-              )}
-              <div className="relative w-20 shrink-0">
-                <span className="absolute left-2 top-2 text-[10px] text-slate-400 font-bold">₹</span>
-                <input
-                  type="number"
-                  step="1"
-                  value={newOptPrice}
-                  onChange={(e) => setNewOptPrice(e.target.value)}
-                  placeholder="Price"
-                  className="w-full pl-5 pr-2 py-2 rounded-lg border border-blue-300 font-bold text-[14px] focus:outline-none focus:border-blue-600 bg-white"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleAddCustom}
-                className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] cursor-pointer border-none shrink-0 shadow-3xs"
-              >
-                Add Option
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleRestoreDefaults = (groupKey) => {
+    const defaultList = DEFAULT_CATALOG_OPTIONS[groupKey] || [];
+    handleUpdateVariantItems(groupKey, defaultList);
   };
 
   return (
@@ -424,22 +534,25 @@ export const ProductCatalogManager = () => {
 
         <div className="flex items-center gap-3 relative z-10">
           <button
+            type="button"
             onClick={() => setActiveTab && setActiveTab('print_matrix')}
             className="px-4 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-[14px] flex items-center gap-2 border border-purple-200 shadow-3xs transition-all cursor-pointer"
           >
-            <Layers className="w-4 h-4 text-purple-600" /> Manage Options Matrix Center
+            <Layers className="w-4 h-4 text-purple-600" /> Options Matrix Center
           </button>
           <button
+            type="button"
             onClick={() => setIsCategorySidebarOpen(true)}
             className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-[14px] flex items-center gap-2 border border-slate-200 shadow-3xs transition-all cursor-pointer"
           >
-            <FolderPlus className="w-4 h-4 text-blue-600" /> Manage Categories
+            <FolderPlus className="w-4 h-4 text-blue-600" /> Categories
           </button>
           <button
+            type="button"
             onClick={openCreateForm}
             className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] flex items-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer border-none"
           >
-            <Plus className="w-4 h-4" /> Add New Print Product
+            <Plus className="w-4 h-4 text-white" /> Add New Print Product
           </button>
         </div>
       </div>
@@ -484,7 +597,7 @@ export const ProductCatalogManager = () => {
           </div>
           <div>
             <div className="text-lg font-black text-slate-900">{Object.keys(catalogOptions || {}).length} Matrices</div>
-            <div className="text-[14px] font-semibold text-slate-500">Firebase Options Active</div>
+            <div className="text-[14px] font-semibold text-slate-500">Firebase Presets Active</div>
           </div>
         </div>
       </div>
@@ -508,6 +621,7 @@ export const ProductCatalogManager = () => {
           {['All', ...categories].map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-xl font-bold text-[14px] shrink-0 cursor-pointer transition border ${selectedCategory === cat
                   ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
@@ -601,10 +715,10 @@ export const ProductCatalogManager = () => {
 
       {/* Form Editor Mode - 100% RELIABLE TABBED MODAL OVERLAY */}
       {isCreating && (
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs overflow-y-auto p-3 sm:p-6 flex justify-center items-start">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex justify-center items-center p-2 sm:p-4 animate-in fade-in duration-200">
           <form
             onSubmit={handleFormSubmit}
-            className="bg-white rounded-3xl w-full max-w-5xl my-4 sm:my-8 shadow-2xl border border-slate-200/90 text-slate-800 animate-in fade-in zoom-in-95 duration-200 relative overflow-hidden flex flex-col max-h-[90vh]"
+            className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl border border-slate-200 text-slate-800 relative overflow-hidden flex flex-col h-[92vh] max-h-[850px]"
           >
             {/* Sticky Top Header */}
             <div className="bg-white px-6 py-4 border-b border-slate-200/80 flex items-center justify-between shrink-0">
@@ -616,8 +730,8 @@ export const ProductCatalogManager = () => {
                   <h3 className="font-black text-base sm:text-lg tracking-tight text-slate-900">
                     {editingProduct ? `Edit SKU: ${formData.title}` : 'Create New Custom Print Product'}
                   </h3>
-                  <p className="text-[14px] text-slate-500 font-medium">
-                    Configure core product details, gallery images, tiered quantity pricing, and multi-variant rules
+                  <p className="text-[13px] text-slate-500 font-medium">
+                    Configure details, quantity volume pricing, orientation, paper sizes, and options matrix
                   </p>
                 </div>
               </div>
@@ -631,46 +745,86 @@ export const ProductCatalogManager = () => {
               </button>
             </div>
 
-            {/* Form Section Navigation Tab Bar */}
-            <div className="bg-slate-50/80 px-6 py-2 border-b border-slate-200/80 flex items-center gap-2 overflow-x-auto shrink-0 select-none">
+            {/* Quick 1-Click Preset Template Bar */}
+            {!editingProduct && (
+              <div className="bg-gradient-to-r from-blue-50 via-slate-50 to-indigo-50 px-6 py-2.5 border-b border-blue-100 flex items-center justify-between gap-3 text-[13px] flex-wrap shrink-0">
+                <span className="font-extrabold text-blue-900 flex items-center gap-1.5 shrink-0">
+                  <Zap className="w-4 h-4 text-blue-600 fill-blue-500" />
+                  Quick Presets:
+                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => applyPresetTemplate('businessCard')}
+                    className="px-3 py-1 rounded-lg bg-white hover:bg-blue-600 hover:text-white text-slate-700 font-bold text-[12px] border border-blue-200 shadow-3xs transition cursor-pointer"
+                  >
+                    🎴 Business Cards
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyPresetTemplate('flyers')}
+                    className="px-3 py-1 rounded-lg bg-white hover:bg-blue-600 hover:text-white text-slate-700 font-bold text-[12px] border border-blue-200 shadow-3xs transition cursor-pointer"
+                  >
+                    📄 Flyers & Leaflets
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyPresetTemplate('flexBanner')}
+                    className="px-3 py-1 rounded-lg bg-white hover:bg-blue-600 hover:text-white text-slate-700 font-bold text-[12px] border border-blue-200 shadow-3xs transition cursor-pointer"
+                  >
+                    🖼️ Flex Banner (Sq.Ft)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyPresetTemplate('boxPackaging')}
+                    className="px-3 py-1 rounded-lg bg-white hover:bg-blue-600 hover:text-white text-slate-700 font-bold text-[12px] border border-blue-200 shadow-3xs transition cursor-pointer"
+                  >
+                    📦 Custom Box
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Tab Bar */}
+            <div className="bg-slate-50/90 px-6 py-2 border-b border-slate-200/80 flex items-center gap-2 overflow-x-auto shrink-0 select-none">
               <button
                 type="button"
                 onClick={() => setFormActiveTab('general')}
-                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'general'
+                className={`px-4 py-2 rounded-xl text-[13.5px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'general'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
               >
-                <Package className="w-4 h-4" /> 1. Core Info, Tech Specs & Gallery
+                <Package className="w-4 h-4" /> 1. Core Info, Tech Specs & Media
               </button>
 
               <button
                 type="button"
                 onClick={() => setFormActiveTab('tiered')}
-                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'tiered'
+                className={`px-4 py-2 rounded-xl text-[13.5px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'tiered'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
               >
-                <DollarSign className="w-4 h-4" /> 2. Tiered Quantity Pricing Grid ({formData.tieredPricing?.length || 0} tiers)
+                <DollarSign className="w-4 h-4" /> 2. Tiered Quantity Pricing Grid ({formData.tieredPricing?.length || 0})
               </button>
 
               <button
                 type="button"
                 onClick={() => setFormActiveTab('variants')}
-                className={`px-4 py-2 rounded-xl text-[14px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'variants'
+                className={`px-4 py-2 rounded-xl text-[13.5px] font-bold transition-all flex items-center gap-2 cursor-pointer border ${formActiveTab === 'variants'
                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
                   }`}
               >
-                <Layers className="w-4 h-4" /> 3. Print Options & Finishes Matrix
+                <Layers className="w-4 h-4" /> 3. Options & Finishes Matrix (12 Sections)
               </button>
             </div>
 
-            {/* Tabbed Form Body */}
+            {/* Tabbed Form Body - STRICT INDEPENDENT SCROLL CONTAINER */}
             <div className="p-6 space-y-6 overflow-y-auto flex-1 text-[14px] custom-scrollbar bg-slate-50/30">
 
-              {/* TAB 1: GENERAL INFO & CLOUDINARY GALLERY */}
+              {/* TAB 1: GENERAL INFO & MEDIA */}
               {formActiveTab === 'general' && (
                 <div className="space-y-6 animate-in fade-in duration-150">
                   <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
@@ -684,7 +838,7 @@ export const ProductCatalogManager = () => {
                         <input
                           type="text"
                           value={formData.title}
-                          onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value, slug: e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') })}
                           required
                           className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-[14px]"
                           placeholder="e.g. Luxury Velvet Soft-Touch Business Cards"
@@ -713,7 +867,7 @@ export const ProductCatalogManager = () => {
                         />
                       </div>
 
-                      {/* Main Category Cascading Selector */}
+                      {/* Main Category Selector */}
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
                           <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Main Category *</label>
@@ -756,7 +910,7 @@ export const ProductCatalogManager = () => {
                               }}
                               className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
                             >
-                              Save Category
+                              Save
                             </button>
                             <button
                               type="button"
@@ -779,7 +933,7 @@ export const ProductCatalogManager = () => {
                           >
                             {(megamenuCategories && megamenuCategories.length > 0
                               ? megamenuCategories.map(c => c.categoryQuery || c.title)
-                              : ['Business Cards', 'Invitations', 'Printing', 'Packaging', 'Corporate & Merch']
+                              : ['Business Stationery', 'Flyers & Leaflets', 'Signage & Banners', 'Packaging & Boxes', 'Corporate & Merch']
                             ).map((catName, idx) => (
                               <option key={idx} value={catName}>{catName}</option>
                             ))}
@@ -787,7 +941,7 @@ export const ProductCatalogManager = () => {
                         )}
                       </div>
 
-                      {/* Subcategory / Item Type Cascading Dropdown */}
+                      {/* Subcategory / Item Type Dropdown */}
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
                           <label className="block font-bold text-slate-700 uppercase text-[10px] tracking-wider">Subcategory / Item Type *</label>
@@ -831,7 +985,7 @@ export const ProductCatalogManager = () => {
                               }}
                               className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0 shadow-3xs"
                             >
-                              Save Subcategory
+                              Save
                             </button>
                             <button
                               type="button"
@@ -847,22 +1001,17 @@ export const ProductCatalogManager = () => {
                             onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
                             className="w-full p-3 rounded-xl border border-slate-200 font-bold text-slate-800 focus:outline-none focus:border-blue-500 bg-white text-[14px]"
                           >
-                            <option value="">-- Select Subcategory --</option>
-                            {(() => {
-                              const activeCatObj = (megamenuCategories || []).find(
-                                c => (c.categoryQuery || c.title) === formData.category || c.title === formData.category
-                              );
-                              const subList = activeCatObj?.items || [];
-                              return subList.map((sub, idx) => (
-                                <option key={idx} value={sub.name}>{sub.name} ({sub.tag || 'Item'})</option>
-                              ));
-                            })()}
+                            <option value="">-- Select Subcategory (Optional) --</option>
+                            {((megamenuCategories || []).find(c => (c.categoryQuery || c.title) === formData.category || c.title === formData.category)?.items || []).map((sub, i) => (
+                              <option key={i} value={sub.name}>{sub.name}</option>
+                            ))}
                           </select>
                         )}
                       </div>
 
+                      {/* Short Product Summary */}
                       <div className="md:col-span-2">
-                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Short Product Summary</label>
+                        <label className="block font-bold text-slate-700 mb-1.5 uppercase text-[10px] tracking-wider">Short Product Summary *</label>
                         <textarea
                           rows={2}
                           value={formData.summary}
@@ -871,6 +1020,88 @@ export const ProductCatalogManager = () => {
                           placeholder="Brief description visible on product cards..."
                         />
                       </div>
+
+                      {/* Orientation Picker */}
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                          <Maximize2 className="w-3.5 h-3.5 text-blue-500" /> Print Orientation
+                        </label>
+                        <div className="flex gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, orientation: 'horizontal' })}
+                            className={`flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl border-2 transition-all cursor-pointer font-extrabold text-[13px] ${
+                              formData.orientation === 'horizontal'
+                                ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
+                            }`}
+                          >
+                            <div className={`w-12 h-8 rounded-lg border-2 flex items-center justify-center ${
+                              formData.orientation === 'horizontal' ? 'border-blue-500 bg-blue-100' : 'border-slate-300 bg-slate-50'
+                            }`}>
+                              <AlignJustify className="w-5 h-4 text-blue-600" />
+                            </div>
+                            <span>Landscape</span>
+                            <span className="text-[10px] font-semibold text-slate-400">Width &gt; Height</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, orientation: 'vertical' })}
+                            className={`flex-1 flex flex-col items-center justify-center gap-2 p-3 rounded-2xl border-2 transition-all cursor-pointer font-extrabold text-[13px] ${
+                              formData.orientation === 'vertical'
+                                ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300'
+                            }`}
+                          >
+                            <div className={`w-8 h-12 rounded-lg border-2 flex items-center justify-center ${
+                              formData.orientation === 'vertical' ? 'border-blue-500 bg-blue-100' : 'border-slate-300 bg-slate-50'
+                            }`}>
+                              <AlignCenter className="w-4 h-5 text-blue-600" />
+                            </div>
+                            <span>Portrait</span>
+                            <span className="text-[10px] font-semibold text-slate-400">Height &gt; Width</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Paper Sizes Multi-Select */}
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-2 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                          <FileText className="w-3.5 h-3.5 text-blue-500" /> Paper Sizes Supported
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {['A3', 'A4', 'A5', 'Letter', 'Legal', 'Custom'].map((size) => {
+                            const isSelected = (formData.paperSizes || []).includes(size);
+                            return (
+                              <button
+                                key={size}
+                                type="button"
+                                onClick={() => {
+                                  const current = formData.paperSizes || [];
+                                  const updated = isSelected
+                                    ? current.filter(s => s !== size)
+                                    : [...current, size];
+                                  setFormData({ ...formData, paperSizes: updated });
+                                }}
+                                className={`px-3.5 py-2 rounded-xl border-2 font-extrabold text-[13px] transition-all cursor-pointer flex items-center gap-1.5 ${
+                                  isSelected
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'
+                                }`}
+                              >
+                                <Tag className="w-3 h-3" />
+                                {size}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {(formData.paperSizes || []).length > 0 && (
+                          <p className="mt-2 text-[11px] text-slate-500 font-medium">
+                            Selected: <span className="font-bold text-blue-600">{(formData.paperSizes || []).join(', ')}</span>
+                          </p>
+                        )}
+                      </div>
+
                     </div>
                   </div>
 
@@ -882,27 +1113,31 @@ export const ProductCatalogManager = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {Object.entries(formData.specs || {}).map(([key, val]) => (
-                        <div key={key} className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
-                          <span className="font-bold text-slate-700 text-[14px] w-28 truncate shrink-0">{key}:</span>
+                        <div key={key} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200">
+                          <input
+                            type="text"
+                            value={key}
+                            readOnly
+                            className="w-1/3 p-2 rounded-lg bg-slate-100 font-bold text-slate-700 text-[13px] border border-slate-200 uppercase"
+                          />
                           <input
                             type="text"
                             value={val}
                             onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                specs: { ...formData.specs, [key]: e.target.value }
-                              });
+                              const updated = { ...formData.specs, [key]: e.target.value };
+                              setFormData({ ...formData, specs: updated });
                             }}
-                            className="flex-1 p-1.5 rounded-lg border border-slate-200 bg-white font-semibold text-[14px] focus:outline-none focus:border-blue-500"
+                            className="flex-1 p-2 rounded-lg bg-white font-bold text-slate-900 text-[13px] border border-slate-200 focus:outline-none focus:border-blue-500"
                           />
                           <button
                             type="button"
                             onClick={() => {
-                              const updatedSpecs = { ...formData.specs };
-                              delete updatedSpecs[key];
-                              setFormData({ ...formData, specs: updatedSpecs });
+                              const updated = { ...formData.specs };
+                              delete updated[key];
+                              setFormData({ ...formData, specs: updated });
                             }}
-                            className="p-1 text-slate-400 hover:text-red-600 border-none bg-transparent cursor-pointer"
+                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg border-none bg-transparent cursor-pointer"
+                            title="Remove attribute"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -910,46 +1145,46 @@ export const ProductCatalogManager = () => {
                       ))}
                     </div>
 
-                    {/* Inline Add Custom Spec Row */}
-                    <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
+                    {/* Add Custom Spec Row */}
+                    <div className="flex items-center gap-2 pt-2 border-t border-dashed border-slate-200">
                       <input
                         type="text"
-                        placeholder="Spec Name (e.g. Grammage, Inks)"
                         value={newSpecKey}
                         onChange={(e) => setNewSpecKey(e.target.value)}
-                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500"
+                        placeholder="Spec Name (e.g. turnaround)"
+                        className="w-1/3 p-2 rounded-xl border border-slate-200 font-bold text-[13px] focus:outline-none focus:border-blue-500"
                       />
                       <input
                         type="text"
-                        placeholder="Spec Value (e.g. 350 GSM, CMYK Soy)"
                         value={newSpecVal}
                         onChange={(e) => setNewSpecVal(e.target.value)}
-                        className="flex-1 p-2 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500"
+                        placeholder="Spec Value (e.g. 24 Hours)"
+                        className="flex-1 p-2 rounded-xl border border-slate-200 font-bold text-[13px] focus:outline-none focus:border-blue-500"
                       />
                       <button
                         type="button"
                         onClick={() => {
-                          if (newSpecKey.trim()) {
+                          if (newSpecKey.trim() && newSpecVal.trim()) {
                             setFormData({
                               ...formData,
-                              specs: { ...formData.specs, [newSpecKey.trim()]: newSpecVal.trim() || 'Standard' }
+                              specs: { ...formData.specs, [newSpecKey.trim()]: newSpecVal.trim() }
                             });
                             setNewSpecKey('');
                             setNewSpecVal('');
                           }
                         }}
-                        className="px-4 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shrink-0"
+                        className="px-4 py-2 rounded-xl bg-blue-600 text-white font-extrabold text-[13px] hover:bg-blue-700 cursor-pointer border-none shadow-3xs"
                       >
-                        + Add Spec
+                        Add Spec
                       </button>
                     </div>
                   </div>
 
-                  {/* Cloudinary Image Gallery Dropzone */}
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-4">
+                  {/* Media Gallery Upload */}
+                  <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-3xs space-y-3">
                     <div className="flex items-center justify-between">
                       <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center gap-2">
-                        <Upload className="w-4 h-4" /> Cloudinary Product Gallery ({formData.images.length} uploaded)
+                        <Upload className="w-4 h-4" /> Cloudinary Product Gallery Images ({formData.images?.length || 0})
                       </h4>
                       <span className="text-[10px] text-slate-400 font-medium">PNG, JPG, WEBP up to 10MB</span>
                     </div>
@@ -1014,7 +1249,7 @@ export const ProductCatalogManager = () => {
                         <h4 className="font-extrabold text-slate-900 text-[14px] uppercase tracking-wider text-blue-600 flex items-center gap-2">
                           <DollarSign className="w-4 h-4" /> Volume Quantity Discount Matrix
                         </h4>
-                        <p className="text-[14px] text-slate-500 mt-0.5">Automatically calculates tiered discounts based on order quantity threshold</p>
+                        <p className="text-[13px] text-slate-500 mt-0.5">Automatically calculates tiered discounts based on order quantity threshold</p>
                       </div>
                       <button
                         type="button"
@@ -1027,7 +1262,7 @@ export const ProductCatalogManager = () => {
                             tieredPricing: [...currentTiers, { tierMin: lastMin, pricePerUnit: lastPrice }]
                           });
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-[14px] flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
+                        className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-extrabold text-[13px] flex items-center gap-1.5 border border-blue-200 cursor-pointer shadow-3xs"
                       >
                         <Plus className="w-3.5 h-3.5" /> Add Tier Rule
                       </button>
@@ -1088,17 +1323,17 @@ export const ProductCatalogManager = () => {
                 </div>
               )}
 
-              {/* TAB 3: PRINT OPTIONS & FINISHES MATRIX WITH "+ ADD CUSTOM OPTION AT LAST" */}
+              {/* TAB 3: PRINT OPTIONS & FINISHES MATRIX (12 SECTIONS) */}
               {formActiveTab === 'variants' && (
-                <div className="space-y-6 animate-in fade-in duration-150">
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-900 text-[14px] flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-4 animate-in fade-in duration-150">
+                  <div className="p-3 bg-blue-50/80 border border-blue-200/80 rounded-2xl text-blue-900 text-[13.5px] flex flex-wrap items-center justify-between gap-3">
                     <span className="font-bold flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
-                      All changes, custom options, and 1-click deletions automatically upload to Firebase and update live storefront products.
+                      Add, edit, or remove options. All changes will save cleanly when you submit the form.
                     </span>
                     <button
                       type="button"
-                      onClick={async () => {
+                      onClick={() => {
                         if (window.confirm("Are you sure you want to clear ALL options across all 12 option matrices in 1 click?")) {
                           const emptyVariants = {
                             paperStock: [],
@@ -1115,90 +1350,164 @@ export const ProductCatalogManager = () => {
                             customAreaPricing: []
                           };
                           setFormData(prev => ({ ...prev, variants: emptyVariants }));
-                          if (updateCatalogOptions) {
-                            await updateCatalogOptions(emptyVariants);
-                          }
                         }
                       }}
-                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[14px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
+                      className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-[12.5px] shadow-sm flex items-center gap-1.5 cursor-pointer border-none transition shrink-0"
                       title="Clear options across all 12 sections in 1 click"
                     >
-                      <Trash2 className="w-3.5 h-3.5" /> Clear All 12 Option Sections (1-Click)
+                      <Trash2 className="w-3.5 h-3.5" /> Clear All 12 Option Sections
                     </button>
                   </div>
 
+                  {/* Category Quick Filter Sub-Tabs */}
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {[
+                      { id: 'all', label: 'All Sections (12)' },
+                      { id: 'paper', label: '📄 Paper & Finishes' },
+                      { id: 'sizing', label: '📐 Sizing & Area (sq.ft)' },
+                      { id: 'enhancements', label: '✨ Foils & Textures' },
+                      { id: 'binding', label: '📦 Binding & Delivery' }
+                    ].map(f => (
+                      <button
+                        key={f.id}
+                        type="button"
+                        onClick={() => setVariantFilterCategory(f.id)}
+                        className={`px-3 py-1.5 rounded-xl font-extrabold text-[12px] shrink-0 border cursor-pointer transition ${
+                          variantFilterCategory === f.id
+                            ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                            : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* 12 Option Cards Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <VariantSectionCard
-                      title="1. Paper Stock & Board Weight"
-                      groupKey="paperStock"
-                      items={formData.variants?.paperStock || []}
-                    />
+                    {(variantFilterCategory === 'all' || variantFilterCategory === 'paper') && (
+                      <>
+                        <VariantSectionCard
+                          title="1. Paper Stock & Board Weight"
+                          groupKey="paperStock"
+                          items={formData.variants?.paperStock || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.paperStock}
+                        />
 
-                    <VariantSectionCard
-                      title="2. Special Finishes"
-                      groupKey="finishes"
-                      items={formData.variants?.finishes || []}
-                    />
+                        <VariantSectionCard
+                          title="2. Special Finishes"
+                          groupKey="finishes"
+                          items={formData.variants?.finishes || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.finishes}
+                        />
 
-                    <VariantSectionCard
-                      title="3. Print Sides Option"
-                      groupKey="sides"
-                      items={formData.variants?.sides || []}
-                    />
+                        <VariantSectionCard
+                          title="5. Lamination Finish & Coating"
+                          groupKey="lamination"
+                          items={formData.variants?.lamination || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.lamination}
+                        />
+                      </>
+                    )}
 
-                    <VariantSectionCard
-                      title="4. Edge Cuts & Corner Finishing"
-                      groupKey="corners"
-                      items={formData.variants?.corners || []}
-                    />
+                    {(variantFilterCategory === 'all' || variantFilterCategory === 'sizing') && (
+                      <>
+                        <VariantSectionCard
+                          title="6. Size Formats & Aspect Ratio"
+                          groupKey="sizeFormat"
+                          items={formData.variants?.sizeFormat || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.sizeFormat}
+                        />
 
-                    <VariantSectionCard
-                      title="5. Lamination Finish & Coating"
-                      groupKey="lamination"
-                      items={formData.variants?.lamination || []}
-                    />
+                        <VariantSectionCard
+                          title="12. Custom Area Tier Pricing & Calculation (sq. feet)"
+                          groupKey="customAreaPricing"
+                          items={formData.variants?.customAreaPricing || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.customAreaPricing}
+                        />
+                      </>
+                    )}
 
-                    <VariantSectionCard
-                      title="6. Size Formats & Aspect Ratio"
-                      groupKey="sizeFormat"
-                      items={formData.variants?.sizeFormat || []}
-                    />
+                    {(variantFilterCategory === 'all' || variantFilterCategory === 'enhancements') && (
+                      <>
+                        <VariantSectionCard
+                          title="3. Print Sides Option"
+                          groupKey="sides"
+                          items={formData.variants?.sides || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.sides}
+                        />
 
-                    <VariantSectionCard
-                      title="7. Metallic Foil Accents & Stamping"
-                      groupKey="foilAccents"
-                      items={formData.variants?.foilAccents || []}
-                    />
+                        <VariantSectionCard
+                          title="4. Edge Cuts & Corner Finishing"
+                          groupKey="corners"
+                          items={formData.variants?.corners || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.corners}
+                        />
 
-                    <VariantSectionCard
-                      title="8. Spot UV & Raised Gloss Textures"
-                      groupKey="spotUV"
-                      items={formData.variants?.spotUV || []}
-                    />
+                        <VariantSectionCard
+                          title="7. Metallic Foil Accents & Stamping"
+                          groupKey="foilAccents"
+                          items={formData.variants?.foilAccents || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.foilAccents}
+                        />
 
-                    <VariantSectionCard
-                      title="9. Binding & Booklet Construction"
-                      groupKey="bindingStyle"
-                      items={formData.variants?.bindingStyle || []}
-                    />
+                        <VariantSectionCard
+                          title="8. Spot UV & Raised Gloss Textures"
+                          groupKey="spotUV"
+                          items={formData.variants?.spotUV || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.spotUV}
+                        />
+                      </>
+                    )}
 
-                    <VariantSectionCard
-                      title="10. Prepress Proofing Service"
-                      groupKey="proofService"
-                      items={formData.variants?.proofService || []}
-                    />
+                    {(variantFilterCategory === 'all' || variantFilterCategory === 'binding') && (
+                      <>
+                        <VariantSectionCard
+                          title="9. Binding & Booklet Construction"
+                          groupKey="bindingStyle"
+                          items={formData.variants?.bindingStyle || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.bindingStyle}
+                        />
 
-                    <VariantSectionCard
-                      title="11. Packaging & Presentation Style"
-                      groupKey="packagingStyle"
-                      items={formData.variants?.packagingStyle || []}
-                    />
+                        <VariantSectionCard
+                          title="10. Prepress Proofing Service"
+                          groupKey="proofService"
+                          items={formData.variants?.proofService || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.proofService}
+                        />
 
-                    <VariantSectionCard
-                      title="12. Custom Area Tier Pricing & Calculation (cm²)"
-                      groupKey="customAreaPricing"
-                      items={formData.variants?.customAreaPricing || []}
-                    />
+                        <VariantSectionCard
+                          title="11. Packaging & Presentation Style"
+                          groupKey="packagingStyle"
+                          items={formData.variants?.packagingStyle || []}
+                          onUpdateItems={handleUpdateVariantItems}
+                          onRestoreDefaults={handleRestoreDefaults}
+                          defaultItems={DEFAULT_CATALOG_OPTIONS.packagingStyle}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -1207,8 +1516,8 @@ export const ProductCatalogManager = () => {
 
             {/* Sticky Bottom Action Bar */}
             <div className="bg-white px-6 py-3.5 border-t border-slate-200/80 flex items-center justify-between rounded-b-3xl shrink-0 shadow-md">
-              <span className="text-[14px] font-semibold text-slate-500 hidden sm:inline-block">
-                💡 Live matrix updates instantly calculate accurate pricing for storefront customers.
+              <span className="text-[13px] font-semibold text-slate-500 hidden sm:inline-block">
+                💡 Saved product details and matrices instantly sync to live storefront.
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                 <button
@@ -1220,7 +1529,7 @@ export const ProductCatalogManager = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2 border-none"
+                  className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[14px] shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2 border-none active:scale-95"
                 >
                   <CheckCircle2 className="w-4 h-4 text-white" /> Save Product & Live Matrix
                 </button>
@@ -1242,89 +1551,101 @@ export const ProductCatalogManager = () => {
                   </div>
                   <div>
                     <h3 className="font-extrabold text-base text-slate-900">Manage Categories</h3>
-                    <p className="text-[14px] text-slate-500">Create & control product categories across shop & admin</p>
+                    <p className="text-[12px] text-slate-500">Add or delete store categories</p>
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsCategorySidebarOpen(false)}
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold border-none cursor-pointer"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 border-none bg-transparent cursor-pointer"
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Add Category Input Box */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <label className="block font-extrabold text-[14px] text-slate-800 uppercase tracking-wider">Add New Print Category</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={newCatSidebarInput}
-                    onChange={(e) => setNewCatSidebarInput(e.target.value)}
-                    placeholder="e.g. Stickers & Decals, Corporate Gifts"
-                    className="flex-1 p-2.5 rounded-xl border border-slate-200 font-semibold text-[14px] focus:outline-none focus:border-blue-500 bg-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (newCatSidebarInput.trim()) {
-                        addCategory(newCatSidebarInput.trim());
-                        setNewCatSidebarInput('');
-                      }
-                    }}
-                    className="px-4 py-2.5 rounded-xl bg-[#FF5A1F] hover:bg-[#e44d15] text-white font-extrabold text-[14px] shadow-md shadow-[#FF5A1F]/20 cursor-pointer border-none flex items-center gap-1 shrink-0"
-                  >
-                    <Plus className="w-4 h-4" /> Add
-                  </button>
-                </div>
-              </div>
-
-              {/* Active Categories List */}
-              <div className="space-y-3">
-                <h4 className="font-extrabold text-[14px] text-slate-700 uppercase tracking-wider flex items-center justify-between">
-                  <span>Active Print Categories ({categories.length})</span>
-                </h4>
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  {categories.map((cat, idx) => {
-                    const prodCount = products.filter(p => p.category === cat).length;
-                    return (
-                      <div key={idx} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-white shadow-xs hover:border-slate-300 transition">
-                        <div className="flex items-center gap-2.5">
-                          <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                          <span className="font-extrabold text-[14px] text-slate-800">{cat}</span>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                    Add New Primary Category
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={inlineCatInput}
+                      onChange={(e) => setInlineCatInput(e.target.value)}
+                      placeholder="Category name..."
+                      className="flex-1 p-2.5 rounded-xl border border-slate-200 font-bold text-[14px] focus:outline-none focus:border-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (inlineCatInput.trim()) {
+                          const name = inlineCatInput.trim();
+                          const newCat = {
+                            id: name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+                            title: name,
+                            categoryQuery: name,
+                            badge: null,
+                            items: []
+                          };
+                          const updated = [...(megamenuCategories || []), newCat];
+                          if (updateMegamenuCategories) await updateMegamenuCategories(updated);
+                          setInlineCatInput('');
+                        }
+                      }}
+                      className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-[14px] hover:bg-blue-700 cursor-pointer border-none shadow-3xs"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                    Active Categories List ({categories.length})
+                  </label>
+                  <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1">
+                    {categories.map((cat) => {
+                      const prodCount = products.filter(p => p.category === cat).length;
+                      return (
+                        <div key={cat} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+                          <div className="flex items-center gap-2">
+                            <FolderPlus className="w-4 h-4 text-blue-500" />
+                            <span className="font-extrabold text-[14px] text-slate-800">{cat}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-extrabold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
+                              {prodCount} {prodCount === 1 ? 'product' : 'products'}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm(`Delete category "${cat}"? Products in this category will keep their label.`)) {
+                                  deleteCategory(cat);
+                                }
+                              }}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition border-none bg-transparent cursor-pointer"
+                              title="Delete Category"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-extrabold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
-                            {prodCount} {prodCount === 1 ? 'product' : 'products'}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (window.confirm(`Delete category "${cat}"? Products in this category will keep their label.`)) {
-                                deleteCategory(cat);
-                              }
-                            }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition border-none bg-transparent cursor-pointer"
-                            title="Delete Category"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="pt-4 border-t border-slate-200">
-              <button
-                type="button"
-                onClick={() => setIsCategorySidebarOpen(false)}
-                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[14px] cursor-pointer border-none"
-              >
-                Done / Close Sidebar
-              </button>
+              <div className="pt-4 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setIsCategorySidebarOpen(false)}
+                  className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[14px] cursor-pointer border-none"
+                >
+                  Done / Close Sidebar
+                </button>
+              </div>
             </div>
           </div>
         </div>
