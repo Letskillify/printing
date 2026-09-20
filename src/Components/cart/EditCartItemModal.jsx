@@ -4,13 +4,13 @@ import { uploadToCloudinary } from '../../services/cloudinary';
 import { APP_CONFIG } from '../../config/appConfig';
 
 export function EditCartItemModal({ isOpen, onClose, item, onSaveItem }) {
-  if (!isOpen || !item) return null;
-
-  const [quantity, setQuantity] = useState(item.qty || item.quantity || 100);
-  const [artworkFiles, setArtworkFiles] = useState(item.artworkFiles || []);
-  const [artworkNotes, setArtworkNotes] = useState(item.artworkNotes || '');
+  const [quantity, setQuantity] = useState(item?.qty || item?.quantity || 100);
+  const [artworkFiles, setArtworkFiles] = useState(item?.artworkFiles || []);
+  const [artworkNotes, setArtworkNotes] = useState(item?.artworkNotes || '');
   const [uploading, setUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  if (!isOpen || !item) return null;
 
   const unitPrice = item.unitPrice || 1.5;
   const recalculatedTotal = Math.round(quantity * unitPrice);
